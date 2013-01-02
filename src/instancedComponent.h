@@ -1,9 +1,5 @@
 //
 //  instancedComponent.h
-//  renature_rev01
-//
-//  Created by matobahiroshi on 13/01/01.
-//
 //
 
 
@@ -12,25 +8,25 @@
 //
 //  model - component - instance(sphere, cylinder, etc)
 //
-//  GUI drawing sohuld be same with data itself
+//  GUI should show data itself without transformation
 //
 //
 //  :::Usage:::
 //
-//  setup(){
+//  setup
 //      instancedComponent ic;
 //      ic.setInstanceMesh(sphere);
 //      ic.setInstancePositionFromModel("myBee.pcl");
-//  }
 //
-//  update(){
+//
+//  update
 //      ic.setInstanceMatrix(12, newMat);
 //      ic.update();
-//  }
 //
-//  draw(){
+//
+//  draw
 //      ic.draw(myShader);
-//  }
+//
 //
 #pragma once
 
@@ -75,7 +71,7 @@ public:
     // instance param
     //
     void setInstanceMatrix      (int index, ofMatrix4x4 m);
-    void setInstanceMatrix      (int index, ofVec3f p, ofVec4f r, ofVec3f s);
+    void setInstanceMatrix      (int index, ofVec3f p, ofVec4f r=ofVec4f(0,0,0,0), ofVec3f s=ofVec3f(1,1,1));
 //    void setInstancePosition    (int index, ofVec3f p);
 //    void setInstanceRotattion   (int index, ofVec4f r);
 //    void setInstanceScale       (int index, ofVec3f s);

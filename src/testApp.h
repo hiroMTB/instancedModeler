@@ -55,23 +55,8 @@ class testApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
-    
-    //
-    float * createPositionTexture(GLuint *texId);
-    void updatePositionTexture(GLuint *texId, ofMatrix4x4 matrices[], ofVec3f trans, float _posScale);
-    void setPositionTexture(string modelPath, GLuint *texId, ofVec3f trans, float _posScale);
-    
-    
-    int loadPositionFromModel(string modelPath, ofVec3f trans, float _posScale, GLuint * texId);
-    ofMatrix4x4 loadMatrixFromModel();
-    
-    ofxVboMeshInstanced * loadComponent(ofMesh component, float scale);
 
-    
-    ofMesh getOFSphere();
-    
-    ofMesh createCylinder(float radius, float height, int slices, int stacks);
-    
+    void setupCameraLightMaterial();
     instancedComponent ic;
     
     

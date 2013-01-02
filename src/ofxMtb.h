@@ -1,9 +1,5 @@
 //
 //  ofxMtb.h
-//  renature_rev01
-//
-//  Created by matobahiroshi on 13/01/02.
-//
 //
 
 #pragma once
@@ -12,7 +8,8 @@
 
 using namespace std;
 
-static string myModule = "renature::insecta";
+static string myModule = "instancedModeler";
 
 void myLogDebug(string message);
 void myLogRelease(string message);
+ofMesh createCylinder(float radius, float height, int slices, int stacks);

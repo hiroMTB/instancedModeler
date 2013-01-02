@@ -1,9 +1,5 @@
 //
 //  instancedComponent.cpp
-//  renature_rev01
-//
-//  Created by matobahiroshi on 13/01/02.
-//
 //
 
 #include "instancedComponent.h"
@@ -223,6 +219,9 @@ void instancedComponent::loadInstancePositionFromModel(string path, float posSca
         myLogDebug(string(row4));
     }
     
+  
+    
+    vmi->setPrimCount(instanceNum);
     
     bTexNeedUpdate = true;
     model.clear();
