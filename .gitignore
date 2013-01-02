@@ -17,3 +17,5 @@
 *.obj
 *.ply
 *.dae
+*.blend
+*.mb
