@@ -1,0 +1,19 @@
+// addons
+ADDON_HEADER_1 = "$(OF_PATH)/addons/ofxVboMeshInstanced/src"
+ADDON_HEADER_2 = "$(OF_PATH)/addons/ofxGui/src"
+ADDON_HEADER_3 = "$(OF_PATH)/addons/ofxVectorMath/src"
+ADDON_HEADER_4 = "$(OF_PATH)/addons/ofxDirList/src"
+ADDON_HEADER_5 = "$(OF_PATH)/addons/ofxAssimpModelLoader/src" "$(OF_PATH)/addons/ofxAssimpModelLoader/libs/assimp/include" "$(OF_PATH)/addons/ofxAssimpModelLoader/libs/assimp/include/Compiler"
+
+
+ADDON_HEADERS = $(ADDON_HEADER_1) $(ADDON_HEADER_2) $(ADDON_HEADER_3) $(ADDON_HEADER_4) $(ADDON_HEADER_5)
+
+
+ADDON_LIB_1 = "$(OF_PATH)/addons/ofxAssimpModelLoader/libs/assimp/lib/osx/assimp.a"
+ADDON_LIB = $(ADDON_LIB_1)
+
+SRC = "src/*" "src"
+
+
+EXTRA_HEADERS = $(ADDON_HEADERS) $(SRC) 
+EXTRA_LIBS = $(ADDON_LIBS)

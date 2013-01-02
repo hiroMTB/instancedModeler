@@ -23,6 +23,7 @@
 # Xcode Project
 xcuserdata/
 *.entitlements
+*.xcscheme
 
 #OSX
 .DS_Store
@@ -57,3 +58,5 @@ xcuserdata/
 *.tiff
 *.tif
 *.gif
+
+
