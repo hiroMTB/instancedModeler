@@ -19,3 +19,41 @@
 *.dae
 *.blend
 *.mb
+
+# Xcode Project
+xcuserdata/
+*.entitlements
+
+#OSX
+.DS_Store
+*.swp
+*~.nib
+# Thumbnails
+._*
+
+*~
+.svn/
+.DS_Store
+*.wav
+*.app/
+
+
+# xml
+*.*.bak
+
+#emacs
+*.*~
+
+#movie file
+*.mov
+*.avi
+*.mpeg
+
+
+#image file
+*.png
+*.jpg
+*.jpeg
+*.tiff
+*.tif
+*.gif
