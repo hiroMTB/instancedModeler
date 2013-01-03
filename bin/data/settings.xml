@@ -4,3 +4,9 @@
 <shouldUseFlatShading>1</shouldUseFlatShading>
 <zNear>3.5</zNear>
 <zFar>3500</zFar>
+<Near_Clip>40.5</Near_Clip>
+<Far_Clip>3150</Far_Clip>
+<Render_Normals>1</Render_Normals>
+<Use_FlatShading>1</Use_FlatShading>
+<Particle_Diam>0.245</Particle_Diam>
+<Particle_Resolution>8.22</Particle_Resolution>

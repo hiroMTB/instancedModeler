@@ -1,5 +1,4 @@
 #include "testApp.h"
-#include <boost/algorithm/string.hpp>
 #include "ofxMtb.h"
 
 
@@ -40,7 +39,7 @@ void testApp::setup(){
 	ofSetVerticalSync(false);
 	ofSetColor(255);
     setupCameraLightMaterial();
-
+    setupGui();
     
     // model setup
     ofSetSphereResolution(5);
@@ -77,8 +76,8 @@ void testApp::update(){
 
 	}
 	
-	mCamMain.setNearClip(mPrmFloat["zNear"]);
-	mCamMain.setFarClip(mPrmFloat["zFar"]);
+	camMain.setNearClip(prmFloat["zNear"]);
+	camMain.setFarClip(prmFloat["zFar"]);
 
     ic.update();
 }
@@ -96,7 +95,7 @@ void testApp::testDraw(){
 void testApp::mainDraw(){
     ofSetColor(255);
 	ofBackgroundGradient(ofColor::fromHsb(0, 0, 100), ofColor::fromHsb(0, 0, 50), OF_GRADIENT_LINEAR);
-	mCamMain.begin();
+	camMain.begin();
 	ofEnableLighting();
 	mLigDirectional.setGlobalPosition(1000, 1000, 1000);
 	mLigDirectional.lookAt(ofVec3f(0,0,0));
@@ -108,18 +107,18 @@ void testApp::mainDraw(){
 	glCullFace(GL_BACK);
 
 	mShdInstanced->begin();
-        if (mPrmBool["shouldRenderNormals"]){
-            mShdInstanced->setUniform1f("shouldRenderNormals", 1.0);
+        if (prmBool["RenderNormals"]){
+            mShdInstanced->setUniform1f("RenderNormals", 1.0);
         } else {
-            mShdInstanced->setUniform1f("shouldRenderNormals", 0.0);
+            mShdInstanced->setUniform1f("RenderNormals", 0.0);
         }
 
-        if (mPrmBool["shouldUseFlatShading"]){
-            mShdInstanced->setUniform1f("shouldUseFlatShading", 1.0);
+        if (prmBool["UseFlatShading"]){
+            mShdInstanced->setUniform1f("UseFlatShading", 1.0);
             glShadeModel(GL_FLAT);
             glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);		// OpenGL default is GL_LAST_VERTEX_CONVENTION
         } else {
-            mShdInstanced->setUniform1f("shouldUseFlatShading", 0.0);
+            mShdInstanced->setUniform1f("UseFlatShading", 0.0);
             glShadeModel(GL_SMOOTH);
             glProvokingVertex(GL_LAST_VERTEX_CONVENTION);
         }
@@ -142,15 +141,16 @@ void testApp::mainDraw(){
 
     ofSetColor(255,0,0);
 	ofDisableLighting();
-	mCamMain.end();
+	camMain.end();
 	
     //  GUI draw
-	mPnlMain.draw();
+	mainPnl.draw();
 	ofDrawBitmapString(ofToString(ofGetFrameRate()), ofGetWidth()-100, 20);
 }
 
 
 void testApp::keyPressed(int key){
+
 }
 
 void testApp::keyReleased(int key){
@@ -181,24 +181,52 @@ void testApp::keyReleased(int key){
 	
 }
 
-void testApp::mouseMoved(int x, int y ){}
-void testApp::mouseDragged(int x, int y, int button){}
-void testApp::mousePressed(int x, int y, int button){}
-void testApp::mouseReleased(int x, int y, int button){}
+void testApp::mouseMoved(int x, int y ){
+    ofRectangle area = mainPnl.getShape();
+    bool in = area.inside(x, y);
+
+    if(!in){
+        camMain.mouseMoved(x, y);
+    }
+}
+
+void testApp::mouseDragged(int x, int y, int button){
+    ofRectangle area = mainPnl.getShape();
+    bool in = area.inside(x, y);
+    
+    if(!in){
+        camMain.mouseDragged(x, y, button);
+    }
+}
+
+void testApp::mousePressed(int x, int y, int button){
+    ofRectangle area = mainPnl.getShape();
+    bool in = area.inside(x, y);
+    
+    if(!in){
+        camMain.mousePressed(x, y, button);
+    }
+}
+
+void testApp::mouseReleased(int x, int y, int button){
+    ofRectangle area = mainPnl.getShape();
+    bool in = area.inside(x, y);
+    
+    if(!in){
+        camMain.mouseReleased(x, y, button);
+    }
+}
+
 void testApp::windowResized(int w, int h){}
 void testApp::gotMessage(ofMessage msg){}
 void testApp::dragEvent(ofDragInfo dragInfo){}
+
+
 void testApp::setupCameraLightMaterial(){
-    mCamMain.setupPerspective(false);
-    mCamMain.setDistance(1500);
+    camMain.setupPerspective(false);
+    camMain.setDistance(1500);
+    camMain.disableMouseInput();
     
-	mPnlMain.setup("MAIN SETTINGS", "settings.xml", 20, 20);
-	mPnlMain.add(mPrmFloat["zNear"].set("zNear",0,0,100));
-	mPnlMain.add(mPrmFloat["zFar"].set("zFar",0,0,5000.0));
-	mPnlMain.add(mPrmBool["shouldRenderNormals"].set("shouldRenderNormals", false));
-	mPnlMain.add(mPrmBool["shouldUseFlatShading"].set("shouldUseFlatShading", true));
-	mPnlMain.loadFromFile("settings.xml");
-	
 	mLigDirectional.setup();
 	mLigDirectional.setDirectional();
 	mLigDirectional.setAmbientColor(ofColor::fromHsb(0, 0, 200));
@@ -211,6 +239,22 @@ void testApp::setupCameraLightMaterial(){
 }
 
 
+
+void testApp::setupGui(){
+    
+	mainPnl.setup("MAIN SETTINGS", "settings.xml", ofGetWidth() - 300, 50);
+	mainPnl.add(prmFloat["zNear"].set("Near Clip",0,0,100));
+	mainPnl.add(prmFloat["zFar"].set("Far Clip",0,0,5000.0));
+	mainPnl.add(prmBool["RenderNormals"].set("Render Normals", true));
+	mainPnl.add(prmBool["UseFlatShading"].set("Use FlatShading", true));
+	
+	
+    
+    mainPnl.add(prmFloat["Particle_Diam"].set("Particle Diam",0,0,1.0));
+    mainPnl.add(prmFloat["Particle_Resolution"].set("Particle Resolution",0,3,12));
+
+	mainPnl.loadFromFile("settings.xml");
+}
 
 
 

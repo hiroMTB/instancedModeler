@@ -29,14 +29,16 @@ class testApp : public ofBaseApp{
 	ofxVboMeshInstanced * mMshSphere;
    	ofxVboMeshInstanced * mMshCylinder;
     
-	ofEasyCam	mCamMain;
+	ofEasyCam	camMain;
 	
 	ofLight	mLigDirectional;
 	ofMaterial mMatMainMaterial;
+
 	
-	ofxPanel	mPnlMain;
-	map<string, ofxParameter<float> > mPrmFloat;
-	map<string, ofxParameter<bool> > mPrmBool;
+    // GUI
+	ofxPanel	mainPnl;
+	map<string, ofxParameter<float> > prmFloat;
+	map<string, ofxParameter<bool> > prmBool;
 	
 	public:
 		void setup();
@@ -55,9 +57,11 @@ class testApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
-
-    void setupCameraLightMaterial();
-    instancedComponent ic;
+        void setupGui();
+    
+        void setupCameraLightMaterial();
+    
+        instancedComponent ic;
     
     
 };

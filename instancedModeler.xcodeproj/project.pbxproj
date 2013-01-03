@@ -15,16 +15,8 @@
 		4D598A5016947EA500EECD95 /* ofxPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D598A4716947EA500EECD95 /* ofxPanel.cpp */; };
 		4D598A5116947EA500EECD95 /* ofxSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D598A4916947EA500EECD95 /* ofxSlider.cpp */; };
 		4D598A5216947EA500EECD95 /* ofxToggle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D598A4B16947EA500EECD95 /* ofxToggle.cpp */; };
-		4D65FB9D1689630E00D7B2F5 /* force.frag in Sources */ = {isa = PBXBuildFile; fileRef = 4D65FB971689630E00D7B2F5 /* force.frag */; };
-		4D65FB9E1689630E00D7B2F5 /* force.vert in Sources */ = {isa = PBXBuildFile; fileRef = 4D65FB981689630E00D7B2F5 /* force.vert */; };
-		4D65FB9F1689630E00D7B2F5 /* instanced.frag in Sources */ = {isa = PBXBuildFile; fileRef = 4D65FB991689630E00D7B2F5 /* instanced.frag */; };
-		4D65FBA01689630E00D7B2F5 /* instanced.vert in Sources */ = {isa = PBXBuildFile; fileRef = 4D65FB9A1689630E00D7B2F5 /* instanced.vert */; };
-		4D65FBA11689630E00D7B2F5 /* length.frag in Sources */ = {isa = PBXBuildFile; fileRef = 4D65FB9B1689630E00D7B2F5 /* length.frag */; };
-		4D65FBA21689630E00D7B2F5 /* length.vert in Sources */ = {isa = PBXBuildFile; fileRef = 4D65FB9C1689630E00D7B2F5 /* length.vert */; };
 		4D65FC001689DCB700D7B2F5 /* assimp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D65FBFA1689DCB700D7B2F5 /* assimp.a */; };
 		4D65FC011689DCB700D7B2F5 /* ofxAssimpModelLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D65FBFE1689DCB700D7B2F5 /* ofxAssimpModelLoader.cpp */; };
-		4D9B7214168A2A3300A4C20A /* pos.frag in Sources */ = {isa = PBXBuildFile; fileRef = 4D9B7212168A2A3200A4C20A /* pos.frag */; };
-		4D9B7215168A2A3300A4C20A /* pos.vert in Sources */ = {isa = PBXBuildFile; fileRef = 4D9B7213168A2A3200A4C20A /* pos.vert */; };
 		4D9D72B81688FFFD00CE7F68 /* ofxVboMeshInstanced.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D9D729A1688FFFD00CE7F68 /* ofxVboMeshInstanced.cpp */; };
 		4DA082A51693D7C300DF20AD /* instancedComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA082A41693D7C300DF20AD /* instancedComponent.cpp */; };
 		4DA082B31693F01900DF20AD /* ofxMtb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA082B21693F01900DF20AD /* ofxMtb.cpp */; };
@@ -102,12 +94,6 @@
 		4D598A4A16947EA500EECD95 /* ofxSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxSlider.h; sourceTree = "<group>"; };
 		4D598A4B16947EA500EECD95 /* ofxToggle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxToggle.cpp; sourceTree = "<group>"; };
 		4D598A4C16947EA500EECD95 /* ofxToggle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxToggle.h; sourceTree = "<group>"; };
-		4D65FB971689630E00D7B2F5 /* force.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = force.frag; sourceTree = "<group>"; };
-		4D65FB981689630E00D7B2F5 /* force.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = force.vert; sourceTree = "<group>"; };
-		4D65FB991689630E00D7B2F5 /* instanced.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = instanced.frag; sourceTree = "<group>"; };
-		4D65FB9A1689630E00D7B2F5 /* instanced.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = instanced.vert; sourceTree = "<group>"; };
-		4D65FB9B1689630E00D7B2F5 /* length.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = length.frag; sourceTree = "<group>"; };
-		4D65FB9C1689630E00D7B2F5 /* length.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = length.vert; sourceTree = "<group>"; };
 		4D65FBCF1689DCB700D7B2F5 /* install.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = install.xml; sourceTree = "<group>"; };
 		4D65FBD31689DCB700D7B2F5 /* aiAnim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aiAnim.h; sourceTree = "<group>"; };
 		4D65FBD41689DCB700D7B2F5 /* aiAssert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aiAssert.h; sourceTree = "<group>"; };
@@ -150,8 +136,6 @@
 		4D65FBFD1689DCB700D7B2F5 /* ofxAssimpMeshHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxAssimpMeshHelper.h; sourceTree = "<group>"; };
 		4D65FBFE1689DCB700D7B2F5 /* ofxAssimpModelLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxAssimpModelLoader.cpp; sourceTree = "<group>"; };
 		4D65FBFF1689DCB700D7B2F5 /* ofxAssimpModelLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxAssimpModelLoader.h; sourceTree = "<group>"; };
-		4D9B7212168A2A3200A4C20A /* pos.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = pos.frag; sourceTree = "<group>"; };
-		4D9B7213168A2A3200A4C20A /* pos.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = pos.vert; sourceTree = "<group>"; };
 		4D9D72471688FE6500CE7F68 /* Project_extra.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Project_extra.xcconfig; sourceTree = "<group>"; };
 		4D9D72831688FFFD00CE7F68 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		4D9D72981688FFFD00CE7F68 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
@@ -269,16 +253,8 @@
 		4D65FB961689630E00D7B2F5 /* shaders */ = {
 			isa = PBXGroup;
 			children = (
-				4D9B7212168A2A3200A4C20A /* pos.frag */,
-				4D9B7213168A2A3200A4C20A /* pos.vert */,
-				4D65FB971689630E00D7B2F5 /* force.frag */,
-				4D65FB981689630E00D7B2F5 /* force.vert */,
-				4D65FB991689630E00D7B2F5 /* instanced.frag */,
-				4D65FB9A1689630E00D7B2F5 /* instanced.vert */,
 				4D159999168B215400D10232 /* instancedTexTrans.frag */,
 				4D15999A168B215400D10232 /* instancedTexTrans.vert */,
-				4D65FB9B1689630E00D7B2F5 /* length.frag */,
-				4D65FB9C1689630E00D7B2F5 /* length.vert */,
 			);
 			name = shaders;
 			path = bin/data/shaders;
@@ -672,15 +648,7 @@
 				9d44dc88ef9e7991b4a09951e2e4769f /* tinyxmlerror.cpp in Sources */,
 				5a4349e9754d6fa14c0f2a3a1abc30b6 /* tinyxmlparser.cpp in Sources */,
 				4D9D72B81688FFFD00CE7F68 /* ofxVboMeshInstanced.cpp in Sources */,
-				4D65FB9D1689630E00D7B2F5 /* force.frag in Sources */,
-				4D65FB9E1689630E00D7B2F5 /* force.vert in Sources */,
-				4D65FB9F1689630E00D7B2F5 /* instanced.frag in Sources */,
-				4D65FBA01689630E00D7B2F5 /* instanced.vert in Sources */,
-				4D65FBA11689630E00D7B2F5 /* length.frag in Sources */,
-				4D65FBA21689630E00D7B2F5 /* length.vert in Sources */,
 				4D65FC011689DCB700D7B2F5 /* ofxAssimpModelLoader.cpp in Sources */,
-				4D9B7214168A2A3300A4C20A /* pos.frag in Sources */,
-				4D9B7215168A2A3300A4C20A /* pos.vert in Sources */,
 				4D15999B168B215400D10232 /* instancedTexTrans.frag in Sources */,
 				4D15999C168B215400D10232 /* instancedTexTrans.vert in Sources */,
 				4DA082A51693D7C300DF20AD /* instancedComponent.cpp in Sources */,
@@ -737,6 +705,7 @@
 					"-lpthread",
 					"-mtune=native",
 				);
+				SDKROOT = macosx10.7;
 			};
 			name = Debug;
 		};
@@ -773,6 +742,7 @@
 					"-lpthread",
 					"-mtune=native",
 				);
+				SDKROOT = macosx10.7;
 			};
 			name = Release;
 		};
