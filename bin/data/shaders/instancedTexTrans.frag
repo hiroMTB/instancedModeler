@@ -5,8 +5,8 @@
 varying vec3 normal, screenSpaceNormal, lightDir, eyeVec;
 flat varying vec3  flatNormal;
 flat varying vec3  screenSpaceflatNormal;
-uniform float RenderNormals;
-uniform float UseFlatShading;
+uniform float RENDER_NORMALS;
+uniform float FLAT_SHADING;
 varying vec2 texCoord;
 
 uniform sampler2D tex;
@@ -20,7 +20,7 @@ void main( void )
 	
 	vec3 selectedNormal;
 	
-	if (UseFlatShading==1.0){
+	if (FLAT_SHADING==1.0){
 		selectedNormal = flatNormal;
 	} else {
 		selectedNormal = normal;
@@ -47,7 +47,7 @@ void main( void )
 	//gl_FragColor = texture2D(tex, gl_TexCoord[0].xy);
     gl_FragColor = final_color;
 
-	if (RenderNormals == 1.0){
+	if (RENDER_NORMALS== 1.0){
 		gl_FragColor = vec4((N + vec3(1.0, 1.0, 1.0)) / 2.0,1.0);
 	}
     

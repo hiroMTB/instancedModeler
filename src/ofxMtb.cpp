@@ -20,7 +20,7 @@ void myLogRelease(string message){
 
 
 
-ofMesh createCylinder(float radius, float height, int slices, int stacks){
+ofMesh createCylinderZ(float radius, float height, int slices, int stacks){
     if(slices<2 || stacks<1 || radius<0.0 || height<0.0)
         myLogRelease("invalid parameter for cylinder mesh creation");
     
@@ -83,7 +83,7 @@ ofMesh createCylinder(float radius, float height, int slices, int stacks){
             cylinder.addTexCoord(t1);
             cylinder.addTexCoord(t2);
             
-            if(i!=0){
+//            if(i!=0){
                 float nx = radius*sinCache2[i];
                 float ny = radius*cosCache2[i];
                 
@@ -91,11 +91,19 @@ ofMesh createCylinder(float radius, float height, int slices, int stacks){
                 n2.set(nx, ny, 0);
                 cylinder.addNormal(n1);
                 cylinder.addNormal(n2);
-            }
+//            }
         }
     }
     
     cylinder.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
     
     return cylinder;
+}
+
+
+ofMesh createCylinderY(float radius, float height, int slices, int stacks){
+    if(slices<2 || stacks<1 || radius<0.0 || height<0.0)
+        myLogRelease("invalid parameter for cylinder mesh creation");
+    
+
 }

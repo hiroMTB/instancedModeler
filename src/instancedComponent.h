@@ -34,18 +34,57 @@
 #include "ofxVboMeshInstanced.h"
 #include "ofxMtb.h"
 
+#include <map>
 
 #define TEX_WIDTH 1024
 #define TEX_HEIGHT 512
 
+//
+//  <map> instanceGroups
+//      class instanceGroup
+//          <vector> instances
+//              class instance
+//
+
+struct instance{
+public:
+    //int instanceId;
+    ofMatrix4x4 matrix;
+};
+
+
+typedef vector<instance> INSTANCES;
+
+
+struct instanceGroup{
+public:
+    instanceGroup(){
+        //groupIdMaster++;
+    }
+    
+    //int groupId;
+    INSTANCES instances;
+    ofColor color;
+};
+
+typedef map<int, instanceGroup> INSTANCE_GROUPS;
+
 
 class instancedComponent{
+public:
+
+    INSTANCE_GROUPS &getInstanceGroups(){ return instanceGroups; }
     
+private:
+    INSTANCE_GROUPS instanceGroups;
+    int groupIdMaster;
+    
+
 public:
     instancedComponent();
     ~instancedComponent();
     
-    void allocate();
+    //void allocate();
     
     void destroy();
     void reset();
@@ -70,18 +109,20 @@ public:
     
     // instance param
     //
-    void setInstanceMatrix      (int index, ofMatrix4x4 m);
-    void setInstanceMatrix      (int index, ofVec3f p, ofVec4f r=ofVec4f(0,0,0,0), ofVec3f s=ofVec3f(1,1,1));
-//    void setInstancePosition    (int index, ofVec3f p);
-//    void setInstanceRotattion   (int index, ofVec4f r);
-//    void setInstanceScale       (int index, ofVec3f s);
-    
+    void setInstanceMatrix      (int groupId, int index, ofMatrix4x4 m);
+    void setInstanceMatrix      (int groupId, int index, ofVec3f p, ofVec4f r=ofVec4f(0,0,0,0), ofVec3f s=ofVec3f(1,1,1));
     void clearInstanceMatrices();
 
+    int initGroup();
+    
+    ofxVboMeshInstanced * getVboMeshInstanced(){ return vmi; }
+    
+    inline void setInstanceNum(int i){ instanceNum = i; }
+    inline int getInstanceNum(){ return instanceNum; }
+    
     
 private:
 
-    
     // component param
     //
     ofVec3f offsetPosition;
@@ -92,13 +133,27 @@ private:
     // instance param
     //
     bool    bTexNeedUpdate;
-    bool    bTexAllocated;
     int     instanceNum;
 
-    float * matrices;
     GLuint  texId;
     
     ofxVboMeshInstanced * vmi;
     
     string shaderTextureName;
+
+    
+    
+    
+    //
+    //  Rycycle bin
+    //
+    
+    //bool    bTexAllocated;
+    //float * matrices;       // don't want to keep this here. but new float[????] is expensive and glGetTexImage is slow as well.
+
+
+    //    void setInstancePosition    (int index, ofVec3f p);
+    //    void setInstanceRotattion   (int index, ofVec4f r);
+    //    void setInstanceScale       (int index, ofVec3f s);
+
 };
