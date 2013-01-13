@@ -8,13 +8,17 @@
 
 
 instancedComponent::instancedComponent():
-bTexNeedUpdate(false),
+bVtxtexNeedUpdate(false),
+bCltexNeedUpdate(true),
 instanceNum(0),
-texId(GL_NONE),
+vtxtexId(GL_NONE),
+cltexId(GL_NONE),
 groupIdMaster(-1)
 {
     //allocate();
-    shaderTextureName = "vtxtex";
+    shaderVtxTextureName = "vtxtex";
+    shaderColorTextureName = "cltex";
+    
     offsetPosition.set(0,0,0);
     offsetRotation.set(0, 0, 0, 0);
     offsetScale.set(1,1,1);
@@ -24,33 +28,9 @@ instancedComponent::~instancedComponent(){
     destroy();
 }
 
-
-//void instancedComponent::allocate(){
-//
-//    if(!bTexAllocated){
-//        if(matrices==NULL)
-//            matrices = new float[TEX_WIDTH * TEX_WIDTH * 16];
-//
-//        // position data sender(textrue)
-//        if(texId!=GL_NONE)
-//            glGenTextures(1, &texId);
-//        glBindTexture(GL_TEXTURE_2D, texId);
-//        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, TEX_WIDTH, TEX_HEIGHT, 0, GL_RGBA, GL_FLOAT, matrices);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//        
-//        myLogDebug("texture id = " + ofToString(texId));
-//        initGroup(0);
-//        bTexAllocated = true;
-//        myLogDebug("instancedComponent allocated");
-//    }
-//}
-
-
 void instancedComponent::destroy(){
-    glDeleteTextures(1, &texId);
+    glDeleteTextures(1, &vtxtexId);
+    glDeleteTextures(1, &cltexId);
     //delete matrices;
     
     vmi->clear();
@@ -60,24 +40,27 @@ void instancedComponent::destroy(){
 
 
 void instancedComponent::update(){
-    if(bTexNeedUpdate){
-        
-        float * matrices = new float[TEX_WIDTH*TEX_HEIGHT*16];
-        
+    updateVertexTexture();
+    
+    updateColorTexture();
+}
+
+
+void instancedComponent::updateVertexTexture(){
+    // VERTEX UPDATE
+    if(bVtxtexNeedUpdate){
         int id = 0;
-        
-        // re-construct float array from all instance group
-        
+        float * matrices = new float[VTX_TEX_WIDTH*VTX_TEX_HEIGHT*4];
+
         INSTANCE_GROUPS::iterator itr = instanceGroups.begin();
         for(; itr!=instanceGroups.end(); itr++){
             
-            instanceGroup g = (itr->second);
+            instanceGroup& g = (itr->second);
             int n = g.instances.size();
             
             for(int j=0; j<n; j++){
-
-                instance d = g.instances[j];
-                ofMatrix4x4 m = d.matrix;
+                instance& d = g.instances[j];
+                ofMatrix4x4& m = d.matrix;
                 
                 for(int k=0; k<4; k++){
                     for(int l=0; l<4; l++){
@@ -86,26 +69,60 @@ void instancedComponent::update(){
                 }
                 
                 id++;
-
             }
         }
     
-    
-    
-//        if(bTexAllocated){
-        if(texId==GL_NONE){
-            glGenTextures(1, &texId);
+        if(vtxtexId==GL_NONE){
+            glGenTextures(1, &vtxtexId);
+            myLogRelease("Generate vertex texture with id: " + ofToString(vtxtexId));
         }
-            glBindTexture(GL_TEXTURE_2D, texId);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, TEX_WIDTH, TEX_HEIGHT, 0, GL_RGBA, GL_FLOAT, matrices);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            bTexNeedUpdate = false;
-//        }
-        
+
+        glBindTexture(GL_TEXTURE_2D, vtxtexId);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, VTX_TEX_WIDTH, VTX_TEX_HEIGHT, 0, GL_RGBA, GL_FLOAT, matrices);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        bVtxtexNeedUpdate = false;
         delete matrices;
+    }
+}
+
+
+void instancedComponent::updateColorTexture(){
+    
+    // COLOR UPDATE
+    if(bCltexNeedUpdate){
+        
+        float * colors = new float[CL_TEX_WIDTH*CL_TEX_HEIGHT*4];
+        
+        INSTANCE_GROUPS::iterator itr = instanceGroups.begin();
+        for(; itr!=instanceGroups.end(); itr++){
+            instanceGroup& g = (itr->second);
+            int n = g.instances.size();
+            for(int j=0; j<n; j++){
+                instance& d = g.instances[j];
+                ofColor& color = d.color;
+                color[j+0] =color.r;
+                color[j+1] =color.g;
+                color[j+2] =color.b;
+                color[j+3] =color.a;
+            }
+        }
+        
+        if(cltexId == GL_NONE){
+            glGenTextures(1, &cltexId);
+            myLogRelease("Generate color texture with id: " + ofToString(cltexId));
+        }
+        
+        glBindTexture(GL_TEXTURE_2D, cltexId);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, CL_TEX_WIDTH, CL_TEX_HEIGHT, 0, GL_RGBA, GL_FLOAT, colors);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        bCltexNeedUpdate = false;
+        delete colors;
     }
 }
 
@@ -117,7 +134,12 @@ void instancedComponent::draw(ofShader * shader){
 //    glRotatef(offsetRotation.w, offsetRotation.x, offsetRotation.y, offsetRotation.z);
 //    glTranslatef(offsetPosition.x, offsetPosition.y, offsetPosition.z);
     
-    shader->setUniformTexture(shaderTextureName.c_str(), GL_TEXTURE_2D, texId, 0);
+    if(vtxtexId!=GL_NONE)
+        shader->setUniformTexture(shaderVtxTextureName.c_str(), GL_TEXTURE_2D, vtxtexId, 0);
+    
+    if(cltexId!=GL_NONE)
+        shader->setUniformTexture(shaderColorTextureName.c_str(), GL_TEXTURE_2D, cltexId, 1);
+    
     vmi->setPrimCount(instanceNum);
     vmi->draw();
 
@@ -133,7 +155,12 @@ void instancedComponent::drawWireframe(ofShader * shader){
     //    glRotatef(offsetRotation.w, offsetRotation.x, offsetRotation.y, offsetRotation.z);
     //    glTranslatef(offsetPosition.x, offsetPosition.y, offsetPosition.z);
     
-    shader->setUniformTexture(shaderTextureName.c_str(), GL_TEXTURE_2D, texId, 0);
+    if(vtxtexId!=GL_NONE)
+        shader->setUniformTexture(shaderVtxTextureName.c_str(), GL_TEXTURE_2D, vtxtexId, 0);
+    
+    if(cltexId!=GL_NONE)
+        shader->setUniformTexture(shaderColorTextureName.c_str(), GL_TEXTURE_2D, cltexId, 1);
+
     vmi->setPrimCount(instanceNum);
     vmi->drawWireframe();
     
@@ -147,17 +174,17 @@ void instancedComponent::drawWireframe(ofShader * shader){
 //
 void instancedComponent::setOffsetPosition(ofVec3f p){
     offsetPosition = p;
-    //bTexNeedUpdate = true;
+    //bVtxtexNeedUpdate = true;
 }
 
 void instancedComponent::setOffsetRotation(ofVec4f r){
     offsetRotation = r;
-    //bTexNeedUpdate = true;
+    //bVtxtexNeedUpdate = true;
 }
 
 void instancedComponent::setOffsetScale(ofVec3f s){
     offsetScale = s;
-    //bTexNeedUpdate = true;
+    //bVtxtexNeedUpdate = true;
 }
 
 
@@ -187,7 +214,7 @@ void instancedComponent::setInstanceMatrix(int groupId, int index, ofMatrix4x4 m
     d.matrix = m;
     g.instances.push_back(d);
     
-    bTexNeedUpdate = true;
+    bVtxtexNeedUpdate = true;
 }
 
 void instancedComponent::setInstanceMatrix(int groupId, int index, ofVec3f p, ofVec4f r, ofVec3f s){
@@ -201,23 +228,6 @@ void instancedComponent::setInstanceMatrix(int groupId, int index, ofVec3f p, of
         
     setInstanceMatrix(groupId, index, m);
 }
-
-
-
-//void instancedComponent::setInstancePosition(int index, ofVec3f){
-//    
-//}
-//
-//
-//void instancedComponent::setInstanceRotattion(int index, ofVec4f){
-//    
-//}
-//
-//
-//void instancedComponent::setInstanceScale(int index, ofVec3f){
-//    
-//}
-
 
 
 
@@ -264,29 +274,10 @@ void instancedComponent::loadInstancePositionFromModel(string path, float posSca
         
         setInstanceMatrix(0, i, m);
     }
-    
-//    {
-//        int randTest = ofRandom(instanceNum);
-//        int a00 = randTest*16;
-//        char mes[256], row1[256], row2[256], row3[256], row4[256];
-//        sprintf(mes, "matrices[%d]-[%d] for instance #%d", a00, a00+15, randTest);
-//        sprintf(row1, "%04f %04f %04f %04f", matrices[a00+0], matrices[a00+4], matrices[a00+8], matrices[a00+12]);
-//        sprintf(row2, "%04f %04f %04f %04f", matrices[a00+1], matrices[a00+5], matrices[a00+9], matrices[a00+13]);
-//        sprintf(row3, "%04f %04f %04f %04f", matrices[a00+2], matrices[a00+6], matrices[a00+10], matrices[a00+14]);
-//        sprintf(row4, "%04f %04f %04f %04f", matrices[a00+3], matrices[a00+7], matrices[a00+11], matrices[a00+15]);
-//        
-//        myLogDebug(string(mes));
-//        myLogDebug(string(row1));
-//        myLogDebug(string(row2));
-//        myLogDebug(string(row3));
-//        myLogDebug(string(row4));
-//    }
-    
-  
-    
+
     vmi->setPrimCount(instanceNum);
     
-    bTexNeedUpdate = true;
+    bVtxtexNeedUpdate = true;
     model.clear();
 }
 
@@ -299,17 +290,12 @@ void instancedComponent::loadInstancePositionFromMatrices(ofMatrix4x4 *ms, int s
     }
     
     instanceNum = size;
-    bTexNeedUpdate = true;
+    bVtxtexNeedUpdate = true;
 }
 
 
 
 void instancedComponent::clearInstanceMatrices(){
-//    if(bTexAllocated){
-//        for(int i=0; i<TEX_WIDTH*TEX_HEIGHT*16; i++){
-//            matrices[i] = 0;
-//        }
-//    }
 
     INSTANCE_GROUPS::iterator itr = instanceGroups.begin();
     for(; itr!=instanceGroups.end(); itr++){
@@ -319,7 +305,7 @@ void instancedComponent::clearInstanceMatrices(){
     instanceGroups.clear();
     
     myLogDebug("clear all group data");
-    bTexNeedUpdate = true;
+    bVtxtexNeedUpdate = true;
 }
 
 
@@ -364,3 +350,28 @@ int instancedComponent::initGroup(){
 void instancedComponent::reset(){
     clearInstanceMatrices();
 }
+
+
+/*
+void instancedComponent::sendVertexData(ofShader * shader, GLuint loc){
+
+    int id = 0;
+    INSTANCE_GROUPS::iterator itr = instanceGroups.begin();
+    
+    for(; itr!=instanceGroups.end(); itr++){
+        
+        instanceGroup g = (itr->second);
+        
+        int n= g.instances.size();
+        
+        for(int j=0; j<n; j++){
+            
+            instance d = g.instances[j];
+            ofMatrix4x4 mat = d.matrix;
+            ofVec4f p = mat.getTranslation();
+
+            shader->setAttribute4f(loc, p.x, p.y, p.z, 1);
+        }
+    }
+}
+*/

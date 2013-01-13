@@ -20,29 +20,20 @@ class testApp : public ofBaseApp{
     float compScale;
     float posScale;
     
-    GLuint matLoc;
-    GLuint texLoc;
-    
-    GLuint texId_P;
-    GLuint texId_L;
-    
     string posModelPath_P;
-    string posModelPath_L;
     
     ofShader* mShdInstanced;
-    ofShader* mShdInstanced_L;
 	
 	ofxVboMeshInstanced * mMshSphere;
    	ofxVboMeshInstanced * mMshCylinder;
     
-	ofEasyCam	camMain;
-	
-	ofLight	mLigDirectional;
-	ofMaterial mMatMainMaterial;
+	ofEasyCam       camMain;
+	ofLight         mLigDirectional;
+	ofMaterial      mMatMainMaterial;
 
 	
     // GUI
-	ofxPanel	mainPnl;
+	ofxPanel        mainPnl;
 	map<string, ofxParameter<float> > prmFloat;
 	map<string, ofxParameter<bool> > prmBool;
 	
@@ -64,7 +55,7 @@ class testApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     
         void setupGui();
-    void processGui();
+        void processGui();
     
         void setupCameraLightMaterial();
     
@@ -95,5 +86,5 @@ class testApp : public ofBaseApp{
     static const string RESET_CYLINDERS;
     static const string RESET_SPHERES;
     
-    
+    void updateShaders(bool doLink=true);
 };

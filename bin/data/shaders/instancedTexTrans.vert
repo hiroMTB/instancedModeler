@@ -3,18 +3,21 @@
 #extension GL_ARB_draw_instanced : enable
 
 uniform sampler2D vtxtex;
-uniform mat4 mymat;
+uniform sampler2D cltex;
 
 varying vec3 normal, screenSpaceNormal, lightDir, eyeVec;
 flat varying vec3  flatNormal;
 flat varying vec3  screenSpaceflatNormal;
+
 varying vec2 texCoord;
+varying vec4 customColor;
 
 int tex_w = 1024;
 int tex_h = 512;
-
 float tex_w_f = float(tex_w);
 float tex_h_f = float(tex_h);
+
+
 
 void main()
 {
@@ -30,6 +33,7 @@ void main()
     // shading
     vec3 inNormal = gl_Normal;
     vec4 inVertex = mvp * gl_Vertex;
+    
     screenSpaceNormal = (gl_ModelViewMatrix * vec4(inNormal,1.0)).xyz;
     screenSpaceflatNormal = (gl_ModelViewMatrix * vec4(inNormal,1.0)).xyz;
     normal = gl_NormalMatrix * inNormal;
@@ -40,6 +44,16 @@ void main()
     texCoord = gl_MultiTexCoord0.xy;
     
     // position
+  	gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * inVertex;
     
-  	gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * mvp * gl_Vertex;
+    
+    // color
+    y = gl_InstanceID/tex_w;
+    y_f = float(y);
+    v = y_f / tex_h_f;
+    
+    //customColor = texture2D(cltex, vec2(float(gl_InstanceID%tex_w)/tex_w_f, v));
+    //customColor = vec4(255,0,0,1);
+    customColor = inVertex;
+
 }

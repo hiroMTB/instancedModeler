@@ -2,22 +2,14 @@
 #include "ofxMtb.h"
 
 
-//
-// max transfer matrix num
-// 1024*1024/4 = 262,144
-//
-#define TEX_WIDTH 1024
-#define TEX_HEIGHT 512
-
-
 
 // GUI parts
-const string testApp::RENDER_NORMALS = "RENDER NORMALS";
-const string testApp::FLAT_SHADING = "FLAT SHADING";
+const string testApp::RENDER_NORMALS = "RENDER_NORMALS";
+const string testApp::FLAT_SHADING = "FLAT_SHADING";
 const string testApp::CONNECT_RANDOM = "CONNECT_RANDOM";
-const string testApp::CONNECT_NEAR = "CONNECT NEAR";
-const string testApp::RESET_CYLINDERS = "RESET CYLINDERS";
-const string testApp::RESET_SPHERES = "RESET SPHERES";
+const string testApp::CONNECT_NEAR = "CONNECT_NEAR";
+const string testApp::RESET_CYLINDERS = "RESET_CYLINDERS";
+const string testApp::RESET_SPHERES = "RESET_SPHERES";
 
 void testApp::setup(){
 
@@ -36,20 +28,18 @@ void testApp::setup(){
     mShdInstanced = NULL;
     bWireframe = false;
     posModelPath_P = "models/bee_100k_MASTER_mesh_wN.ply";
-    posModelPath_L = "models/bee_20k_MASTER_mesh_wN.ply";
     
     compScale = 1;
     posScale = 100;
-
-    texId_P = GL_NONE;
-    texId_L = GL_NONE;
-    
     
 	ofSetFrameRate(60);
 	ofSetVerticalSync(false);
 	ofSetColor(255);
     setupCameraLightMaterial();
     setupGui();
+
+    updateShaders();
+
     
     {
         // model setup
@@ -57,57 +47,25 @@ void testApp::setup(){
         ofMesh sphere = ofGetGLRenderer()->ofGetSphereMesh();
         spheres.loadInstanceMesh(sphere);
         spheres.loadInstancePositionFromModel(posModelPath_P, 100);
-
-//        int size =20;
-//        ofMatrix4x4 * ms = new ofMatrix4x4[size];
-//        for(int i=0; i<size; i++){
-//            ms[i].makeIdentityMatrix();
-//            ms[i].scale(4, 4, 4);
-//            ms[i].translate(ofRandom(-50, 50), ofRandom(-50, 50), ofRandom(-50, 50));
-//        }
-//        spheres.loadInstancePositionFromMatrices(ms, size);
-    
     }
     
 #if 1
     {
-        ofMesh cylinder = createCylinderZ(0.2, 1, 12, 1);
+        ofMesh cylinder = createCylinderZ(0.2, 1, 20, 1);
         cylinders.loadInstanceMesh(cylinder);
-
     }
 
     connectRandom(&spheres, &cylinders, 1000, 100, 1000);
 #endif
     
+    GLint max;
+    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &max);
+    myLogRelease("GL_MAX_VERTEX_ATTRIBS : " + ofToString(max));
+    
 }
 
 void testApp::update(){
-	if (isShaderDirty){
-		
-		GLuint err = glGetError();	// we need this to clear out the error buffer.
-    
-		if (mShdInstanced != NULL ) delete mShdInstanced;
-		mShdInstanced = new ofShader();
-		mShdInstanced->load("shaders/instancedTexTrans");
-		err = glGetError();
-		ofLogNotice() << "Loaded instanced Shader: " << err;
-
-		isShaderDirty = false;
-        matLoc = mShdInstanced->getAttributeLocation("mymat");
-        myLogDebug("mymat location is " + ofToString(matLoc));
-        
-        texLoc = mShdInstanced->getAttributeLocation("vtxtex");
-        myLogDebug("vtxtex location is "+ofToString(texLoc));
-        
-        
-        //
-        if (mShdInstanced_L != NULL ) delete mShdInstanced_L;
-		mShdInstanced_L = new ofShader();
-		mShdInstanced_L->load("shaders/instancedTexTrans");
-		err = glGetError();
-		ofLogNotice() << "Loaded instanced Shader: " << err;
-
-	}
+	updateShaders();
 	
 	camMain.setNearClip(prmFloat["zNear"]);
 	camMain.setFarClip(prmFloat["zFar"]);
@@ -118,7 +76,6 @@ void testApp::update(){
     spheres.update();
     cylinders.update();
 
-    
 }
 
 
@@ -151,7 +108,8 @@ void testApp::mainDraw(){
     ofSetColor(255);
 	ofBackgroundGradient(ofColor::fromHsb(0, 0, 100), ofColor::fromHsb(0, 0, 50), OF_GRADIENT_LINEAR);
 	camMain.begin();
-	ofEnableLighting();
+	
+    ofEnableLighting();
 	mLigDirectional.setGlobalPosition(1000, 1000, 1000);
 	mLigDirectional.lookAt(ofVec3f(0,0,0));
 	ofEnableSeparateSpecularLight();
@@ -160,7 +118,7 @@ void testApp::mainDraw(){
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-
+    
 	mShdInstanced->begin();
         if (prmBool[RENDER_NORMALS]){
             mShdInstanced->setUniform1f(RENDER_NORMALS.c_str(), 1.0);
@@ -183,14 +141,12 @@ void testApp::mainDraw(){
         mMatMainMaterial.begin();
         
         if (bWireframe) {
-            ofSetColor(0,0,0);
+            ofSetColor(222,0,0);
             spheres.drawWireframe(mShdInstanced);
             cylinders.drawWireframe(mShdInstanced);
         }else{
-    
             ofSetColor(200,200,200);
             spheres.draw(mShdInstanced);
-        
             cylinders.draw(mShdInstanced);
         }
     
@@ -203,14 +159,27 @@ void testApp::mainDraw(){
 	glDisable(GL_CULL_FACE);
 	glShadeModel(GL_SMOOTH);
 
-    ofSetColor(255,0,0);
+    ofSetColor(255,255,255);
 	ofDisableLighting();
 	camMain.end();
 	
     //  GUI draw
 	mainPnl.draw();
-	ofDrawBitmapString(ofToString(ofGetFrameRate()), ofGetWidth()-100, 20);
+    
+    
+    int y = 20;
+    int x = 20;
+    int h = 25;
+	ofDrawBitmapString(ofToString(ofGetFrameRate()), x, y);
+    
+    ofVec3f cp = camMain.getPosition();
+    ofDrawBitmapString("camera position: "+ofToString(cp.x)+", "+ofToString(cp.y)+", "+ofToString(cp.z), x, y+=h);
+
+    ofVec3f tp = camMain.getTarget().getPosition();
+    ofDrawBitmapString("camera position: "+ofToString(tp.x)+", "+ofToString(tp.y)+", "+ofToString(tp.z), x, y+=h);
+    
 }
+
 
 
 void testApp::keyPressed(int key){
@@ -284,23 +253,6 @@ void testApp::mouseReleased(int x, int y, int button){
 void testApp::windowResized(int w, int h){}
 void testApp::gotMessage(ofMessage msg){}
 void testApp::dragEvent(ofDragInfo dragInfo){}
-
-
-void testApp::setupCameraLightMaterial(){
-    camMain.setupPerspective(false);
-    camMain.setDistance(1500);
-    camMain.disableMouseInput();
-    
-	mLigDirectional.setup();
-	mLigDirectional.setDirectional();
-	mLigDirectional.setAmbientColor(ofColor::fromHsb(0, 0, 200));
-	mLigDirectional.setDiffuseColor(ofColor::fromHsb(120, 120, 128));
-	mLigDirectional.setSpecularColor(ofColor(255,255,255));
-	
-	mMatMainMaterial.setDiffuseColor(ofColor(0,0,0));
-	mMatMainMaterial.setSpecularColor(ofColor(200,200,200));
-	mMatMainMaterial.setShininess(25.0f);
-}
 
 
 
@@ -395,7 +347,7 @@ void testApp::setupGui(){
 	mainPnl.setup("MAIN SETTINGS", "settings.xml", ofGetWidth() - 300, 50);
 	mainPnl.add(prmFloat["zNear"].set("Near Clip",0,0,100));
 	mainPnl.add(prmFloat["zFar"].set("Far Clip",0,0,5000.0));
-	mainPnl.add(prmBool[RENDER_NORMALS].set(RENDER_NORMALS, true));
+	mainPnl.add(prmBool[RENDER_NORMALS].set(RENDER_NORMALS, false));
 	mainPnl.add(prmBool[FLAT_SHADING].set(FLAT_SHADING, true));
 	
     mainPnl.add(prmFloat["Particle_Diam"].set("Particle Diam",0,0,1.0));
@@ -414,3 +366,43 @@ void testApp::setupGui(){
 }
 
 
+
+void testApp::setupCameraLightMaterial(){
+    camMain.setupPerspective(false);
+    camMain.setDistance(1500);
+    camMain.disableMouseInput();
+    
+	mLigDirectional.setup();
+	mLigDirectional.setDirectional();
+	mLigDirectional.setAmbientColor(ofFloatColor(0.01, 0.01,0.01));
+	mLigDirectional.setDiffuseColor(ofColor::fromHsb(0, 0, 0));
+	mLigDirectional.setSpecularColor(ofFloatColor(0,0,0));
+    
+    mMatMainMaterial.setAmbientColor(ofFloatColor(0,0,0));
+	mMatMainMaterial.setDiffuseColor(ofFloatColor(0.0, 0.0, 0.0));
+	mMatMainMaterial.setSpecularColor(ofFloatColor(0,0,0));
+	mMatMainMaterial.setShininess(1.0f);
+}
+
+
+void testApp::updateShaders(bool doLink){
+    if (isShaderDirty){
+		
+		GLuint err = glGetError();	// we need this to clear out the error buffer.
+        
+		if (mShdInstanced != NULL ) delete mShdInstanced;
+		mShdInstanced = new ofShader();
+        
+        //		mShdInstanced->load("shaders/instancedTexTrans");
+        mShdInstanced->setupShaderFromFile(GL_VERTEX_SHADER, "shaders/instancedTexTrans.vert");
+        mShdInstanced->setupShaderFromFile(GL_FRAGMENT_SHADER, "shaders/instancedTexTrans.frag");
+        
+        if(doLink){
+            mShdInstanced->linkProgram();
+            err = glGetError();
+            ofLogNotice() << "Loaded instanced Shader: " << err;
+        }
+        
+		isShaderDirty = false;
+	}
+}

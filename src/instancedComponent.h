@@ -36,8 +36,12 @@
 
 #include <map>
 
-#define TEX_WIDTH 1024
-#define TEX_HEIGHT 512
+#define VTX_TEX_WIDTH       1024
+#define VTX_TEX_HEIGHT      512
+
+#define CL_TEX_WIDTH        512     // 262,144
+#define CL_TEX_HEIGHT       512
+
 
 //
 //  <map> instanceGroups
@@ -48,8 +52,9 @@
 
 struct instance{
 public:
-    //int instanceId;
+    instance(){color.set(255,100,0,100);}
     ofMatrix4x4 matrix;
+    ofColor color;
 };
 
 
@@ -58,13 +63,7 @@ typedef vector<instance> INSTANCES;
 
 struct instanceGroup{
 public:
-    instanceGroup(){
-        //groupIdMaster++;
-    }
-    
-    //int groupId;
     INSTANCES instances;
-    ofColor color;
 };
 
 typedef map<int, instanceGroup> INSTANCE_GROUPS;
@@ -91,6 +90,8 @@ public:
 
 
     void update();
+    void updateVertexTexture();
+    void updateColorTexture();
     void draw(ofShader * shader);
     void drawWireframe(ofShader * shader);
     
@@ -132,15 +133,17 @@ private:
     
     // instance param
     //
-    bool    bTexNeedUpdate;
+    bool    bVtxtexNeedUpdate;
+    bool    bCltexNeedUpdate;
     int     instanceNum;
 
-    GLuint  texId;
+    GLuint  vtxtexId;
+    GLuint  cltexId;
     
     ofxVboMeshInstanced * vmi;
     
-    string shaderTextureName;
-
+    string shaderVtxTextureName;
+    string shaderColorTextureName;
     
     
     
@@ -155,5 +158,7 @@ private:
     //    void setInstancePosition    (int index, ofVec3f p);
     //    void setInstanceRotattion   (int index, ofVec4f r);
     //    void setInstanceScale       (int index, ofVec3f s);
-
+ 
+    //void sendVertexData(ofShader * shader, GLuint loc);
+    
 };
