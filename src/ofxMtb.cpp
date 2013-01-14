@@ -49,8 +49,8 @@ ofMesh createCylinderZ(float radius, float height, int slices, int stacks){
     // outside
     for(int i=0; i<slices; i++){
         angle = TWO_PI * (i-0.5) / (float)slices;
-        sinCache[i] = sin(angle);
-        cosCache[i] = cos(angle);
+        sinCache2[i] = sin(angle);
+        cosCache2[i] = cos(angle);
     }
     
     sinCache[slices] = sinCache[0];
@@ -84,8 +84,8 @@ ofMesh createCylinderZ(float radius, float height, int slices, int stacks){
             cylinder.addTexCoord(t2);
             
 //            if(i!=0){
-                float nx = radius*sinCache2[i];
-                float ny = radius*cosCache2[i];
+                float nx = sinCache[i];
+                float ny = cosCache[i];
                 
                 n1.set(nx, ny, 0);
                 n2.set(nx, ny, 0);
@@ -102,8 +102,51 @@ ofMesh createCylinderZ(float radius, float height, int slices, int stacks){
 
 
 ofMesh createCylinderY(float radius, float height, int slices, int stacks){
-    if(slices<2 || stacks<1 || radius<0.0 || height<0.0)
-        myLogRelease("invalid parameter for cylinder mesh creation");
-    
+//    if(slices<2 || stacks<1 || radius<0.0 || height<0.0)
+//        myLogRelease("invalid parameter for cylinder mesh creation");
+//
+//  TODO
+}
 
+
+//
+//  buggy
+//
+ofMesh createQuadSphere(float r, int lats, int longs){
+
+    ofMesh sp;
+  
+    
+    for(int i = 0; i <= lats; i++) {
+        double lat0 = M_PI * (-0.5 + (double) (i - 1) / lats);
+        double z0  = sin(lat0);
+        double zr0 =  cos(lat0);
+        
+        double lat1 = M_PI * (-0.5 + (double) i / lats);
+        double z1 = sin(lat1);
+        double zr1 = cos(lat1);
+
+        //glBegin(GL_QUAD_STRIP);
+        
+        for(int j = 0; j <= longs; j++) {
+            double lng = 2 * M_PI * (double) (j - 1) / longs;
+            double x = cos(lng);
+            double y = sin(lng);
+
+//            glNormal3f(x * zr0, y * zr0, z0);
+//            glVertex3f(x * zr0, y * zr0, z0);
+//            glNormal3f(x * zr1, y * zr1, z1);
+//            glVertex3f(x * zr1, y * zr1, z1);
+
+            sp.addNormal(ofVec3f(x * zr0, y * zr0, z0));
+            sp.addVertex(ofVec3f(x * zr0, y * zr0, z0));
+            sp.addNormal(ofVec3f(x * zr1, y * zr1, z1));
+            sp.addVertex(ofVec3f(x * zr1, y * zr1, z1));
+        }
+        
+        //glEnd();
+    }
+    
+      sp.setMode(OF_PRIMITIVE_QUAD_STRIP);
+    return sp;
 }

@@ -14,10 +14,6 @@ varying vec4 customColor;
 
 void main( void )
 {
-//	vec4 final_color =
-//	(gl_FrontLightModelProduct.sceneColor * gl_FrontMaterial.ambient) +
-//	(gl_LightSource[0].ambient * gl_FrontMaterial.ambient);
-
     vec4 myColor = normalize(customColor);
     myColor.w = 1.0;
 
@@ -52,20 +48,16 @@ void main( void )
 
 		final_color += gl_LightSource[0].specular *
 		gl_FrontMaterial.specular *	specular;
-	}else{
-        final_color = vec4(1.0, 0.0, 0.0, 1.0);
-    }
+	}
+    //else{
+    //    final_color = vec4(1.0, 0.0, 0.0, 1.0);
+    //}
 	
 
     gl_FragColor = final_color;
 
-//	if (RENDER_NORMALS== 1.0){
-//		gl_FragColor = vec4((N + vec3(1.0, 1.0, 1.0)) / 2.0,1.0);
-//	}
-//    
-//    if(gl_FrontMaterial.diffuse.x > 0.785){
-//        gl_FragColor = vec4(0.0, 0.0, 1, 1.0);
-//    }
-    
+	if (RENDER_NORMALS== 1.0){
+		gl_FragColor = vec4((N + vec3(1.0, 1.0, 1.0)) / 2.0,1.0);
+	}
 }
 

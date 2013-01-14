@@ -30,8 +30,10 @@ void main()
                     texture2D(vtxtex,vec2(float((gl_InstanceID*4+2)%tex_w)/tex_w_f, v)),
                     texture2D(vtxtex,vec2(float((gl_InstanceID*4+3)%tex_w)/tex_w_f, v)) );
     
+    mat3 rotMat = mat3(mvp[0].xyz, mvp[1].xyz, mvp[2].xyz);
+
     // shading
-    vec3 inNormal = gl_Normal;
+    vec3 inNormal = rotMat * gl_Normal;
     vec4 inVertex = mvp * gl_Vertex;
     
     screenSpaceNormal = (gl_ModelViewMatrix * vec4(inNormal,1.0)).xyz;

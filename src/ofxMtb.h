@@ -14,3 +14,5 @@ void myLogDebug(string message);
 void myLogRelease(string message);
 ofMesh createCylinderZ(float radius, float height, int slices, int stacks);
 ofMesh createCylinderY(float radius, float height, int slices, int stacks);
+
+ofMesh createQuadSphere(float r, int lats, int longs);

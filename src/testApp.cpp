@@ -45,6 +45,7 @@ void testApp::setup(){
         // model setup
         ofSetSphereResolution(5);
         ofMesh sphere = ofGetGLRenderer()->ofGetSphereMesh();
+        //ofMesh sphere = createQuadSphere(1, 12, 10);
         spheres.loadInstanceMesh(sphere);
         spheres.loadInstancePositionFromModel(posModelPath_P, 100);
     }
@@ -92,12 +93,44 @@ void testApp::testDraw(){
 	mLigDirectional.setGlobalPosition(1000, 1000, 1000);
 	mLigDirectional.lookAt(ofVec3f(0,0,0));
 	ofEnableSeparateSpecularLight();
-
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+    glShadeModel(GL_FLAT);
     
-    ofMesh cyl = createCylinderZ(10, 40, 12, 1);
-    ofSetColor(0,0,0);
-    ///cyl.drawWireframe();
-    cyl.draw();
+    mLigDirectional.enable();
+    mMatMainMaterial.begin();
+    
+    {
+        glPushMatrix();
+        glTranslatef(-10, 0, 0);
+        ofMesh cyl = createCylinderZ(4, 7, 12, 1);
+        ofSetColor(200,200,200);
+        //cyl.drawWireframe();
+        cyl.draw();
+        glPopMatrix();
+    }
+    
+    {
+        glPushMatrix();
+        glTranslatef(0, 0, 0);
+        ofSetSphereResolution(5);
+        ofMesh sphere = ofGetGLRenderer()->ofGetSphereMesh();
+        ofSetColor(200,200,200);
+        //sphere.drawWireframe();
+        sphere.draw();
+        glPopMatrix();
+    }
+
+    {
+        glPushMatrix();
+        glTranslatef(10, 0, 0);
+        ofMesh sphere = createQuadSphere(1, 12, 12);
+        ofSetColor(200,200,200);
+        //sphere.drawWireframe();
+        sphere.draw();
+        glPopMatrix();
+    }
     
     mMatMainMaterial.end();
     mLigDirectional.disable();
@@ -374,14 +407,14 @@ void testApp::setupCameraLightMaterial(){
     
 	mLigDirectional.setup();
 	mLigDirectional.setDirectional();
-	mLigDirectional.setAmbientColor(ofFloatColor(0.01, 0.01,0.01));
-	mLigDirectional.setDiffuseColor(ofColor::fromHsb(0, 0, 0));
-	mLigDirectional.setSpecularColor(ofFloatColor(0,0,0));
+	mLigDirectional.setAmbientColor(ofFloatColor(0.4, 0.4, 0.4));
+	mLigDirectional.setDiffuseColor(ofFloatColor(0.7, 0.7, 0.7));
+	mLigDirectional.setSpecularColor(ofFloatColor(0.1,0.1,0.1));
     
-    mMatMainMaterial.setAmbientColor(ofFloatColor(0,0,0));
-	mMatMainMaterial.setDiffuseColor(ofFloatColor(0.0, 0.0, 0.0));
+    mMatMainMaterial.setAmbientColor(ofFloatColor(0.8, 0.1, 0.1));
+	mMatMainMaterial.setDiffuseColor(ofFloatColor(0.8, 0.1, 0.1));
 	mMatMainMaterial.setSpecularColor(ofFloatColor(0,0,0));
-	mMatMainMaterial.setShininess(1.0f);
+	mMatMainMaterial.setShininess(10.1f);
 }
 
 
