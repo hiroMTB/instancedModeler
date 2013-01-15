@@ -95,18 +95,20 @@ void instancedComponent::updateColorTexture(){
     if(bCltexNeedUpdate){
         
         float * colors = new float[CL_TEX_WIDTH*CL_TEX_HEIGHT*4];
-        
+        int id = 0;
         INSTANCE_GROUPS::iterator itr = instanceGroups.begin();
         for(; itr!=instanceGroups.end(); itr++){
             instanceGroup& g = (itr->second);
             int n = g.instances.size();
             for(int j=0; j<n; j++){
                 instance& d = g.instances[j];
-                ofColor& color = d.color;
-                color[j+0] =color.r;
-                color[j+1] =color.g;
-                color[j+2] =color.b;
-                color[j+3] =color.a;
+                ofFloatColor& color = d.color;
+                colors[id*4+0] =color.r;
+                colors[id*4+1] =color.g;
+                colors[id*4+2] =color.b;
+                colors[id*4+3] =color.a;
+                
+                id++;
             }
         }
         
@@ -327,13 +329,15 @@ void instancedComponent::loadInstanceMesh(ofMesh mesh, ofVec3f scale){
     myLogDebug("numNormals = " + ofToString(numNormals));
     myLogDebug("numIndices = " + ofToString(numIndices));
     
+#ifndef NDEBUG
     // just check
-    for(int i=0; i<10; i++){
+    for(int i=0; i<mesh.getNumVertices(); i++){
         ofVec3f pos = vmi->getVertex(i);
         char mes[256];
         sprintf(mes, "vertices[%d] =  %03f, %03f, %03f", i, pos.x, pos.y, pos.z);
         myLogDebug(string(mes));
     }
+#endif
 }
 
 
@@ -375,3 +379,89 @@ void instancedComponent::sendVertexData(ofShader * shader, GLuint loc){
     }
 }
 */
+
+
+
+void instancedComponent::setInstanceColor(int groupId, int index, ofFloatColor color){
+    if(index<0){
+        myLogRelease("invalid value for index num");
+        return;
+    }else if(groupId<0){
+        myLogRelease("invalid value for groupId");
+        return;
+    }
+    
+    INSTANCE_GROUPS::iterator itr;
+    INSTANCE_GROUPS::iterator end = instanceGroups.end();
+    itr = instanceGroups.find(groupId);
+    
+    if(itr == end){
+        myLogRelease("Can not find group with groupId: " + ofToString(groupId));
+    }
+    
+    instanceGroup &g = (itr->second);
+    int n = g.instances.size();
+    
+    if(n<=index){
+        myLogRelease("out of range for instanceGroups["+ ofToString(groupId)+ "].instances["+ofToString(index)+"]");
+    }
+    
+    instance& ins =  g.instances[index];
+    ins.color = color;
+
+    bCltexNeedUpdate = true;
+}
+
+
+
+//
+//  groupA += groupB
+//
+//  result:
+//      A = A+B
+//      B = 0
+//
+void instancedComponent::mergeInstanceGroup(int groupIdA, int groupIdB){
+    
+    INSTANCE_GROUPS::iterator end = instanceGroups.end();
+    
+    INSTANCE_GROUPS::iterator itrA = instanceGroups.find(groupIdA);
+    INSTANCE_GROUPS::iterator itrB = instanceGroups.find(groupIdB);
+
+    if(itrA!=end || itrB!=end){
+        myLogRelease("Can not merge instanceGroup: " + ofToString(groupIdA) + " + " + ofToString(groupIdB));
+        return;
+    }
+    
+    myLogRelease("merge group " +  ofToString(groupIdA) + " + " + ofToString(groupIdB));
+    
+    mergeInstanceGroup(itrA, itrB);
+    instanceGroups.erase(itrB);
+}
+
+void instancedComponent::mergeInstanceGroup(INSTANCE_GROUPS::iterator itrA, INSTANCE_GROUPS::iterator itrB){
+    
+    instanceGroup &gA = itrA->second;
+    instanceGroup &gB = itrB->second;
+    
+    INSTANCES& insA = gA.instances;
+    INSTANCES& insB = gB.instances;
+    
+    insA.insert(insA.end(), insB.begin(), insB.end());
+    insB.clear();
+    
+    // dont forget erase groupB from instanceGroups
+}
+
+void instancedComponent::mergeInstanceGroupAll(){
+    
+    INSTANCE_GROUPS::iterator begin = instanceGroups.begin();
+    INSTANCE_GROUPS::iterator itr =  ++begin;
+
+    while(itr!=instanceGroups.end()){
+        mergeInstanceGroup(begin, itr);
+        instanceGroups.end();
+        itr = begin++;
+    }
+}
+

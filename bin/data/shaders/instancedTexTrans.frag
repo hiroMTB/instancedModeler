@@ -14,13 +14,17 @@ varying vec4 customColor;
 
 void main( void )
 {
-    vec4 myColor = normalize(customColor);
-    myColor.w = 1.0;
+    vec4 myColor = customColor;
+    myColor.a = 1.0;
+
+
+//	vec4 final_color =
+//	(gl_FrontLightModelProduct.sceneColor * gl_FrontMaterial.ambient) +
+//	(gl_LightSource[0].ambient * gl_FrontMaterial.ambient);
 
 	vec4 final_color =
-	(gl_FrontLightModelProduct.sceneColor * gl_FrontMaterial.ambient) +
+	(myColor * gl_FrontMaterial.ambient) +
 	(gl_LightSource[0].ambient * gl_FrontMaterial.ambient);
-
 
     
 	vec3 selectedNormal;

@@ -9,6 +9,20 @@
 /* Begin PBXBuildFile section */
 		4D15999B168B215400D10232 /* instancedTexTrans.frag in Sources */ = {isa = PBXBuildFile; fileRef = 4D159999168B215400D10232 /* instancedTexTrans.frag */; };
 		4D15999C168B215400D10232 /* instancedTexTrans.vert in Sources */ = {isa = PBXBuildFile; fileRef = 4D15999A168B215400D10232 /* instancedTexTrans.vert */; };
+		4D3A44BE16A4F8AE00328314 /* collisionTester.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A44BC16A4F8AE00328314 /* collisionTester.cpp */; };
+		4D3A451016A5001700328314 /* DemoApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A44F416A5001700328314 /* DemoApplication.cpp */; };
+		4D3A451116A5001700328314 /* GL_DialogDynamicsWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A44F616A5001700328314 /* GL_DialogDynamicsWorld.cpp */; };
+		4D3A451216A5001700328314 /* GL_DialogWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A44F816A5001700328314 /* GL_DialogWindow.cpp */; };
+		4D3A451316A5001700328314 /* GL_ShapeDrawer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A44FA16A5001700328314 /* GL_ShapeDrawer.cpp */; };
+		4D3A451416A5001700328314 /* GL_Simplex1to4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A44FC16A5001700328314 /* GL_Simplex1to4.cpp */; };
+		4D3A451516A5001700328314 /* GLDebugDrawer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A44FE16A5001700328314 /* GLDebugDrawer.cpp */; };
+		4D3A451616A5001700328314 /* GLDebugFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A450016A5001700328314 /* GLDebugFont.cpp */; };
+		4D3A451716A5001700328314 /* GlutDemoApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A450216A5001700328314 /* GlutDemoApplication.cpp */; };
+		4D3A451816A5001700328314 /* GlutStuff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A450416A5001700328314 /* GlutStuff.cpp */; };
+		4D3A451916A5001700328314 /* RenderTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A450916A5001700328314 /* RenderTexture.cpp */; };
+		4D3A451A16A5001700328314 /* stb_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A450B16A5001700328314 /* stb_image.cpp */; };
+		4D3A451B16A5001700328314 /* Win32AppMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A450D16A5001700328314 /* Win32AppMain.cpp */; };
+		4D3A451C16A5001700328314 /* Win32DemoApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A450E16A5001700328314 /* Win32DemoApplication.cpp */; };
 		4D598A4D16947EA500EECD95 /* ofxBaseGui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D598A4016947EA500EECD95 /* ofxBaseGui.cpp */; };
 		4D598A4E16947EA500EECD95 /* ofxButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D598A4216947EA500EECD95 /* ofxButton.cpp */; };
 		4D598A4F16947EA500EECD95 /* ofxLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D598A4516947EA500EECD95 /* ofxLabel.cpp */; };
@@ -179,6 +193,39 @@
 		4D159999168B215400D10232 /* instancedTexTrans.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = instancedTexTrans.frag; sourceTree = "<group>"; };
 		4D15999A168B215400D10232 /* instancedTexTrans.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = instancedTexTrans.vert; sourceTree = "<group>"; };
 		4D37C1A51692E2EC006FD104 /* instancedComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = instancedComponent.h; sourceTree = "<group>"; };
+		4D3A44BC16A4F8AE00328314 /* collisionTester.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = collisionTester.cpp; sourceTree = "<group>"; };
+		4D3A44BD16A4F8AE00328314 /* collisionTester.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = collisionTester.h; sourceTree = "<group>"; };
+		4D3A44F116A5001700328314 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
+		4D3A44F216A5001700328314 /* CommandLineArguments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandLineArguments.h; sourceTree = "<group>"; };
+		4D3A44F316A5001700328314 /* DebugCastResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DebugCastResult.h; sourceTree = "<group>"; };
+		4D3A44F416A5001700328314 /* DemoApplication.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DemoApplication.cpp; sourceTree = "<group>"; };
+		4D3A44F516A5001700328314 /* DemoApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoApplication.h; sourceTree = "<group>"; };
+		4D3A44F616A5001700328314 /* GL_DialogDynamicsWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GL_DialogDynamicsWorld.cpp; sourceTree = "<group>"; };
+		4D3A44F716A5001700328314 /* GL_DialogDynamicsWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GL_DialogDynamicsWorld.h; sourceTree = "<group>"; };
+		4D3A44F816A5001700328314 /* GL_DialogWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GL_DialogWindow.cpp; sourceTree = "<group>"; };
+		4D3A44F916A5001700328314 /* GL_DialogWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GL_DialogWindow.h; sourceTree = "<group>"; };
+		4D3A44FA16A5001700328314 /* GL_ShapeDrawer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GL_ShapeDrawer.cpp; sourceTree = "<group>"; };
+		4D3A44FB16A5001700328314 /* GL_ShapeDrawer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GL_ShapeDrawer.h; sourceTree = "<group>"; };
+		4D3A44FC16A5001700328314 /* GL_Simplex1to4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GL_Simplex1to4.cpp; sourceTree = "<group>"; };
+		4D3A44FD16A5001700328314 /* GL_Simplex1to4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GL_Simplex1to4.h; sourceTree = "<group>"; };
+		4D3A44FE16A5001700328314 /* GLDebugDrawer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLDebugDrawer.cpp; sourceTree = "<group>"; };
+		4D3A44FF16A5001700328314 /* GLDebugDrawer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLDebugDrawer.h; sourceTree = "<group>"; };
+		4D3A450016A5001700328314 /* GLDebugFont.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLDebugFont.cpp; sourceTree = "<group>"; };
+		4D3A450116A5001700328314 /* GLDebugFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLDebugFont.h; sourceTree = "<group>"; };
+		4D3A450216A5001700328314 /* GlutDemoApplication.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GlutDemoApplication.cpp; sourceTree = "<group>"; };
+		4D3A450316A5001700328314 /* GlutDemoApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlutDemoApplication.h; sourceTree = "<group>"; };
+		4D3A450416A5001700328314 /* GlutStuff.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GlutStuff.cpp; sourceTree = "<group>"; };
+		4D3A450516A5001700328314 /* GlutStuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlutStuff.h; sourceTree = "<group>"; };
+		4D3A450616A5001700328314 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
+		4D3A450716A5001700328314 /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
+		4D3A450816A5001700328314 /* premake4.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = premake4.lua; sourceTree = "<group>"; };
+		4D3A450916A5001700328314 /* RenderTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderTexture.cpp; sourceTree = "<group>"; };
+		4D3A450A16A5001700328314 /* RenderTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderTexture.h; sourceTree = "<group>"; };
+		4D3A450B16A5001700328314 /* stb_image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stb_image.cpp; sourceTree = "<group>"; };
+		4D3A450C16A5001700328314 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
+		4D3A450D16A5001700328314 /* Win32AppMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Win32AppMain.cpp; sourceTree = "<group>"; };
+		4D3A450E16A5001700328314 /* Win32DemoApplication.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Win32DemoApplication.cpp; sourceTree = "<group>"; };
+		4D3A450F16A5001700328314 /* Win32DemoApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Win32DemoApplication.h; sourceTree = "<group>"; };
 		4D598A3E16947EA500EECD95 /* ofOscParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofOscParameter.h; sourceTree = "<group>"; };
 		4D598A3F16947EA500EECD95 /* ofParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofParameter.h; sourceTree = "<group>"; };
 		4D598A4016947EA500EECD95 /* ofxBaseGui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBaseGui.cpp; sourceTree = "<group>"; };
@@ -574,6 +621,44 @@
 			name = ofxXmlSettings;
 			sourceTree = "<group>";
 		};
+		4D3A44F016A5001700328314 /* OpenGL */ = {
+			isa = PBXGroup;
+			children = (
+				4D3A44F116A5001700328314 /* CMakeLists.txt */,
+				4D3A44F216A5001700328314 /* CommandLineArguments.h */,
+				4D3A44F316A5001700328314 /* DebugCastResult.h */,
+				4D3A44F416A5001700328314 /* DemoApplication.cpp */,
+				4D3A44F516A5001700328314 /* DemoApplication.h */,
+				4D3A44F616A5001700328314 /* GL_DialogDynamicsWorld.cpp */,
+				4D3A44F716A5001700328314 /* GL_DialogDynamicsWorld.h */,
+				4D3A44F816A5001700328314 /* GL_DialogWindow.cpp */,
+				4D3A44F916A5001700328314 /* GL_DialogWindow.h */,
+				4D3A44FA16A5001700328314 /* GL_ShapeDrawer.cpp */,
+				4D3A44FB16A5001700328314 /* GL_ShapeDrawer.h */,
+				4D3A44FC16A5001700328314 /* GL_Simplex1to4.cpp */,
+				4D3A44FD16A5001700328314 /* GL_Simplex1to4.h */,
+				4D3A44FE16A5001700328314 /* GLDebugDrawer.cpp */,
+				4D3A44FF16A5001700328314 /* GLDebugDrawer.h */,
+				4D3A450016A5001700328314 /* GLDebugFont.cpp */,
+				4D3A450116A5001700328314 /* GLDebugFont.h */,
+				4D3A450216A5001700328314 /* GlutDemoApplication.cpp */,
+				4D3A450316A5001700328314 /* GlutDemoApplication.h */,
+				4D3A450416A5001700328314 /* GlutStuff.cpp */,
+				4D3A450516A5001700328314 /* GlutStuff.h */,
+				4D3A450616A5001700328314 /* Makefile.am */,
+				4D3A450716A5001700328314 /* Makefile.in */,
+				4D3A450816A5001700328314 /* premake4.lua */,
+				4D3A450916A5001700328314 /* RenderTexture.cpp */,
+				4D3A450A16A5001700328314 /* RenderTexture.h */,
+				4D3A450B16A5001700328314 /* stb_image.cpp */,
+				4D3A450C16A5001700328314 /* stb_image.h */,
+				4D3A450D16A5001700328314 /* Win32AppMain.cpp */,
+				4D3A450E16A5001700328314 /* Win32DemoApplication.cpp */,
+				4D3A450F16A5001700328314 /* Win32DemoApplication.h */,
+			);
+			path = OpenGL;
+			sourceTree = "<group>";
+		};
 		4D598A3C16947EA500EECD95 /* ofxGui */ = {
 			isa = PBXGroup;
 			children = (
@@ -805,6 +890,7 @@
 		4D9E67A31697C5EA0033C2DC /* src */ = {
 			isa = PBXGroup;
 			children = (
+				4D3A44F016A5001700328314 /* OpenGL */,
 				4D9E67A41697C5EA0033C2DC /* btBulletCollisionCommon.h */,
 				4D9E67A61697C5EA0033C2DC /* Bullet-C-Api.h */,
 				4D9E67A71697C5EA0033C2DC /* BulletCollision */,
@@ -1224,6 +1310,8 @@
 				4DA082A41693D7C300DF20AD /* instancedComponent.cpp */,
 				4DA082A61693E5CD00DF20AD /* ofxMtb.h */,
 				4DA082B21693F01900DF20AD /* ofxMtb.cpp */,
+				4D3A44BC16A4F8AE00328314 /* collisionTester.cpp */,
+				4D3A44BD16A4F8AE00328314 /* collisionTester.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -1442,6 +1530,20 @@
 				4D9E6A541697C5EB0033C2DC /* btQuickprof.cpp in Sources */,
 				4D9E6A551697C5EB0033C2DC /* btSerializer.cpp in Sources */,
 				4D9E6A561697C5EB0033C2DC /* btVector3.cpp in Sources */,
+				4D3A44BE16A4F8AE00328314 /* collisionTester.cpp in Sources */,
+				4D3A451016A5001700328314 /* DemoApplication.cpp in Sources */,
+				4D3A451116A5001700328314 /* GL_DialogDynamicsWorld.cpp in Sources */,
+				4D3A451216A5001700328314 /* GL_DialogWindow.cpp in Sources */,
+				4D3A451316A5001700328314 /* GL_ShapeDrawer.cpp in Sources */,
+				4D3A451416A5001700328314 /* GL_Simplex1to4.cpp in Sources */,
+				4D3A451516A5001700328314 /* GLDebugDrawer.cpp in Sources */,
+				4D3A451616A5001700328314 /* GLDebugFont.cpp in Sources */,
+				4D3A451716A5001700328314 /* GlutDemoApplication.cpp in Sources */,
+				4D3A451816A5001700328314 /* GlutStuff.cpp in Sources */,
+				4D3A451916A5001700328314 /* RenderTexture.cpp in Sources */,
+				4D3A451A16A5001700328314 /* stb_image.cpp in Sources */,
+				4D3A451B16A5001700328314 /* Win32AppMain.cpp in Sources */,
+				4D3A451C16A5001700328314 /* Win32DemoApplication.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

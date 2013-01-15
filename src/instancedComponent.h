@@ -52,9 +52,9 @@
 
 struct instance{
 public:
-    instance(){color.set(255,100,0,100);}
+    instance(){color = ofFloatColor(1.0, 1.0, 1.0);}
     ofMatrix4x4 matrix;
-    ofColor color;
+    ofFloatColor color;
 };
 
 
@@ -114,6 +114,8 @@ public:
     void setInstanceMatrix      (int groupId, int index, ofVec3f p, ofVec4f r=ofVec4f(0,0,0,0), ofVec3f s=ofVec3f(1,1,1));
     void clearInstanceMatrices();
 
+    void setInstanceColor(int groupId, int index, ofFloatColor color);
+    
     int initGroup();
     
     ofxVboMeshInstanced * getVboMeshInstanced(){ return vmi; }
@@ -121,6 +123,8 @@ public:
     inline void setInstanceNum(int i){ instanceNum = i; }
     inline int getInstanceNum(){ return instanceNum; }
     
+    void mergeInstanceGroup(int groupIdA, int groupIdB);
+    void mergeInstanceGroupAll();
     
 private:
 
@@ -147,6 +151,7 @@ private:
     
     
     
+    void mergeInstanceGroup(INSTANCE_GROUPS::iterator itrA, INSTANCE_GROUPS::iterator itrB);
     //
     //  Rycycle bin
     //

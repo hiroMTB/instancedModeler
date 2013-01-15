@@ -14,8 +14,14 @@ varying vec4 customColor;
 
 int tex_w = 1024;
 int tex_h = 512;
+int cltex_w = 512;
+int cltex_h = 512;
+
+
 float tex_w_f = float(tex_w);
 float tex_h_f = float(tex_h);
+float cltex_w_f = float(cltex_w);
+float cltex_h_f = float(cltex_h);
 
 
 
@@ -48,14 +54,15 @@ void main()
     // position
   	gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * inVertex;
     
-    
-    // color
-    y = gl_InstanceID/tex_w;
-    y_f = float(y);
-    v = y_f / tex_h_f;
-    
-    //customColor = texture2D(cltex, vec2(float(gl_InstanceID%tex_w)/tex_w_f, v));
-    //customColor = vec4(255,0,0,1);
-    customColor = inVertex;
 
+    {
+        // color
+        int y = gl_InstanceID/cltex_w;
+        float y_f = float(y);
+        float v = y_f / cltex_h_f;
+        
+        customColor = texture2D(cltex, vec2(float(gl_InstanceID%cltex_w)/cltex_w_f, v));
+        //customColor = vec4(-1.0, -1.0, 0.0, 1.0);
+        //customColor = inVertex / 255.0;
+    }
 }

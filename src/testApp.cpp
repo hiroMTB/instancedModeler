@@ -10,6 +10,8 @@ const string testApp::CONNECT_RANDOM = "CONNECT_RANDOM";
 const string testApp::CONNECT_NEAR = "CONNECT_NEAR";
 const string testApp::RESET_CYLINDERS = "RESET_CYLINDERS";
 const string testApp::RESET_SPHERES = "RESET_SPHERES";
+const string testApp::COLLISION_TEST = "COLLISION_TEST";
+
 
 void testApp::setup(){
 
@@ -27,12 +29,12 @@ void testApp::setup(){
     isShaderDirty = true;
     mShdInstanced = NULL;
     bWireframe = false;
-    posModelPath_P = "models/bee_100k_MASTER_mesh_wN.ply";
+    posModelPath_P = "models/bee_20k_MASTER_mesh_wN.ply";
     
     compScale = 1;
     posScale = 100;
     
-	ofSetFrameRate(60);
+//	ofSetFrameRate(60);
 	ofSetVerticalSync(false);
 	ofSetColor(255);
     setupCameraLightMaterial();
@@ -43,20 +45,52 @@ void testApp::setup(){
     
     {
         // model setup
-        ofSetSphereResolution(5);
+        ofSetSphereResolution(8);
         ofMesh sphere = ofGetGLRenderer()->ofGetSphereMesh();
         //ofMesh sphere = createQuadSphere(1, 12, 10);
-        spheres.loadInstanceMesh(sphere);
+        float radius = 3;
+        spheres.loadInstanceMesh(sphere, ofVec3f(radius, radius, radius));
+        tester.resetSphereShape(radius);
+
+#if 1
+        int nV = sphere.getNumVertices();
+        for(int i=0; i<nV; i++){
+            ofVec3f v = sphere.getVertex(i);
+            char m[255];
+            sprintf(m, "sphere vetices[%d] = %0.3f, %0.3f, %0.3f", i, v.x, v.y, v.z);
+            myLogDebug(ofToString(m));
+            //spheres.setInstanceColor(0, i, ofFloatColor(ofRandom(0.0, 1.0), ofRandom(0.0, 1.0), ofRandom(0.0, 1.0)));
+        }
+        
+
         spheres.loadInstancePositionFromModel(posModelPath_P, 100);
+#else
+        
+        int size = 10;
+        ofMatrix4x4 * ms = new ofMatrix4x4[size];
+        for(int i=0; i<size; i++){
+            ms[i].makeIdentityMatrix();
+            ms[i].scale(1, 1, 1);
+            ms[i].translate(ofRandom(-10, 10), ofRandom(-10, 10), ofRandom(-10, 10));
+        }
+        ms[0].translate(0, 0, 0);
+        ms[1].translate(8, 0, 0);
+        ms[2].translate(0, 8, 0);
+        ms[3].translate(0, 0, 11);
+        spheres.loadInstancePositionFromMatrices(ms, size);
+#endif
+        
     }
     
 #if 1
     {
-        ofMesh cylinder = createCylinderZ(0.2, 1, 20, 1);
+        ofMesh cylinder = createCylinderZ(0.1, 1, 20, 1);
         cylinders.loadInstanceMesh(cylinder);
+        tester.resetCylinderShape(ofVec3f(0.1, 0.5, 0.1));
+        
     }
 
-    connectRandom(&spheres, &cylinders, 1000, 100, 1000);
+    //connectRandom(&spheres, &cylinders, 100, 10, 1000);
 #endif
     
     GLint max;
@@ -139,7 +173,7 @@ void testApp::testDraw(){
 
 void testApp::mainDraw(){
     ofSetColor(255);
-	ofBackgroundGradient(ofColor::fromHsb(0, 0, 100), ofColor::fromHsb(0, 0, 50), OF_GRADIENT_LINEAR);
+	ofBackgroundGradient(ofColor::fromHsb(0, 0, 175), ofColor::fromHsb(0, 0, 20), OF_GRADIENT_LINEAR);
 	camMain.begin();
 	
     ofEnableLighting();
@@ -172,21 +206,23 @@ void testApp::mainDraw(){
 
         mLigDirectional.enable();
         mMatMainMaterial.begin();
-        
+    
+        ofSetColor(ofFloatColor(prmFloat["COLOR_R"], prmFloat["COLOR_G"], prmFloat["COLOR_B"]));
         if (bWireframe) {
-            ofSetColor(222,0,0);
+//          ofSetColor(222,0,0);
             spheres.drawWireframe(mShdInstanced);
             cylinders.drawWireframe(mShdInstanced);
         }else{
-            ofSetColor(200,200,200);
+//          ofSetColor(ofFloatColor(prmFloat["COLOR_R"], prmFloat["COLOR_G"], prmFloat["COLOR_B"]));
             spheres.draw(mShdInstanced);
             cylinders.draw(mShdInstanced);
         }
     
+    
         mMatMainMaterial.end();
         mLigDirectional.disable();
 	mShdInstanced->end();
-	
+    
 	glProvokingVertex(GL_LAST_VERTEX_CONVENTION);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
@@ -210,7 +246,6 @@ void testApp::mainDraw(){
 
     ofVec3f tp = camMain.getTarget().getPosition();
     ofDrawBitmapString("camera position: "+ofToString(tp.x)+", "+ofToString(tp.y)+", "+ofToString(tp.z), x, y+=h);
-    
 }
 
 
@@ -360,17 +395,18 @@ void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int
 
 
 void testApp::processGui(){
-    bool connect_random = mainPnl.getButton(CONNECT_RANDOM).value;
-    bool reset_cylinders = mainPnl.getButton(RESET_CYLINDERS).value;
     
-    
-    
-    if (connect_random) {
+
+    if (mainPnl.getButton(CONNECT_RANDOM)) {
         connectRandom(&spheres, &cylinders, ofRandom(100,300), ofRandom(200, 400), ofRandom(401, 600));
-    }
-    
-    if (reset_cylinders){
+    }else
+
+    if (mainPnl.getButton(RESET_CYLINDERS)){
         cylinders.reset();
+    }else
+        
+    if(mainPnl.getButton(COLLISION_TEST)){
+        processCollisionTest();
     }
     
 }
@@ -386,6 +422,11 @@ void testApp::setupGui(){
     mainPnl.add(prmFloat["Particle_Diam"].set("Particle Diam",0,0,1.0));
     mainPnl.add(prmFloat["Particle_Resolution"].set("Particle Resolution",0,3,12));
     
+    mainPnl.add(prmFloat["COLOR_R"].set("Red", 1.0, 0.0, 1.0));
+    mainPnl.add(prmFloat["COLOR_G"].set("Green", 1.0, 0.0, 1.0));
+    mainPnl.add(prmFloat["COLOR_B"].set("Blue", 1.0, 0.0, 1.0));
+    
+    
     ofxButton * btn = new ofxButton();
     btn->setup(CONNECT_RANDOM);
     mainPnl.add(btn);
@@ -394,6 +435,11 @@ void testApp::setupGui(){
     ofxButton * btn2 = new ofxButton();
     btn2->setup(RESET_CYLINDERS);
     mainPnl.add(btn2);
+
+    ofxButton * btn3 = new ofxButton();
+    btn3->setup(COLLISION_TEST);
+    mainPnl.add(btn3);
+
     
 	mainPnl.loadFromFile("settings.xml");
 }
@@ -439,3 +485,37 @@ void testApp::updateShaders(bool doLink){
 		isShaderDirty = false;
 	}
 }
+
+void testApp::processCollisionTest(){
+
+    spheres.mergeInstanceGroupAll();
+    
+    instanceGroup& g = spheres.getInstanceGroups()[0];       // check
+    int n= g.instances.size();
+
+    char m[255];
+    for(int i=0; i<n; i++){
+        sprintf(m, "processCollisionTest i:%d", i);
+        myLogDebug(ofToString(m));
+        
+        instance& insA = g.instances[i];
+        ofMatrix4x4& matA = insA.matrix;
+        
+        for(int j=i+1; j<n; j++){
+            instance& insB = g.instances[j];
+            ofMatrix4x4& matB = insB.matrix;
+            float dist = tester.testSphereSphere(matA, matB);
+            
+            if(dist<0.0) {
+                ofFloatColor red = ofFloatColor(1.0, 0.0, 0.0);
+                spheres.setInstanceColor(0, i, red);
+                spheres.setInstanceColor(0, j, red);
+            }
+            
+          
+            //sprintf(m, "collisionTest %d : %d, dist=%0.3f", i, j, dist);
+            //myLogDebug(ofToString(m));
+        }
+    }
+}
+

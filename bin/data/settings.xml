@@ -10,3 +10,8 @@
 <Use_FlatShading>1</Use_FlatShading>
 <Particle_Diam>0.245</Particle_Diam>
 <Particle_Resolution>8.22</Particle_Resolution>
+<RENDER_NORMALS>0</RENDER_NORMALS>
+<FLAT_SHADING>1</FLAT_SHADING>
+<Red>0.5</Red>
+<Green>0.5</Green>
+<Blue>0.5</Blue>

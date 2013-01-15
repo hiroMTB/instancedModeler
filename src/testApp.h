@@ -8,7 +8,7 @@
 #include "ofxAssimpModelLoader.h"
 
 #include "instancedComponent.h"
-
+#include "collisionTester.h"
 
 
 
@@ -85,6 +85,11 @@ class testApp : public ofBaseApp{
     static const string CONNECT_NEAR;
     static const string RESET_CYLINDERS;
     static const string RESET_SPHERES;
+    static const string COLLISION_TEST;
     
     void updateShaders(bool doLink=true);
+    
+    // collision
+    collisionTester tester;
+    void processCollisionTest();
 };
