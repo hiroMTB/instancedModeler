@@ -259,7 +259,7 @@ void testApp::mainDraw(){
     
     int y = 20;
     int x = 20;
-    int h = 25;
+    int h = 20;
 	ofDrawBitmapString(ofToString(ofGetFrameRate()), x, y);
     
     ofVec3f cp = camMain.getPosition();
@@ -299,7 +299,6 @@ void testApp::keyReleased(int key){
 	}
 	
 }
-
 void testApp::mouseMoved(int x, int y ){
     ofRectangle area = mainPnl.getShape();
     bool in = area.inside(x, y);
@@ -308,7 +307,6 @@ void testApp::mouseMoved(int x, int y ){
         camMain.mouseMoved(x, y);
     }
 }
-
 void testApp::mouseDragged(int x, int y, int button){
     ofRectangle area = mainPnl.getShape();
     bool in = area.inside(x, y);
@@ -317,7 +315,6 @@ void testApp::mouseDragged(int x, int y, int button){
         camMain.mouseDragged(x, y, button);
     }
 }
-
 void testApp::mousePressed(int x, int y, int button){
     ofRectangle area = mainPnl.getShape();
     bool in = area.inside(x, y);
@@ -326,7 +323,6 @@ void testApp::mousePressed(int x, int y, int button){
         camMain.mousePressed(x, y, button);
     }
 }
-
 void testApp::mouseReleased(int x, int y, int button){
     ofRectangle area = mainPnl.getShape();
     bool in = area.inside(x, y);
@@ -335,12 +331,9 @@ void testApp::mouseReleased(int x, int y, int button){
         camMain.mouseReleased(x, y, button);
     }
 }
-
 void testApp::windowResized(int w, int h){}
 void testApp::gotMessage(ofMessage msg){}
 void testApp::dragEvent(ofDragInfo dragInfo){}
-
-
 
 void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int numAllCylinders, float minDist, float maxDist){
     INSTANCE_MAP& instanceMap = ic->getInstanceMap();
@@ -419,7 +412,6 @@ void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int
 
 
 void testApp::processGui(){
-    
 
     if (mainPnl.getButton(CONNECT_RANDOM)) {
         connectRandom(&spheres, &cylinders, ofRandom(100,300), ofRandom(200, 400), ofRandom(401, 600));
@@ -468,8 +460,6 @@ void testApp::setupGui(){
 	mainPnl.loadFromFile("settings.xml");
 }
 
-
-
 void testApp::setupCameraLightMaterial(){
     camMain.setupPerspective(false);
     camMain.setDistance(1500);
@@ -486,7 +476,6 @@ void testApp::setupCameraLightMaterial(){
 	mMatMainMaterial.setSpecularColor(ofFloatColor(0,0,0));
 	mMatMainMaterial.setShininess(10.1f);
 }
-
 
 void testApp::updateShaders(bool doLink){
     if (isShaderDirty){
@@ -540,7 +529,23 @@ void testApp::processCollisionTest(){
         for(itrB++; itrB!=end; itrB++){
             instance& insB = itrB->second;
             ofMatrix4x4& matB = insB.matrix;
-            float dist = tester.testSphereSphere(matA, matB);
+
+            float dist;
+            INSTANCE_TYPE tA = insA.type;
+            INSTANCE_TYPE tB = insB.type;
+            
+            if(tA == INSTANCE_SPHERE && tB==INSTANCE_SPHERE)
+                dist = tester.testSphereSphere(matA, matB);
+            else if(tA==INSTANCE_SPHERE && tB==INSTANCE_CYLINDER)
+                dist = tester.testSphereCylinder(matA, matB);
+            else if (tA==INSTANCE_CYLINDER && tB==INSTANCE_SPHERE)
+                dist = tester.testSphereCylinder(matB, matA);
+            else if(tA==INSTANCE_CYLINDER && tB==INSTANCE_CYLINDER)
+                dist = tester.testCylinderCylinder(matA, matB);
+            else{
+                myLogRelease("Can not test collision");
+                return;
+            }
             
             if(dist<0.0) {
                 int groupIdA = itrA->first;
@@ -601,6 +606,7 @@ void testApp::processCollisionTest(){
                 }
                 
                 ofFloatColor red = ofFloatColor(1.0, 0.0, 0.0);
+                
                 spheres.setInstanceColor(itrA, red);
                 spheres.setInstanceColor(itrB, red);
             }
@@ -621,7 +627,7 @@ void testApp::processCollisionTest(){
                 for(; iitr!=instanceMap.end(); iitr++){
                     if(&iitr->second == ins){
                         spheres.changeInstanceGroupId(iitr, groupId);
-                        myLogDebug("change");
+
                         break;
                     }
                 }
@@ -633,4 +639,7 @@ void testApp::processCollisionTest(){
     
     spheres.setCltexNeedUpdate(true);
     spheres.setVtxtexNeedUpdate(true);
+    
+    cylinders.setCltexNeedUpdate(true);
+    cylinders.setVtxtexNeedUpdate(true);
 }

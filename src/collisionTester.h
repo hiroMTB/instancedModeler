@@ -31,8 +31,8 @@ public:
     
     float collisionTest(btCollisionObject * objectA, btCollisionObject * objectB);
     float testSphereSphere(ofMatrix4x4& matA, ofMatrix4x4& matB);
-    float testSphereCylinder(float radA, float radB, ofMatrix4x4 matA, ofMatrix4x4 matB);
-    float testCylinderCylinder(float radA, float radB, ofMatrix4x4 matA, ofMatrix4x4 matB);
+    float testSphereCylinder(ofMatrix4x4 matA, ofMatrix4x4 matB);
+    float testCylinderCylinder(ofMatrix4x4 matA, ofMatrix4x4 matB);
     
     void debugDraw();
     

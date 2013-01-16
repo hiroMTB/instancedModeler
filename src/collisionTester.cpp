@@ -44,8 +44,8 @@ void collisionTester::resetSphereShape(float radius){
 }
 
 void collisionTester::resetCylinderShape(ofVec3f halfExtent){
-    btCylinderShape * cA = new btCylinderShape(btVector3(halfExtent.x, halfExtent.y, halfExtent.z));
-    btCylinderShape * cB = new btCylinderShape(btVector3(halfExtent.x, halfExtent.y, halfExtent.z));
+    btCylinderShape * cA = new btCylinderShapeZ(btVector3(halfExtent.x, halfExtent.y, halfExtent.z));
+    btCylinderShape * cB = new btCylinderShapeZ(btVector3(halfExtent.x, halfExtent.y, halfExtent.z));
     cA->setMargin(0.0);
     cB->setMargin(0.0);
     
@@ -62,7 +62,22 @@ void collisionTester::destroy(){
 
 
 void collisionTester::debugDraw(){
-
+//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//	glDisable(GL_LIGHTING);
+//    
+//    btScalar m[16];
+//	
+//	btVector3	worldBoundsMin,worldBoundsMax;
+//	collisionWorld->getBroadphase()->getBroadphaseAabb(worldBoundsMin,worldBoundsMax);
+//    
+//	int i;
+//	for (i=0;i<numObjects;i++)
+//	{
+//		objects[i].getWorldTransform().getOpenGLMatrix( m );
+//		m_shapeDrawer->drawOpenGL(m,objects[i].getCollisionShape(),btVector3(1,1,1),getDebugMode(),worldBoundsMin,worldBoundsMax);
+//	}
+//    
+//	collisionWorld->getDispatchInfo().m_debugDraw = &debugDrawer;
 }
 
 
@@ -83,7 +98,6 @@ void collisionTester::initAlgo(){
 //
 float collisionTester::testSphereSphere(ofMatrix4x4& matA, ofMatrix4x4& matB){
     btTransform transA, transB;
-    
     transA.setFromOpenGLMatrix(matA.getPtr());
     transB.setFromOpenGLMatrix(matB.getPtr());
     
@@ -93,10 +107,52 @@ float collisionTester::testSphereSphere(ofMatrix4x4& matA, ofMatrix4x4& matB){
     return collisionTest(&sphereA, &sphereB);
 }
 
+float collisionTester::testSphereCylinder(ofMatrix4x4 matA, ofMatrix4x4 matB){
+    btTransform transA, transB;
+    transA.setFromOpenGLMatrix(matA.getPtr());
+    transB.setFromOpenGLMatrix(matB.getPtr());
+    
+    sphereA.setWorldTransform(transA);
+    cylinderA.setWorldTransform(transB);
+    return collisionTest(&sphereA, &cylinderA);
+}
+
+float collisionTester::testCylinderCylinder(ofMatrix4x4 matA, ofMatrix4x4 matB){
+    ofVec3f pA = matA.getTranslation();
+    ofVec3f pB = matB.getTranslation();
+    
+    ofQuaternion rA = matA.getRotate();
+    ofQuaternion rB = matB.getRotate();
+    
+    ofVec3f sA = matA.getScale();
+    ofVec3f sB = matB.getScale();
+    
+    btTransform transA, transB;
+    
+    transA.setOrigin(btVector3(pA.x, pA.y, pA.z));
+    transB.setOrigin(btVector3(pB.x, pB.y, pB.z));
+    
+    transA.setRotation(btQuaternion(rA.x(), rA.y(), rA.z(), rA.w()));
+    transB.setRotation(btQuaternion(rB.x(), rB.y(), rB.z(), rB.w()));
+    
+    btCollisionShape * cylA = cylinderA.getCollisionShape();
+    btCollisionShape * cylB = cylinderB.getCollisionShape();
+    
+    cylA->setLocalScaling(btVector3(sA.x, sA.y, sA.z));
+    cylB->setLocalScaling(btVector3(sB.x, sB.y, sB.z));
+    
+//    transA.setFromOpenGLMatrix(matA.getPtr());
+//    transB.setFromOpenGLMatrix(matB.getPtr());
+    
+    cylinderA.setWorldTransform(transA);
+    cylinderB.setWorldTransform(transB);
+    return collisionTest(&cylinderA, &cylinderB);
+}
+
 
 float collisionTester::collisionTest(btCollisionObject * objectA, btCollisionObject * objectB){
     
-    float dist = 9999999;
+    float dist = 99999;
     
     btCollisionObjectWrapper ob0(0,objectA->getCollisionShape(),objectA, objectA->getWorldTransform());
     btCollisionObjectWrapper ob1(0,objectB->getCollisionShape(),objectB, objectB->getWorldTransform());
@@ -118,9 +174,9 @@ float collisionTester::collisionTest(btCollisionObject * objectA, btCollisionObj
 		const btCollisionObject* obA = static_cast<const btCollisionObject*>(contactManifold->getBody0());
         //	btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
         
-		glDisable(GL_DEPTH_TEST);
+	
 		int numContacts = contactManifold->getNumContacts();
-		//bool swap = obA == objectA;
+		bool swap = obA == objectA;
         
         //printf("numManifolds=%i, numContact = %i \n", numManifolds, numContacts);
         
@@ -128,15 +184,16 @@ float collisionTester::collisionTest(btCollisionObject * objectA, btCollisionObj
 		{
 			btManifoldPoint& pt = contactManifold->getContactPoint(j);
             
-//			glBegin(GL_LINES);
-//			glColor3f(0, 0, 0);            
-//			btVector3 ptA = swap ?pt.getPositionWorldOnA():pt.getPositionWorldOnB();
-//			btVector3 ptB = swap ? pt.getPositionWorldOnB():pt.getPositionWorldOnA();
-//            
-//			glVertex3d(ptA.x(),ptA.y(),ptA.z());
-//			glVertex3d(ptB.x(),ptB.y(),ptB.z());
-//            
-//			glEnd();
+            glDisable(GL_DEPTH_TEST);
+			glBegin(GL_LINES);
+			glColor3f(0, 0, 1);
+			btVector3 ptA = swap ?pt.getPositionWorldOnA():pt.getPositionWorldOnB();
+			btVector3 ptB = swap ? pt.getPositionWorldOnB():pt.getPositionWorldOnA();
+            
+			glVertex3d(ptA.x(),ptA.y(),ptA.z());
+			glVertex3d(ptB.x(),ptB.y(),ptB.z());
+            
+			glEnd();
             
             float distTmp = pt.getDistance();
             if(distTmp<dist)
