@@ -50,33 +50,42 @@
 //              class instance
 //
 
+enum INSTANCE_TYPE{
+    INSTANCE_NONE = 0,
+    INSTANCE_SPHERE = 1,
+    INSTANCE_CYLINDER = 2
+};
+
 struct instance{
 public:
-    instance(){color = ofFloatColor(1.0, 1.0, 1.0);}
+    instance(INSTANCE_TYPE t){
+        color = ofFloatColor(1.0, 1.0, 1.0);
+        type = t;
+    }
+    instance(const instance& i){
+        color = i.color;
+        type = i.type;
+        matrix = i.matrix;
+    }
     ofMatrix4x4 matrix;
     ofFloatColor color;
+    INSTANCE_TYPE type;
+private:
+    instance(){};
 };
 
 
-typedef vector<instance> INSTANCES;
-
-
-struct instanceGroup{
-public:
-    INSTANCES instances;
-};
-
-typedef map<int, instanceGroup> INSTANCE_GROUPS;
-
+typedef multimap<int, instance> INSTANCE_MAP;
+typedef INSTANCE_MAP::iterator INSTANCE_MAP_ITR;
 
 class instancedComponent{
 public:
 
-    INSTANCE_GROUPS &getInstanceGroups(){ return instanceGroups; }
+    static INSTANCE_MAP &getInstanceMap(){ return instanceMap; }
     
 private:
-    INSTANCE_GROUPS instanceGroups;
-    int groupIdMaster;
+    static INSTANCE_MAP instanceMap;
+    static int groupIdMaster;
     
 
 public:
@@ -88,17 +97,18 @@ public:
     void destroy();
     void reset();
 
+    void setInstanceType(INSTANCE_TYPE t);
 
-    void update();
-    void updateVertexTexture();
-    void updateColorTexture();
+    void update(INSTANCE_TYPE t);
+    void updateVertexTexture(INSTANCE_TYPE t);
+    void updateColorTexture(INSTANCE_TYPE t);
     void draw(ofShader * shader);
     void drawWireframe(ofShader * shader);
     
     
     void loadInstanceMesh(ofMesh mesh, ofVec3f scale=ofVec3f(1,1,1));
-    void loadInstancePositionFromModel(string path, float posScale);
-    void loadInstancePositionFromMatrices(ofMatrix4x4 * ms, int size);
+    void loadInstancePositionFromModel(string path, INSTANCE_TYPE t, float posScale);
+    void loadInstancePositionFromMatrices(ofMatrix4x4 * ms, INSTANCE_TYPE t, int size);
 
     
     // component param
@@ -110,12 +120,13 @@ public:
     
     // instance param
     //
-    void setInstanceMatrix      (int groupId, int index, ofMatrix4x4 m);
-    void setInstanceMatrix      (int groupId, int index, ofVec3f p, ofVec4f r=ofVec4f(0,0,0,0), ofVec3f s=ofVec3f(1,1,1));
+    void addInstanceMatrix      (ofMatrix4x4 m, INSTANCE_TYPE t, int groupId=-1);
+    //void addInstanceMatrix      (INSTANCE_TYPE t, ofVec3f p, ofVec4f r=ofVec4f(0,0,0,0), ofVec3f s=ofVec3f(1,1,1), int groupId=-1);
     void clearInstanceMatrices();
 
-    void setInstanceColor(int groupId, int index, ofFloatColor color);
-    
+    void setInstanceGroupColor(int groupId, ofFloatColor color);
+    void setInstanceColor(INSTANCE_MAP_ITR itr, ofFloatColor color);
+    void setInstanceColor(int index, ofFloatColor color);
     int initGroup();
     
     ofxVboMeshInstanced * getVboMeshInstanced(){ return vmi; }
@@ -123,8 +134,19 @@ public:
     inline void setInstanceNum(int i){ instanceNum = i; }
     inline int getInstanceNum(){ return instanceNum; }
     
+    
+    void changeInstanceGroupId(INSTANCE_MAP_ITR& itr, int groupId);
     void mergeInstanceGroup(int groupIdA, int groupIdB);
-    void mergeInstanceGroupAll();
+
+    void mergeInstanceGroupAll(int groupId);
+    
+    void printData();
+    
+    static int getGroupIdMaster(){ return groupIdMaster;}
+    static int incGroupIdMaster(){ return ++groupIdMaster; }
+    
+    void setCltexNeedUpdate(bool b){ bCltexNeedUpdate = b; }
+    void setVtxtexNeedUpdate(bool b){ bVtxtexNeedUpdate = b; }
     
 private:
 
@@ -151,7 +173,6 @@ private:
     
     
     
-    void mergeInstanceGroup(INSTANCE_GROUPS::iterator itrA, INSTANCE_GROUPS::iterator itrB);
     //
     //  Rycycle bin
     //

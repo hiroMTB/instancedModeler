@@ -70,13 +70,7 @@ class testApp : public ofBaseApp{
     void makeGroup();
     void removeGroup();
     
-    enum InstanceType{
-        INSTANCE_SPHERE = 0,
-        INSTANCE_CUBE = 1,
-        INSTANCE_CYLINDER = 2
-    };
-    
-    void checkIntersection(ofVec3f posA, ofVec3f posB, InstanceType type);
+   // void checkIntersection(ofVec3f posA, ofVec3f posB, InstanceType type);
     
     
     static const string RENDER_NORMALS;
