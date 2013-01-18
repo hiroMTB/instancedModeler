@@ -5,6 +5,7 @@
 #include "instancedComponent.h"
 #include "ofxMtb.h"
 #include "ofxAssimpModelLoader.h"
+#include "collisionTester.h"
 
 int instancedComponent::groupIdMaster = -1;
 INSTANCE_MAP instancedComponent::instanceMap;
@@ -39,7 +40,6 @@ void instancedComponent::destroy(){
     myLogDebug("instancedComponent destroyed");
 }
 
-
 void instancedComponent::setInstanceType(INSTANCE_TYPE t){
     INSTANCE_MAP_ITR itr = instanceMap.begin();
     for(; itr!=instanceMap.end(); itr++){
@@ -53,7 +53,6 @@ void instancedComponent::update(INSTANCE_TYPE t){
     updateColorTexture(t);
 }
 
-
 void instancedComponent::updateVertexTexture(INSTANCE_TYPE t){
     // VERTEX UPDATE
     if(bVtxtexNeedUpdate){
@@ -65,8 +64,15 @@ void instancedComponent::updateVertexTexture(INSTANCE_TYPE t){
             
             instance& d = itr->second;
             if(d.type == t){
-                ofMatrix4x4& m = d.matrix;
-                    
+                // instance.matrix does not have scale info, here we construct for GL
+
+                ofMatrix4x4 m;
+                
+                m.scale(d.scale);
+                m.rotate(d.matrix.getRotate());
+                m.translate(d.matrix.getTranslation());
+                
+                
                 for(int k=0; k<4; k++){
                     for(int l=0; l<4; l++){
                         matrices[id*16 + k*4 + l] = m(k, l);
@@ -91,7 +97,6 @@ void instancedComponent::updateVertexTexture(INSTANCE_TYPE t){
         delete matrices;
     }
 }
-
 
 void instancedComponent::updateColorTexture(INSTANCE_TYPE t){
     
@@ -151,14 +156,9 @@ void instancedComponent::draw(ofShader * shader){
     
 }
 
-
 void instancedComponent::drawWireframe(ofShader * shader){
     glPushMatrix();
-    
-    //    glScalef(offsetScale.x, offsetScale.y, offsetScale.z);
-    //    glRotatef(offsetRotation.w, offsetRotation.x, offsetRotation.y, offsetRotation.z);
-    //    glTranslatef(offsetPosition.x, offsetPosition.y, offsetPosition.z);
-    
+
     if(vtxtexId!=GL_NONE)
         shader->setUniformTexture(shaderVtxTextureName.c_str(), GL_TEXTURE_2D, vtxtexId, 0);
     
@@ -172,29 +172,22 @@ void instancedComponent::drawWireframe(ofShader * shader){
     
 }
 
-
-
-// component param
-//
-void instancedComponent::setOffsetPosition(ofVec3f p){
-    offsetPosition = p;
-    //bVtxtexNeedUpdate = true;
+void instancedComponent::debugDraw(){
+    
+    INSTANCE_MAP_ITR itr = instanceMap.begin();
+    for(; itr!=instanceMap.end(); itr++){
+        instance& d = itr->second;
+        //if (d.type == t) {
+            collisionTester::debugDraw(d.matrix, d.scale, d.type);  // type should be same with bullet shape type
+        //}
+    }
 }
 
-void instancedComponent::setOffsetRotation(ofVec4f r){
-    offsetRotation = r;
-    //bVtxtexNeedUpdate = true;
-}
-
-void instancedComponent::setOffsetScale(ofVec3f s){
-    offsetScale = s;
-    //bVtxtexNeedUpdate = true;
-}
 
 
 // instance param
 //
-void instancedComponent::addInstanceMatrix(ofMatrix4x4 m, INSTANCE_TYPE t, int groupId){
+void instancedComponent::addInstanceMatrix(ofMatrix4x4 m, ofVec3f s, INSTANCE_TYPE t, int groupId){
     if(index<0){
         myLogRelease("invalid value for index num");
         return;
@@ -205,25 +198,12 @@ void instancedComponent::addInstanceMatrix(ofMatrix4x4 m, INSTANCE_TYPE t, int g
     
     instance ins(t);
     ins.matrix = m;
+    ins.scale = s;
     instanceMap.insert(pair<int, instance>(groupId, ins));
     bVtxtexNeedUpdate = true;
     
     //instanceNum++;
 }
-
-//void instancedComponent::addInstanceMatrix(INSTANCE_TYPE t, ofVec3f p, ofVec4f r, ofVec3f s, int groupId){
-//    ofMatrix4x4 m;
-//    //ofVec3f position = trans + (mesh.getVertex(i)* posScale);     // SCALE POSITION!!
-//    
-//    m.makeIdentityMatrix();
-//    m.rotate(r[3], r[0], r[1], r[2]);
-//    m.scale(s);
-//    m.translate(p);
-//        
-//    addInstanceMatrix(m, t, groupId);
-//}
-
-
 
 void instancedComponent::loadInstancePositionFromModel(string path, INSTANCE_TYPE t, float posScale=1){
 
@@ -265,8 +245,8 @@ void instancedComponent::loadInstancePositionFromModel(string path, INSTANCE_TYP
         //m.rotate(angle, 1, 0, 0);
         //m.scale(scale, scale, scale);
         m.translate(position);
-        
-        addInstanceMatrix(m, t);
+        ofVec3f s(1,1,1);
+        addInstanceMatrix(m, s, t);
     }
 
     vmi->setPrimCount(instanceNum);
@@ -275,19 +255,17 @@ void instancedComponent::loadInstancePositionFromModel(string path, INSTANCE_TYP
     model.clear();
 }
 
-void instancedComponent::loadInstancePositionFromMatrices(ofMatrix4x4 *ms, INSTANCE_TYPE t, int size){
+void instancedComponent::loadInstancePositionFromMatrices(ofMatrix4x4 *ms, ofVec3f *ss, INSTANCE_TYPE t, int size){
 
     //clearInstanceMatrices();
     
     for(int i=0; i<size; i++){
-        addInstanceMatrix(ms[i], t);
+        addInstanceMatrix(ms[i], ss[i], t);
     }
     
     instanceNum = size;
     bVtxtexNeedUpdate = true;
 }
-
-
 
 void instancedComponent::clearInstanceMatrices(){
 
@@ -295,8 +273,8 @@ void instancedComponent::clearInstanceMatrices(){
     
     myLogDebug("clear all group data");
     bVtxtexNeedUpdate = true;
+    bCltexNeedUpdate  = true;
 }
-
 
 void instancedComponent::loadInstanceMesh(ofMesh mesh, ofVec3f scale){
     
@@ -329,36 +307,9 @@ void instancedComponent::loadInstanceMesh(ofMesh mesh, ofVec3f scale){
 #endif
 }
 
-
-
 void instancedComponent::reset(){
     clearInstanceMatrices();
 }
-
-
-/*
-void instancedComponent::sendVertexData(ofShader * shader, GLuint loc){
-
-    int id = 0;
-    INSTANCE_GROUPS::iterator itr = instanceGroups.begin();
-    
-    for(; itr!=instanceGroups.end(); itr++){
-        
-        instanceGroup g = (itr->second);
-        
-        int n= g.instances.size();
-        
-        for(int j=0; j<n; j++){
-            
-            instance d = g.instances[j];
-            ofMatrix4x4 mat = d.matrix;
-            ofVec4f p = mat.getTranslation();
-
-            shader->setAttribute4f(loc, p.x, p.y, p.z, 1);
-        }
-    }
-}
-*/
 
 void instancedComponent::setInstanceColor(int index, ofFloatColor color){
     INSTANCE_MAP_ITR itr = instanceMap.begin();
@@ -369,13 +320,11 @@ void instancedComponent::setInstanceColor(int index, ofFloatColor color){
     }
 }
 
-
 void instancedComponent::setInstanceColor(INSTANCE_MAP_ITR itr, ofFloatColor color){
     instance& ins = itr->second;
     ins.color = color;
     bCltexNeedUpdate = true;
 }
-
 
 void instancedComponent::setInstanceGroupColor(int groupId, ofFloatColor color){
     if(index<0){
@@ -402,8 +351,6 @@ void instancedComponent::setInstanceGroupColor(int groupId, ofFloatColor color){
 
     bCltexNeedUpdate = true;
 }
-
-
 
 void instancedComponent::changeInstanceGroupId(INSTANCE_MAP_ITR& itr, int groupId){
     STL_UTIL::changeKey(instanceMap, itr, groupId);
@@ -433,9 +380,7 @@ void instancedComponent::mergeInstanceGroup(int groupIdA, int groupIdB){
     STL_UTIL::replace_key(instanceMap, groupIdA, groupIdB);
 }
 
-
 #include <set>
-
 void instancedComponent::mergeInstanceGroupAll(int groupId){
 
     set<int> tmp;

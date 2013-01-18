@@ -33,6 +33,7 @@
 #include "ofMain.h"
 #include "ofxVboMeshInstanced.h"
 #include "ofxMtb.h"
+#include "btBulletCollisionCommon.h"
 
 #include <map>
 
@@ -52,8 +53,8 @@
 
 enum INSTANCE_TYPE{
     INSTANCE_NONE = 0,
-    INSTANCE_SPHERE = 1,
-    INSTANCE_CYLINDER = 2
+    INSTANCE_SPHERE = SPHERE_SHAPE_PROXYTYPE,
+    INSTANCE_CYLINDER = CYLINDER_SHAPE_PROXYTYPE
 };
 
 struct instance{
@@ -66,10 +67,12 @@ public:
         color = i.color;
         type = i.type;
         matrix = i.matrix;
+        scale = i.scale;
     }
-    ofMatrix4x4 matrix;
-    ofFloatColor color;
-    INSTANCE_TYPE type;
+    ofMatrix4x4     matrix;     // NOTICE dont use scaling func
+    ofVec3f         scale;
+    ofFloatColor    color;
+    INSTANCE_TYPE   type;
 private:
     instance(){};
 };
@@ -104,23 +107,15 @@ public:
     void updateColorTexture(INSTANCE_TYPE t);
     void draw(ofShader * shader);
     void drawWireframe(ofShader * shader);
-    
+    static void debugDraw();
     
     void loadInstanceMesh(ofMesh mesh, ofVec3f scale=ofVec3f(1,1,1));
     void loadInstancePositionFromModel(string path, INSTANCE_TYPE t, float posScale);
-    void loadInstancePositionFromMatrices(ofMatrix4x4 * ms, INSTANCE_TYPE t, int size);
+    void loadInstancePositionFromMatrices(ofMatrix4x4 * ms, ofVec3f * ss, INSTANCE_TYPE t, int size);
 
-    
-    // component param
-    //
-    void setOffsetPosition(ofVec3f p);
-    void setOffsetRotation(ofVec4f r);
-    void setOffsetScale(ofVec3f s);
-    
-    
     // instance param
     //
-    void addInstanceMatrix      (ofMatrix4x4 m, INSTANCE_TYPE t, int groupId=-1);
+    void addInstanceMatrix      (ofMatrix4x4 m, ofVec3f s, INSTANCE_TYPE t, int groupId=-1);
     //void addInstanceMatrix      (INSTANCE_TYPE t, ofVec3f p, ofVec4f r=ofVec4f(0,0,0,0), ofVec3f s=ofVec3f(1,1,1), int groupId=-1);
     void clearInstanceMatrices();
 
@@ -135,10 +130,10 @@ public:
     inline int getInstanceNum(){ return instanceNum; }
     
     
-    void changeInstanceGroupId(INSTANCE_MAP_ITR& itr, int groupId);
-    void mergeInstanceGroup(int groupIdA, int groupIdB);
+    static void changeInstanceGroupId(INSTANCE_MAP_ITR& itr, int groupId);
+    static void mergeInstanceGroup(int groupIdA, int groupIdB);
 
-    void mergeInstanceGroupAll(int groupId);
+    static void mergeInstanceGroupAll(int groupId);
     
     void printData();
     

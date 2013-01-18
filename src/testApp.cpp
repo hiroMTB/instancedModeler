@@ -1,8 +1,6 @@
 #include "testApp.h"
 #include "ofxMtb.h"
 
-
-
 // GUI parts
 const string testApp::RENDER_NORMALS = "RENDER_NORMALS";
 const string testApp::FLAT_SHADING = "FLAT_SHADING";
@@ -11,7 +9,6 @@ const string testApp::CONNECT_NEAR = "CONNECT_NEAR";
 const string testApp::RESET_CYLINDERS = "RESET_CYLINDERS";
 const string testApp::RESET_SPHERES = "RESET_SPHERES";
 const string testApp::COLLISION_TEST = "COLLISION_TEST";
-
 
 void testApp::setup(){
 
@@ -33,7 +30,8 @@ void testApp::setup(){
     isShaderDirty = true;
     mShdInstanced = NULL;
     bWireframe = false;
-    posModelPath_P = "models/bee_20k_MASTER_mesh_wN.ply";
+    bCollisionDebugDraw = false;
+    posModelPath_P = "models/bee_100k_MASTER_mesh_wN.ply";
     
     compScale = 1;
     posScale = 100;
@@ -48,76 +46,71 @@ void testApp::setup(){
 
     
     {
-        // model setup
         ofSetSphereResolution(8);
         ofMesh sphere = ofGetGLRenderer()->ofGetSphereMesh();
         //ofMesh sphere = createQuadSphere(1, 12, 10);
-        float radius = 0.5;
+        float radius = 3;
         spheres.loadInstanceMesh(sphere, ofVec3f(radius, radius, radius));
         tester.resetSphereShape(radius);
 
 #define SETUP_SPHERE
 #ifdef SETUP_SPHERE
-#if 1
         myLogDebug("setup Spheres");
-//        int nV = sphere.getNumVertices();
-//        for(int i=0; i<nV; i++){
-//            ofVec3f v = sphere.getVertex(i);
-//            char m[255];
-//            sprintf(m, "sphere vetices[%d] = %0.3f, %0.3f, %0.3f", i, v.x, v.y, v.z);
-//            myLogDebug(ofToString(m));
-//            //spheres.setInstanceColor(0, i, ofFloatColor(ofRandom(0.0, 1.0), ofRandom(0.0, 1.0), ofRandom(0.0, 1.0)));
-//        }
-        
-
+#if 1
         spheres.loadInstancePositionFromModel(posModelPath_P, INSTANCE_SPHERE, 100);
 #else
-        
-        int size = 300;
+        float pos = 30;
+        int size = 100;
         ofMatrix4x4 * ms = new ofMatrix4x4[size];
-        float pos = 100;
+        ofVec3f * scales = new ofVec3f[size];
+        
         for(int i=0; i<size; i++){
             ms[i].makeIdentityMatrix();
-            ms[i].scale(1, 1, 1);
             ms[i].translate(ofRandom(-pos, pos), ofRandom(-pos, pos), ofRandom(-pos, pos));
+            scales[i].set(1, 1, 1);
         }
-        spheres.loadInstancePositionFromMatrices(ms, INSTANCE_SPHERE, size);
+        spheres.loadInstancePositionFromMatrices(ms, scales, INSTANCE_SPHERE, size);
 #endif
 #endif
     }
 
+    
+    
+    {
+       
+        ofMesh cylinder = createCylinderZ(0.2, 1, 10, 1);
+        cylinders.loadInstanceMesh(cylinder);
+        tester.resetCylinderShape(ofVec3f(0.2, 123, 0.5));  // do not use y value 
 #define SETUP_CYLINDER 1
 #ifdef SETUP_CYLINDER
+        myLogDebug("setup Cylinders");
 
-    myLogDebug("setup Cylinders");
-    ofMesh cylinder = createCylinderZ(0.2, 1, 20, 1);
-    cylinders.loadInstanceMesh(cylinder);
-    tester.resetCylinderShape(ofVec3f(0.2, 0.5, 0.1));
-
+        int size = 40;
 #if 1
-    connectRandom(&spheres, &cylinders, 100, 1, 10000);
+        connectRandom(&spheres, &cylinders, size, 1, 10000);
 #else
-    int size = 10;
-    ofMatrix4x4 * ms = new ofMatrix4x4[size];
-    float pos = 100;
-    for(int i=0; i<size; i++){
-        ms[i].makeIdentityMatrix();
-        ms[i].scale(1, 1, 1);
-        ms[i].translate(ofRandom(-pos, pos), ofRandom(-pos, pos), ofRandom(-pos, pos));
+
+        ofMatrix4x4 * ms = new ofMatrix4x4[size];
+        ofVec3f * scales = new ofVec3f[size];
+
+        float pos = 5;
+        for(int i=0; i<size; i++){
+            ms[i].makeIdentityMatrix();
+            ms[i].rotate(12, ofRandom(-180, 180), ofRandom(-180, 180), ofRandom(-180, 180));
+            ms[i].translate(ofRandom(-pos, pos), ofRandom(-pos, pos), ofRandom(-pos, pos));
+            scales[i].set(1,1,1);
+        }
+        
+        
+        cylinders.loadInstancePositionFromMatrices(ms, INSTANCE_CYLINDER, size);
+
+#endif
+#endif
     }
-    cylinders.loadInstancePositionFromMatrices(ms, INSTANCE_CYLINDER, size);
-
-#endif
-#endif
-
-    GLint max;
-    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &max);
-    myLogRelease("GL_MAX_VERTEX_ATTRIBS : " + ofToString(max));
-    
-    
-    
     
     cylinders.printData();
+    
+    tester.initAlgo();
 }
 
 void testApp::update(){
@@ -134,10 +127,11 @@ void testApp::update(){
 
 }
 
-
 void testApp::draw(){
     mainDraw();
     //testDraw();
+    
+    //tester.debugDraw();
 }
 
 void testApp::testDraw(){
@@ -244,6 +238,7 @@ void testApp::mainDraw(){
         mLigDirectional.disable();
 	mShdInstanced->end();
     
+    
 	glProvokingVertex(GL_LAST_VERTEX_CONVENTION);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
@@ -251,7 +246,13 @@ void testApp::mainDraw(){
 
     ofSetColor(255,255,255);
 	ofDisableLighting();
-	camMain.end();
+
+    if(bCollisionDebugDraw){
+        //instancedComponent::debugDraw();
+        tester.drawAllContanctPts();
+    }
+
+    camMain.end();
 	
     //  GUI draw
 	mainPnl.draw();
@@ -266,14 +267,10 @@ void testApp::mainDraw(){
     ofDrawBitmapString("camera position: "+ofToString(cp.x)+", "+ofToString(cp.y)+", "+ofToString(cp.z), x, y+=h);
 
     ofVec3f tp = camMain.getTarget().getPosition();
-    ofDrawBitmapString("camera position: "+ofToString(tp.x)+", "+ofToString(tp.y)+", "+ofToString(tp.z), x, y+=h);
+    ofDrawBitmapString("target position: "+ofToString(tp.x)+", "+ofToString(tp.y)+", "+ofToString(tp.z), x, y+=h);
 }
 
-
-
-void testApp::keyPressed(int key){
-
-}
+void testApp::keyPressed(int key){}
 
 void testApp::keyReleased(int key){
 	
@@ -291,7 +288,8 @@ void testApp::keyReleased(int key){
 			bWireframe = !bWireframe;
 			break;
             
-        case '1':
+        case 'd':
+            bCollisionDebugDraw = !bCollisionDebugDraw;
             break;
             
 		default:
@@ -334,81 +332,6 @@ void testApp::mouseReleased(int x, int y, int button){
 void testApp::windowResized(int w, int h){}
 void testApp::gotMessage(ofMessage msg){}
 void testApp::dragEvent(ofDragInfo dragInfo){}
-
-void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int numAllCylinders, float minDist, float maxDist){
-    INSTANCE_MAP& instanceMap = ic->getInstanceMap();
-
-    int numGroups = STL_UTIL::getAllKeySize(instanceMap);
-    
-    int index = 0;
-    int numFind = 0;
-    for(int i=0; i<numAllCylinders; i++){
-        int numTry = 0;
-        int maxTry = 10000;
-        bool find = false;
-        
-        do{
-            // 1. select group
-            int groupIdA = ofRandom(-2, numGroups-2);
-            int groupIdB = ofRandom(-2, numGroups-2);
-
-            int numInstancesA = instanceMap.count(groupIdA);
-            int numInstancesB = instanceMap.count(groupIdB);
-            
-            // 2. select instance
-            int indexA = ofRandom(numInstancesA);
-            int indexB = ofRandom(numInstancesB);
-            
-            INSTANCE_MAP_ITR itrA = instanceMap.find(groupIdA);
-            INSTANCE_MAP_ITR itrB = instanceMap.find(groupIdB);
-            
-            std::advance(itrA, indexA);
-            std::advance(itrB, indexB);
-            
-            instance instA = itrA->second;
-            instance instB = itrB->second;
-            
-            if(instA.type!= INSTANCE_CYLINDER && instB.type!=INSTANCE_CYLINDER ){
-            
-                // 3. check A - B distance
-                ofVec3f vA = instA.matrix.getTranslation();
-                ofVec3f vB = instB.matrix.getTranslation();
-                
-                ofVec3f vAB = vB - vA;
-                float dist = vAB.length();
-                
-                if(minDist<dist && dist<maxDist){
-                    
-                    // 4. put
-                    ofMatrix4x4 mat;
-                    ofVec3f pos = vA + vAB*0.5;
-                    
-                    ofVec3f yAxis(0,0,1);
-                    float angle = yAxis.angle(vAB);
-                    ofVec3f prep = yAxis.cross(vAB);
-
-                    mat.scale(1, 1, dist);
-                    mat.rotate(angle, prep.x, prep.y, prep.z);
-                    mat.translate(pos);
-                    
-                    // add to deafault group
-                    ic2->addInstanceMatrix(mat, INSTANCE_CYLINDER);
-                    find = true;
-                    numFind++;
-                }
-            }
-            
-            numTry++;
-            
-            if(maxTry < numTry)
-                find = true;
-        }while (!find);
-    }
-    
-    int instanceNum = ic2->getInstanceNum();
-    ic2->setInstanceNum(instanceNum + numFind);
-    
-}
 
 
 void testApp::processGui(){
@@ -499,15 +422,91 @@ void testApp::updateShaders(bool doLink){
 	}
 }
 
-void testApp::processCollisionTest(){
-
-    spheres.mergeInstanceGroupAll(-1);
+void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int numAllCylinders, float minDist, float maxDist){
+    INSTANCE_MAP& instanceMap = ic->getInstanceMap();
     
+    int numGroups = STL_UTIL::getAllKeySize(instanceMap);
+    
+    int index = 0;
+    int numFind = 0;
+    for(int i=0; i<numAllCylinders; i++){
+        int numTry = 0;
+        int maxTry = 10000;
+        bool find = false;
+        
+        do{
+            // 1. select group
+            int groupIdA = ofRandom(-2, numGroups-2);
+            int groupIdB = ofRandom(-2, numGroups-2);
+            
+            int numInstancesA = instanceMap.count(groupIdA);
+            int numInstancesB = instanceMap.count(groupIdB);
+            
+            // 2. select instance
+            int indexA = ofRandom(numInstancesA);
+            int indexB = ofRandom(numInstancesB);
+            
+            INSTANCE_MAP_ITR itrA = instanceMap.find(groupIdA);
+            INSTANCE_MAP_ITR itrB = instanceMap.find(groupIdB);
+            
+            std::advance(itrA, indexA);
+            std::advance(itrB, indexB);
+            
+            instance instA = itrA->second;
+            instance instB = itrB->second;
+            
+            if(instA.type!= INSTANCE_CYLINDER && instB.type!=INSTANCE_CYLINDER ){
+                
+                // 3. check A - B distance
+                ofVec3f vA = instA.matrix.getTranslation();
+                ofVec3f vB = instB.matrix.getTranslation();
+                
+                ofVec3f vAB = vB - vA;
+                float dist = vAB.length();
+                
+                if(minDist<dist && dist<maxDist){
+                    
+                    // 4. put
+                    ofMatrix4x4 mat;
+                    ofVec3f scale;
+                    ofVec3f pos = vA + vAB*0.5;
+                    
+                    ofVec3f yAxis(0,0,1);
+                    float angle = yAxis.angle(vAB);
+                    ofVec3f prep = yAxis.cross(vAB);
+                    
+                    scale.set(1, 1, dist);
+                    mat.rotate(angle, prep.x, prep.y, prep.z);
+                    mat.translate(pos);
+                    
+                    // add to deafault group
+                    ic2->addInstanceMatrix(mat, scale, INSTANCE_CYLINDER);
+                    find = true;
+                    numFind++;
+                }
+            }
+            
+            numTry++;
+            
+            if(maxTry < numTry)
+                find = true;
+        }while (!find);
+    }
+    
+    int instanceNum = ic2->getInstanceNum();
+    ic2->setInstanceNum(instanceNum + numFind);
+    
+}
+
+void testApp::processCollisionTest(){
+    
+    instancedComponent::mergeInstanceGroupAll(-1);
+    myLogRelease("Process CollisionTest");
+
 #ifndef NDEBUG
-    myLogDebug("Process CollisionTest");
     spheres.printData();
 #endif
-
+    
     INSTANCE_MAP& instanceMap = spheres.getInstanceMap();
     INSTANCE_MAP_ITR itrA = instanceMap.begin();
     INSTANCE_MAP_ITR itrB = itrA;
@@ -525,23 +524,25 @@ void testApp::processCollisionTest(){
         
         instance& insA = itrA->second;
         ofMatrix4x4& matA = insA.matrix;
+        ofVec3f& sA = insA.scale;
         itrB = itrA;
         for(itrB++; itrB!=end; itrB++){
             instance& insB = itrB->second;
             ofMatrix4x4& matB = insB.matrix;
-
+            ofVec3f& sB = insB.scale;
+            
             float dist;
             INSTANCE_TYPE tA = insA.type;
             INSTANCE_TYPE tB = insB.type;
             
             if(tA == INSTANCE_SPHERE && tB==INSTANCE_SPHERE)
-                dist = tester.testSphereSphere(matA, matB);
+                dist = tester.testSphereSphere(matA,sA,matB,sB);
             else if(tA==INSTANCE_SPHERE && tB==INSTANCE_CYLINDER)
-                dist = tester.testSphereCylinder(matA, matB);
+                dist = tester.testSphereCylinder(matA,sA,matB,sB);
             else if (tA==INSTANCE_CYLINDER && tB==INSTANCE_SPHERE)
-                dist = tester.testSphereCylinder(matB, matA);
+                dist = tester.testSphereCylinder(matA,sA,matB,sB);
             else if(tA==INSTANCE_CYLINDER && tB==INSTANCE_CYLINDER)
-                dist = tester.testCylinderCylinder(matA, matB);
+                dist = tester.testCylinderCylinder(matA,sA,matB,sB);
             else{
                 myLogRelease("Can not test collision");
                 return;
@@ -554,11 +555,11 @@ void testApp::processCollisionTest(){
                 TITR titrA = tmap.find(&itrA->second);
                 if(titrA!=tmap.end())
                     groupIdA = titrA->second;
-
+                
                 TITR titrB = tmap.find(&itrB->second);
                 if(titrB!=tmap.end())
                     groupIdB = titrB->second;
-
+                
                 
                 if(groupIdA==-1){
                     if(groupIdB==-1){
@@ -569,7 +570,7 @@ void testApp::processCollisionTest(){
                             tmap.insert(TPAIR(&itrA->second, newId));
                         else
                             titrA->second = newId;
-
+                        
                         TITR titrB = tmap.find(&itrB->second);
                         if(titrB==tmap.end())
                             tmap.insert(TPAIR(&itrB->second, newId));
@@ -621,13 +622,13 @@ void testApp::processCollisionTest(){
         for(; itr!=tmap.end(); itr++){
             instance * ins = itr->first;
             int groupId = itr->second;
-
+            
             if(ins!=NULL){
                 INSTANCE_MAP_ITR  iitr = instanceMap.begin();
                 for(; iitr!=instanceMap.end(); iitr++){
                     if(&iitr->second == ins){
                         spheres.changeInstanceGroupId(iitr, groupId);
-
+                        
                         break;
                     }
                 }
@@ -635,11 +636,15 @@ void testApp::processCollisionTest(){
         }
     }
     
-    spheres.printData();
     
     spheres.setCltexNeedUpdate(true);
     spheres.setVtxtexNeedUpdate(true);
     
     cylinders.setCltexNeedUpdate(true);
     cylinders.setVtxtexNeedUpdate(true);
+    
+     myLogRelease("finish CollisionTest");
 }
+
+
+

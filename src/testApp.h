@@ -16,7 +16,8 @@ class testApp : public ofBaseApp{
 
 	bool isShaderDirty;
     bool bWireframe;
-
+    bool bCollisionDebugDraw;
+    
     float compScale;
     float posScale;
     

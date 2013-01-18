@@ -29,32 +29,39 @@ public:
     void resetCylinderShape(ofVec3f halfExtent);
 
     
-    float collisionTest(btCollisionObject * objectA, btCollisionObject * objectB);
-    float testSphereSphere(ofMatrix4x4& matA, ofMatrix4x4& matB);
-    float testSphereCylinder(ofMatrix4x4 matA, ofMatrix4x4 matB);
-    float testCylinderCylinder(ofMatrix4x4 matA, ofMatrix4x4 matB);
+    float collisionTest(btCollisionObject * objectA, btCollisionObject * objectB, btCollisionAlgorithm * algo);
+    float testSphereSphere(ofMatrix4x4& matA, ofVec3f& sA, ofMatrix4x4& matB, ofVec3f& sB);
+    float testSphereCylinder(ofMatrix4x4& matA, ofVec3f& sA, ofMatrix4x4& matB, ofVec3f& sB);
+    float testCylinderCylinder(ofMatrix4x4& matA, ofVec3f& sA, ofMatrix4x4& matB, ofVec3f& sB);
     
-    void debugDraw();
+    static void debugDraw(ofMatrix4x4& mat, ofVec3f& scale, int shapeType);
     
     
+    void initAlgo();
   
+    void clearContanctPts();
+    void drawAllContanctPts();
+    
 private:
     void initCollisionWorld();
     
     void destroy();
     
-    btCollisionWorld *	collisionWorld;
+    static btCollisionWorld *	collisionWorld;
     
-    btCollisionObject	sphereA, sphereB;
-    btCollisionObject   cylinderA, cylinderB;
+    static btCollisionObject	sphereA, sphereB;
+    static btCollisionObject   cylinderA, cylinderB;
   
     btCollisionAlgorithm * algoSS;
     btCollisionAlgorithm * algoSC;
     btCollisionAlgorithm * algoCC;
     
-    void initAlgo();
     
+    static void setTransformFromOF(ofMatrix4x4& mat, ofVec3f& scale, btCollisionObject& obj);
+
     // option
     GLDebugDrawer debugDrawer;
+   	GL_ShapeDrawer* m_shapeDrawer;
     
+    vector<btVector3> contactPts;
 };
