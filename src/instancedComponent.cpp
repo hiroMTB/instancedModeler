@@ -8,6 +8,7 @@
 #include "collisionTester.h"
 
 int instancedComponent::groupIdMaster = -1;
+int instancedComponent::groupTotalNum = 1;
 INSTANCE_MAP instancedComponent::instanceMap;
 
 instancedComponent::instancedComponent():
@@ -399,13 +400,45 @@ void instancedComponent::mergeInstanceGroupAll(int groupId){
     }
 }
 
-void instancedComponent::printData(){
+vector<string> instancedComponent::printData(){
+    vector<string> data;
     INSTANCE_MAP_ITR itr = instanceMap.begin();
     char m[255];
     for(int i=0; itr!=instanceMap.end(); itr++, i++){
         instance& ins = itr->second;
         ofMatrix4x4& mat = ins.matrix;
-        sprintf(m, "instanceMap[%d]: group %d, type %d, x=%0.3f, y=%0.3f, z=%0.4f", i, itr->first, ins.type, mat.getTranslation().x, mat.getTranslation().y, mat.getTranslation().z);
+        sprintf(m, "instance[%03d]: group %03d, type %02d, x=%0.3f, y=%0.3f, z=%0.4f", i, itr->first, ins.type, mat.getTranslation().x, mat.getTranslation().y, mat.getTranslation().z);
         myLogRelease(m);
-    }    
+        data.push_back(m);
+    }
+    return data;
 }
+
+
+int instancedComponent::updateGroupTotalNum(){
+    groupTotalNum =  STL_UTIL::getAllKeySize(instanceMap);
+    return groupTotalNum;
+}
+
+
+void instancedComponent::removeGroup(int groupId){
+    instanceMap.erase(groupId);
+}
+
+void instancedComponent::removeSmallGroup(int minNum){
+
+    // remove -1 group
+    removeGroup(-1);
+    
+    INSTANCE_MAP_ITR itr = instanceMap.begin();
+    for(; itr!=instanceMap.end(); itr=instanceMap.upper_bound(itr->first)){       // iterate each key
+        int groupSize = STL_UTIL::getElementSize(instanceMap, itr->first);
+        if(groupSize<minNum){
+            removeGroup(itr->first);
+        }
+    }
+    
+    bCltexNeedUpdate = true;
+    bVtxtexNeedUpdate = true;
+}
+

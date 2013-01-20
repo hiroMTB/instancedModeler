@@ -89,7 +89,7 @@ public:
 private:
     static INSTANCE_MAP instanceMap;
     static int groupIdMaster;
-    
+    static int groupTotalNum;
 
 public:
     instancedComponent();
@@ -135,13 +135,19 @@ public:
 
     static void mergeInstanceGroupAll(int groupId);
     
-    void printData();
+    vector<string> printData();
     
     static int getGroupIdMaster(){ return groupIdMaster;}
     static int incGroupIdMaster(){ return ++groupIdMaster; }
     
     void setCltexNeedUpdate(bool b){ bCltexNeedUpdate = b; }
     void setVtxtexNeedUpdate(bool b){ bVtxtexNeedUpdate = b; }
+    
+    static int    updateGroupTotalNum();
+    static int    getGroupTotalNum(){ return groupTotalNum;}
+    
+    static void removeGroup(int groupId);
+    void removeSmallGroup(int minNum);
     
 private:
 

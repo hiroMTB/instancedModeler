@@ -9,6 +9,8 @@ const string testApp::CONNECT_NEAR = "CONNECT_NEAR";
 const string testApp::RESET_CYLINDERS = "RESET_CYLINDERS";
 const string testApp::RESET_SPHERES = "RESET_SPHERES";
 const string testApp::COLLISION_TEST = "COLLISION_TEST";
+const string testApp::REMOVE_SMALL_GROUPS = "REMOVE_SMALL_GROUPS";
+const string testApp::REMOVE_SMALL_GROUPS_MIN_NUM = "REMOVE_SMALL_GROUPS_MIN_NUM";
 
 void testApp::setup(){
 
@@ -46,7 +48,7 @@ void testApp::setup(){
 
     
     {
-        ofSetSphereResolution(8);
+        ofSetSphereResolution(5);
         ofMesh sphere = ofGetGLRenderer()->ofGetSphereMesh();
         //ofMesh sphere = createQuadSphere(1, 12, 10);
         float radius = 3;
@@ -56,11 +58,11 @@ void testApp::setup(){
 #define SETUP_SPHERE
 #ifdef SETUP_SPHERE
         myLogDebug("setup Spheres");
-#if 1
+#if 0
         spheres.loadInstancePositionFromModel(posModelPath_P, INSTANCE_SPHERE, 100);
 #else
-        float pos = 30;
-        int size = 100;
+        float pos = 40;
+        int size = 1000;
         ofMatrix4x4 * ms = new ofMatrix4x4[size];
         ofVec3f * scales = new ofVec3f[size];
         
@@ -77,7 +79,6 @@ void testApp::setup(){
     
     
     {
-       
         ofMesh cylinder = createCylinderZ(0.2, 1, 10, 1);
         cylinders.loadInstanceMesh(cylinder);
         tester.resetCylinderShape(ofVec3f(0.2, 123, 0.5));  // do not use y value 
@@ -85,7 +86,7 @@ void testApp::setup(){
 #ifdef SETUP_CYLINDER
         myLogDebug("setup Cylinders");
 
-        int size = 40;
+        int size = 100;
 #if 1
         connectRandom(&spheres, &cylinders, size, 1, 10000);
 #else
@@ -130,8 +131,6 @@ void testApp::update(){
 void testApp::draw(){
     mainDraw();
     //testDraw();
-    
-    //tester.debugDraw();
 }
 
 void testApp::testDraw(){
@@ -224,11 +223,9 @@ void testApp::mainDraw(){
     
         ofSetColor(ofFloatColor(prmFloat["COLOR_R"], prmFloat["COLOR_G"], prmFloat["COLOR_B"]));
         if (bWireframe) {
-//          ofSetColor(222,0,0);
             spheres.drawWireframe(mShdInstanced);
             cylinders.drawWireframe(mShdInstanced);
         }else{
-//          ofSetColor(ofFloatColor(prmFloat["COLOR_R"], prmFloat["COLOR_G"], prmFloat["COLOR_B"]));
             spheres.draw(mShdInstanced);
             cylinders.draw(mShdInstanced);
         }
@@ -261,13 +258,21 @@ void testApp::mainDraw(){
     int y = 20;
     int x = 20;
     int h = 20;
-	ofDrawBitmapString(ofToString(ofGetFrameRate()), x, y);
+	ofDrawBitmapString("fps : "+ofToString(ofGetFrameRate()), x, y);
     
     ofVec3f cp = camMain.getPosition();
     ofDrawBitmapString("camera position: "+ofToString(cp.x)+", "+ofToString(cp.y)+", "+ofToString(cp.z), x, y+=h);
 
-    ofVec3f tp = camMain.getTarget().getPosition();
-    ofDrawBitmapString("target position: "+ofToString(tp.x)+", "+ofToString(tp.y)+", "+ofToString(tp.z), x, y+=h);
+    //ofVec3f tp = camMain.getTarget().getPosition();
+    //ofDrawBitmapString("target position: "+ofToString(tp.x)+", "+ofToString(tp.y)+", "+ofToString(tp.z), x, y+=h);
+    
+    ofDrawBitmapString("group total : "+ofToString(instancedComponent::getGroupTotalNum()), x, y+=h);
+    
+    vector<string> strings = spheres.printData();
+    for(int i=0; i<strings.size(); i++){
+        ofDrawBitmapString(strings[i], x, y+=h);
+    }
+    
 }
 
 void testApp::keyPressed(int key){}
@@ -346,6 +351,12 @@ void testApp::processGui(){
         
     if(mainPnl.getButton(COLLISION_TEST)){
         processCollisionTest();
+    }else
+    
+    if(mainPnl.getButton(REMOVE_SMALL_GROUPS)){
+        int min = prmInt[REMOVE_SMALL_GROUPS_MIN_NUM];
+        spheres.removeSmallGroup(min);          // should be static
+        cylinders.removeSmallGroup(min);
     }
     
 }
@@ -380,7 +391,14 @@ void testApp::setupGui(){
     mainPnl.add(btn3);
 
     
-	mainPnl.loadFromFile("settings.xml");
+    mainPnl.add(prmInt[REMOVE_SMALL_GROUPS_MIN_NUM].set(REMOVE_SMALL_GROUPS_MIN_NUM, 1, 0, 30));
+
+    ofxButton * btn4 = new ofxButton();
+    btn4->setup(REMOVE_SMALL_GROUPS);
+    mainPnl.add(btn4);
+
+	
+    mainPnl.loadFromFile("settings.xml");
 }
 
 void testApp::setupCameraLightMaterial(){
@@ -436,7 +454,7 @@ void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int
         
         do{
             // 1. select group
-            int groupIdA = ofRandom(-2, numGroups-2);
+            int groupIdA = ofRandom(-2, numGroups-2);               // todo: invalid
             int groupIdB = ofRandom(-2, numGroups-2);
             
             int numInstancesA = instanceMap.count(groupIdA);
@@ -561,6 +579,9 @@ void testApp::processCollisionTest(){
                     groupIdB = titrB->second;
                 
                 
+                if( (groupIdA!=-1 && groupIdB!=-1) && groupIdA == groupIdB)
+                    continue;
+                
                 if(groupIdA==-1){
                     if(groupIdB==-1){
                         // move instance A, B to new group
@@ -606,10 +627,9 @@ void testApp::processCollisionTest(){
                     }
                 }
                 
-                ofFloatColor red = ofFloatColor(1.0, 0.0, 0.0);
-                
-                spheres.setInstanceColor(itrA, red);
-                spheres.setInstanceColor(itrB, red);
+//                ofFloatColor red = ofFloatColor(1.0, 0.0, 0.0);
+//                spheres.setInstanceColor(itrA, red);
+//                spheres.setInstanceColor(itrB, red);
             }
         }
     }
@@ -637,13 +657,21 @@ void testApp::processCollisionTest(){
     }
     
     
+    // update group totalNum
+    instancedComponent::updateGroupTotalNum();
+
+    // coloring
+    int gid = -1;
+    ofFloatColor color(0, 0, 0, 0);
+    spheres.setInstanceGroupColor(gid, color);
+
     spheres.setCltexNeedUpdate(true);
     spheres.setVtxtexNeedUpdate(true);
     
     cylinders.setCltexNeedUpdate(true);
     cylinders.setVtxtexNeedUpdate(true);
     
-     myLogRelease("finish CollisionTest");
+    myLogRelease("finish CollisionTest");
 }
 
 

@@ -59,4 +59,22 @@ namespace STL_UTIL{
         container.insert(typename CONTAINER::value_type(newKey, itr->second));
         container.erase(itr);
     }
+    
+    
+
+    // for multimap only?
+    template <typename CONTAINER>
+    int getElementSize(CONTAINER& container, const typename CONTAINER::key_type& key){
+        int size=0;
+        
+        pair<typename CONTAINER::iterator, typename CONTAINER::iterator> fe;
+        fe = container.equal_range(key);
+        
+        typename CONTAINER::iterator itr = fe.first;
+        
+        for(; itr!=fe.second; itr++){
+            size++;
+        }
+        return size;
+    }
 }
