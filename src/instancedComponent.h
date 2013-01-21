@@ -91,6 +91,8 @@ private:
     static int groupIdMaster;
     static int groupTotalNum;
 
+    INSTANCE_TYPE insType;
+    
 public:
     instancedComponent();
     ~instancedComponent();
@@ -102,24 +104,27 @@ public:
 
     void setInstanceType(INSTANCE_TYPE t);
 
-    void update(INSTANCE_TYPE t);
-    void updateVertexTexture(INSTANCE_TYPE t);
-    void updateColorTexture(INSTANCE_TYPE t);
+    void update();
+    void updateVertexTexture();
+    void updateColorTexture();
     void draw(ofShader * shader);
     void drawWireframe(ofShader * shader);
     static void debugDraw();
     
     void loadInstanceMesh(ofMesh mesh, ofVec3f scale=ofVec3f(1,1,1));
-    void loadInstancePositionFromModel(string path, INSTANCE_TYPE t, float posScale);
-    void loadInstancePositionFromMatrices(ofMatrix4x4 * ms, ofVec3f * ss, INSTANCE_TYPE t, int size);
+    void loadInstancePositionFromModel(string path, float posScale);
+    void loadInstancePositionFromMatrices(ofMatrix4x4 * ms, ofVec3f * ss, int size);
 
     // instance param
     //
-    void addInstanceMatrix      (ofMatrix4x4 m, ofVec3f s, INSTANCE_TYPE t, int groupId=-1);
+    void addInstance(instance ins, int groupId=-1);
+    void addInstanceMatrix      (ofMatrix4x4 m, ofVec3f s, int groupId=-1);
     //void addInstanceMatrix      (INSTANCE_TYPE t, ofVec3f p, ofVec4f r=ofVec4f(0,0,0,0), ofVec3f s=ofVec3f(1,1,1), int groupId=-1);
     void clearInstanceMatrices();
 
-    void setInstanceGroupColor(int groupId, ofFloatColor color);
+    void setGroupColor(int groupId, ofFloatColor color);
+    void setGroupColorGradient();
+    
     void setInstanceColor(INSTANCE_MAP_ITR itr, ofFloatColor color);
     void setInstanceColor(int index, ofFloatColor color);
     int initGroup();
@@ -135,7 +140,8 @@ public:
 
     static void mergeInstanceGroupAll(int groupId);
     
-    vector<string> printData();
+    static vector<string> printData(bool outputConsole=true);
+    static vector<string> printGroupData(bool outputConsole=true);
     
     static int getGroupIdMaster(){ return groupIdMaster;}
     static int incGroupIdMaster(){ return ++groupIdMaster; }
@@ -146,8 +152,14 @@ public:
     static int    updateGroupTotalNum();
     static int    getGroupTotalNum(){ return groupTotalNum;}
     
-    static void removeGroup(int groupId);
+    void removeGroup(int groupId);
     void removeSmallGroup(int minNum);
+  
+    void updateInstanceNum();
+    
+    // group func
+    static void resetGroup();
+    
     
 private:
 

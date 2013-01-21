@@ -25,12 +25,12 @@ namespace STL_UTIL{
                      const typename CONTAINER::key_type& newKey)
     {
         if(!container.key_comp()(oldKey,newKey) && !container.key_comp()(newKey,oldKey)){
-            return;} //Thanks to Graham for this Fix
+            return;}
         typename CONTAINER::iterator begin(container.find(oldKey));
         for(;;){
             if(begin != container.end()){
                 container.insert(typename CONTAINER::value_type(newKey, begin->second));
-                container.erase(begin); // Thanks to Graham for this potential fix
+                container.erase(begin);
                 begin = container.find(oldKey);
             }
             else{
@@ -38,7 +38,7 @@ namespace STL_UTIL{
             }
         }
     }
-
+    
     template <typename CONTAINER>
     int getAllKeySize(CONTAINER& container){
         int size=0;
@@ -78,3 +78,37 @@ namespace STL_UTIL{
         return size;
     }
 }
+
+
+struct idPair{
+    
+private:
+    idPair();
+    int a;
+    int b;
+public:
+    
+    idPair(int _a, int _b):
+    a(_a),
+    b(_b)
+    {}
+    
+    idPair(const idPair& ip){
+        a=ip.a; b=ip.b;
+    }
+    
+
+    
+    bool operator<(const idPair& other){
+        return a<other.a;
+    }
+        
+    bool operator==(const idPair& other){
+        bool aabb = (a==other.a) && (b==other.b);
+        bool abba =(a==other.b) && (b==other.a);
+        return aabb || abba;
+    }
+};
+
+
+

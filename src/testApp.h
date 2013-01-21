@@ -82,8 +82,8 @@ class testApp : public ofBaseApp{
     static const string RESET_CYLINDERS;
     static const string RESET_SPHERES;
     static const string COLLISION_TEST;
-    static const string REMOVE_SMALL_GROUPS;
-    static const string REMOVE_SMALL_GROUPS_MIN_NUM;
+    static const string REMOVE_GROUPS;
+    static const string REMOVE_GROUPS_MIN_NUM;
     
     void updateShaders(bool doLink=true);
     

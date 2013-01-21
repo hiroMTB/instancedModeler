@@ -42,19 +42,21 @@ void instancedComponent::destroy(){
 }
 
 void instancedComponent::setInstanceType(INSTANCE_TYPE t){
-    INSTANCE_MAP_ITR itr = instanceMap.begin();
-    for(; itr!=instanceMap.end(); itr++){
-        itr->second.type = t;
-    }
+    insType = t;
+
+//    INSTANCE_MAP_ITR itr = instanceMap.begin();
+//    for(; itr!=instanceMap.end(); itr++){
+//        itr->second.type = t;
+//    }
 }
 
-void instancedComponent::update(INSTANCE_TYPE t){
-    updateVertexTexture(t);
+void instancedComponent::update(){
+    updateVertexTexture();
     
-    updateColorTexture(t);
+    updateColorTexture();
 }
 
-void instancedComponent::updateVertexTexture(INSTANCE_TYPE t){
+void instancedComponent::updateVertexTexture(){
     // VERTEX UPDATE
     if(bVtxtexNeedUpdate){
 
@@ -64,7 +66,7 @@ void instancedComponent::updateVertexTexture(INSTANCE_TYPE t){
         for(int id =0; itr!=instanceMap.end(); itr++){
             
             instance& d = itr->second;
-            if(d.type == t){
+            if(d.type == insType){
                 // instance.matrix does not have scale info, here we construct for GL
 
                 ofMatrix4x4 m;
@@ -99,7 +101,7 @@ void instancedComponent::updateVertexTexture(INSTANCE_TYPE t){
     }
 }
 
-void instancedComponent::updateColorTexture(INSTANCE_TYPE t){
+void instancedComponent::updateColorTexture(){
     
     // COLOR UPDATE
     if(bCltexNeedUpdate){
@@ -109,7 +111,7 @@ void instancedComponent::updateColorTexture(INSTANCE_TYPE t){
         INSTANCE_MAP_ITR itr = instanceMap.begin();
         for(; itr!=instanceMap.end(); itr++){
             instance& d = itr->second;
-            if (d.type == t) {
+            if (d.type == insType) {
                 ofFloatColor& color = d.color;
                 colors[id*4+0] =color.r;
                 colors[id*4+1] =color.g;
@@ -188,7 +190,16 @@ void instancedComponent::debugDraw(){
 
 // instance param
 //
-void instancedComponent::addInstanceMatrix(ofMatrix4x4 m, ofVec3f s, INSTANCE_TYPE t, int groupId){
+
+void instancedComponent::addInstance(instance ins, int groupId){
+    instanceMap.insert(pair<int, instance>(groupId, ins));
+    bVtxtexNeedUpdate = true;
+    bCltexNeedUpdate = true;
+//    instanceNum++;
+}
+
+
+void instancedComponent::addInstanceMatrix(ofMatrix4x4 m, ofVec3f s, int groupId){
     if(index<0){
         myLogRelease("invalid value for index num");
         return;
@@ -197,16 +208,13 @@ void instancedComponent::addInstanceMatrix(ofMatrix4x4 m, ofVec3f s, INSTANCE_TY
         return;
     }
     
-    instance ins(t);
+    instance ins(insType);
     ins.matrix = m;
     ins.scale = s;
-    instanceMap.insert(pair<int, instance>(groupId, ins));
-    bVtxtexNeedUpdate = true;
-    
-    //instanceNum++;
+    addInstance(ins);
 }
 
-void instancedComponent::loadInstancePositionFromModel(string path, INSTANCE_TYPE t, float posScale=1){
+void instancedComponent::loadInstancePositionFromModel(string path, float posScale=1){
 
     vector<string> strs = ofSplitString(path, ".");
     string ext = strs.back();
@@ -231,46 +239,42 @@ void instancedComponent::loadInstancePositionFromModel(string path, INSTANCE_TYP
     myLogDebug("numNormals = "  + ofToString(numNormals) );
     myLogDebug("numIndices = " + ofToString(numIndices));
     
-    instanceNum = numVertices;
-    
-//    if (bTexAllocated)
-        //clearInstanceMatrices();
     
     ofMatrix4x4 m;
-    for(int i=0; i<instanceNum; i++){
+    for(int i=0; i<numVertices; i++){
         ofVec3f position = (mesh.getVertex(i)* posScale);     // SCALE POSITION!!
-        //float scale = 1;
         //float angle = 0;
         
         m.makeIdentityMatrix();
         //m.rotate(angle, 1, 0, 0);
-        //m.scale(scale, scale, scale);
         m.translate(position);
         ofVec3f s(1,1,1);
-        addInstanceMatrix(m, s, t);
+        addInstanceMatrix(m, s, insType);
     }
 
-    vmi->setPrimCount(instanceNum);
-    
     bVtxtexNeedUpdate = true;
+    
+    updateInstanceNum();
+    
     model.clear();
 }
 
-void instancedComponent::loadInstancePositionFromMatrices(ofMatrix4x4 *ms, ofVec3f *ss, INSTANCE_TYPE t, int size){
+void instancedComponent::loadInstancePositionFromMatrices(ofMatrix4x4 *ms, ofVec3f *ss, int size){
 
     //clearInstanceMatrices();
     
     for(int i=0; i<size; i++){
-        addInstanceMatrix(ms[i], ss[i], t);
+        addInstanceMatrix(ms[i], ss[i], insType);
     }
     
-    instanceNum = size;
     bVtxtexNeedUpdate = true;
+    updateInstanceNum();
 }
 
 void instancedComponent::clearInstanceMatrices(){
 
     instanceMap.clear();
+    updateInstanceNum();
     
     myLogDebug("clear all group data");
     bVtxtexNeedUpdate = true;
@@ -327,7 +331,24 @@ void instancedComponent::setInstanceColor(INSTANCE_MAP_ITR itr, ofFloatColor col
     bCltexNeedUpdate = true;
 }
 
-void instancedComponent::setInstanceGroupColor(int groupId, ofFloatColor color){
+void instancedComponent::setGroupColorGradient(){
+
+    int instanceAllNum = instanceMap.size();
+    int keySize = STL_UTIL::getAllKeySize(instanceMap);
+    
+    INSTANCE_MAP_ITR itr = instanceMap.begin();
+    for(int i=0; itr!=instanceMap.end(); itr=instanceMap.upper_bound(itr->first), i++){
+
+        int key = itr->first;
+        int n = STL_UTIL::getElementSize(instanceMap, key);
+        ofFloatColor color;
+        color.setHsb(ofRandom(0.9),ofRandom(0.9), ofRandom(0.9));
+        
+        setGroupColor(key, color);
+    }
+}
+
+void instancedComponent::setGroupColor(int groupId, ofFloatColor color){
     if(index<0){
         myLogRelease("invalid value for index num");
         return;
@@ -340,7 +361,7 @@ void instancedComponent::setInstanceGroupColor(int groupId, ofFloatColor color){
     INSTANCE_MAP_ITR itr = instanceMap.find(groupId);
     INSTANCE_MAP_ITR end = instanceMap.end();
     if(itr == end){
-        myLogRelease("Can not find group with groupId: " + ofToString(groupId));
+        myLogRelease("Can not set color to group, Id: " + ofToString(groupId));
         return;
     }
 
@@ -371,14 +392,21 @@ void instancedComponent::mergeInstanceGroup(int groupIdA, int groupIdB){
     INSTANCE_MAP_ITR itrA = instanceMap.find(groupIdA);
     INSTANCE_MAP_ITR itrB = instanceMap.find(groupIdB);
 
-    if(itrA!=end || itrB!=end){
+    myLogRelease("merge group " +  ofToString(groupIdA) + " + " + ofToString(groupIdB));
+
+    if(itrB==end){
         myLogRelease("Can not merge instanceGroup: " + ofToString(groupIdA) + " + " + ofToString(groupIdB));
         return;
     }
     
-    myLogRelease("merge group " +  ofToString(groupIdA) + " + " + ofToString(groupIdB));
+    if(itrA==end){
+        myLogRelease("Can not find group so merge to new group : " + ofToString(groupIdA));
+       STL_UTIL::replace_key(instanceMap, groupIdB, groupIdA);
+    }else{
+        STL_UTIL::replace_key(instanceMap, groupIdA, groupIdB);
+    }
     
-    STL_UTIL::replace_key(instanceMap, groupIdA, groupIdB);
+    
 }
 
 #include <set>
@@ -400,7 +428,7 @@ void instancedComponent::mergeInstanceGroupAll(int groupId){
     }
 }
 
-vector<string> instancedComponent::printData(){
+vector<string> instancedComponent::printData(bool console){
     vector<string> data;
     INSTANCE_MAP_ITR itr = instanceMap.begin();
     char m[255];
@@ -408,12 +436,32 @@ vector<string> instancedComponent::printData(){
         instance& ins = itr->second;
         ofMatrix4x4& mat = ins.matrix;
         sprintf(m, "instance[%03d]: group %03d, type %02d, x=%0.3f, y=%0.3f, z=%0.4f", i, itr->first, ins.type, mat.getTranslation().x, mat.getTranslation().y, mat.getTranslation().z);
-        myLogRelease(m);
-        data.push_back(m);
+
+        if(console)
+            myLogRelease(m);
+        else
+            data.push_back(m);
     }
     return data;
 }
 
+vector<string> instancedComponent::printGroupData(bool console){
+    vector<string>  data;
+    INSTANCE_MAP_ITR itr = instanceMap.begin();
+    char m[255];
+    
+    for(; itr!=instanceMap.end(); itr=instanceMap.upper_bound(itr->first) ){
+        int key = itr->first;
+        int n = STL_UTIL::getElementSize(instanceMap, key);
+        sprintf(m, "Group %03d, num %04d", key, n);
+        
+        if(console)
+            myLogRelease(m);
+        else
+            data.push_back(m);
+    }
+    return data;
+}
 
 int instancedComponent::updateGroupTotalNum(){
     groupTotalNum =  STL_UTIL::getAllKeySize(instanceMap);
@@ -423,6 +471,8 @@ int instancedComponent::updateGroupTotalNum(){
 
 void instancedComponent::removeGroup(int groupId){
     instanceMap.erase(groupId);
+    bCltexNeedUpdate = true;
+    bVtxtexNeedUpdate = true;
 }
 
 void instancedComponent::removeSmallGroup(int minNum){
@@ -440,5 +490,32 @@ void instancedComponent::removeSmallGroup(int minNum){
     
     bCltexNeedUpdate = true;
     bVtxtexNeedUpdate = true;
+    updateInstanceNum();
 }
+
+
+void instancedComponent::updateInstanceNum(){
+    instanceNum = 0;
+    INSTANCE_MAP_ITR itr = instanceMap.begin();
+
+    for(; itr!=instanceMap.end(); itr++){
+        instance& ins = itr->second;
+        if(insType==ins.type){
+            instanceNum++;
+        }
+    }
+}
+
+
+
+void instancedComponent::resetGroup(){
+    
+    int defaultGroup = -1;
+    INSTANCE_MAP_ITR itr = instanceMap.begin();
+    
+    for(; itr!=instanceMap.end(); itr=instanceMap.upper_bound(itr->first)){
+        STL_UTIL::replace_key(instanceMap, itr->first, defaultGroup);
+    }
+}
+
 
