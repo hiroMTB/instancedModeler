@@ -35,8 +35,6 @@ void testApp::setup(){
     bCollisionDebugDraw = false;
     posModelPath_P = "models/bee_100k_MASTER_mesh_wN.ply";
     
-    compScale = 1;
-    posScale = 100;
     
 //	ofSetFrameRate(60);
 	ofSetVerticalSync(false);
@@ -47,6 +45,13 @@ void testApp::setup(){
     updateShaders();
 
     
+    // ---------------------------------------------------
+
+    compScale = 1;
+    posScale = 100;
+
+    int cylNum = 1000;
+    int sphNum = 10000;
     {
         ofSetSphereResolution(5);
         ofMesh sphere = ofGetGLRenderer()->ofGetSphereMesh();
@@ -60,19 +65,20 @@ void testApp::setup(){
 #ifdef SETUP_SPHERE
         myLogDebug("setup Spheres");
 #if 0
-        spheres.loadInstancePositionFromModel(posModelPath_P, INSTANCE_SPHERE, 100);
+        spheres.loadInstancePositionFromModel(posModelPath_P, 100);
 #else
-        float pos = 100;
-        int size = 4000;
-        ofMatrix4x4 * ms = new ofMatrix4x4[size];
-        ofVec3f * scales = new ofVec3f[size];
+       
+
+        ofMatrix4x4 * ms = new ofMatrix4x4[sphNum];
+        ofVec3f * scales = new ofVec3f[sphNum];
         
-        for(int i=0; i<size; i++){
+        for(int i=0; i<sphNum; i++){
             ms[i].makeIdentityMatrix();
-            ms[i].translate(ofRandom(-pos, pos), ofRandom(-pos, pos), ofRandom(-pos, pos));
+            ms[i].translate(ofRandom(-posScale, posScale), ofRandom(-posScale, posScale), ofRandom(-posScale, posScale));
             scales[i].set(1, 1, 1);
         }
-        spheres.loadInstancePositionFromMatrices(ms, scales, size);
+        
+        spheres.loadInstancePositionFromMatrices(ms, scales, sphNum);
 #endif
 #endif
     }
@@ -88,16 +94,16 @@ void testApp::setup(){
 #ifdef SETUP_CYLINDER
         myLogDebug("setup Cylinders");
 
-        int size = 1000;
+        
 #if 1
-        connectRandom(&spheres, &cylinders, size, 1, 10000);
+        connectRandom(&spheres, &cylinders, cylNum, 1, 10000);
 #else
 
-        ofMatrix4x4 * ms = new ofMatrix4x4[size];
-        ofVec3f * scales = new ofVec3f[size];
+        ofMatrix4x4 * ms = new ofMatrix4x4[cylNum];
+        ofVec3f * scales = new ofVec3f[cylNum];
 
         float pos = 5;
-        for(int i=0; i<size; i++){
+        for(int i=0; i<cylNum; i++){
             ms[i].makeIdentityMatrix();
             ms[i].rotate(12, ofRandom(-180, 180), ofRandom(-180, 180), ofRandom(-180, 180));
             ms[i].translate(ofRandom(-pos, pos), ofRandom(-pos, pos), ofRandom(-pos, pos));
@@ -105,7 +111,7 @@ void testApp::setup(){
         }
         
         
-        cylinders.loadInstancePositionFromMatrices(ms, INSTANCE_CYLINDER, size);
+        cylinders.loadInstancePositionFromMatrices(ms, INSTANCE_CYLINDER, cylNum);
 
 #endif
 #endif
@@ -282,7 +288,7 @@ void testApp::mainDraw(){
         
         ofDrawBitmapString(strings[i], x, y+=h);
         if(ofGetHeight()-2*h<y){
-            y=startY; x += 180;
+            y=startY; x += 140;
         }
         
     }
@@ -355,22 +361,27 @@ void testApp::dragEvent(ofDragInfo dragInfo){}
 
 void testApp::processGui(){
 
-    if (mainPnl.getButton(CONNECT_RANDOM)) {
+    if (prmBool[CONNECT_RANDOM]) {
         connectRandom(&spheres, &cylinders, ofRandom(100,300), ofRandom(200, 400), ofRandom(401, 600));
+        prmBool[CONNECT_RANDOM] = false;
     }else
 
-    if (mainPnl.getButton(RESET_CYLINDERS)){
+    if (prmBool[RESET_CYLINDERS]){
         cylinders.reset();
+        prmBool[RESET_CYLINDERS] = false;
     }else
         
-    if(mainPnl.getButton(COLLISION_TEST)){
+    if(prmBool[COLLISION_TEST]){
+        myLogDebug("proces collision from GUI");
         processCollisionTest();
+        prmBool[COLLISION_TEST] = false;
     }else
     
-    if(mainPnl.getButton(REMOVE_GROUPS)){
+    if(prmBool[REMOVE_GROUPS]){
         int min = prmInt[REMOVE_GROUPS_MIN_NUM];
         spheres.removeSmallGroup(min);          // should be static
         cylinders.removeSmallGroup(min);
+        prmBool[REMOVE_GROUPS] = false;
     }
     
 }
@@ -390,26 +401,16 @@ void testApp::setupGui(){
     mainPnl.add(prmFloat["COLOR_G"].set("Green", 1.0, 0.0, 1.0));
     mainPnl.add(prmFloat["COLOR_B"].set("Blue", 1.0, 0.0, 1.0));
     
-    
-    ofxButton * btn = new ofxButton();
-    btn->setup(CONNECT_RANDOM);
-    mainPnl.add(btn);
-    
-    
-    ofxButton * btn2 = new ofxButton();
-    btn2->setup(RESET_CYLINDERS);
-    mainPnl.add(btn2);
 
-    ofxButton * btn3 = new ofxButton();
-    btn3->setup(COLLISION_TEST);
-    mainPnl.add(btn3);
+    mainPnl.add(prmBool[CONNECT_RANDOM].set(CONNECT_RANDOM, false));
+    mainPnl.add(prmBool[RESET_CYLINDERS].set(RESET_CYLINDERS, false));
+    mainPnl.add(prmBool[COLLISION_TEST].set(COLLISION_TEST, false));
+    
 
     
     mainPnl.add(prmInt[REMOVE_GROUPS_MIN_NUM].set(REMOVE_GROUPS_MIN_NUM, 1, 0, 30));
 
-    ofxButton * btn4 = new ofxButton();
-    btn4->setup(REMOVE_GROUPS);
-    mainPnl.add(btn4);
+    mainPnl.add(prmBool[REMOVE_GROUPS].set(REMOVE_GROUPS, false));
 
 	
     mainPnl.loadFromFile("settings.xml");
@@ -417,7 +418,7 @@ void testApp::setupGui(){
 
 void testApp::setupCameraLightMaterial(){
     camMain.setupPerspective(false);
-    camMain.setDistance(1500);
+    camMain.setDistance(400);
     camMain.disableMouseInput();
     
 	mLigDirectional.setup();
@@ -554,7 +555,12 @@ void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int
 
 void testApp::processCollisionTest(){
     
+    
     instancedComponent::resetGroup();
+
+    int startTime = ofGetElapsedTimeMillis();
+    myLogRelease("collisionTest startTime:  "+ ofToString(startTime));
+
     myLogRelease("Process CollisionTest");
 
 #ifndef NDEBUG
@@ -563,7 +569,7 @@ void testApp::processCollisionTest(){
     
     INSTANCE_MAP& instanceMap = instancedComponent::getInstanceMap();
     INSTANCE_MAP_ITR itrA = instanceMap.begin();
-    INSTANCE_MAP_ITR itrB = itrA;
+    
     INSTANCE_MAP_ITR end  = instanceMap.end();
     
     typedef map<instance*, int> TMAP;
@@ -579,8 +585,10 @@ void testApp::processCollisionTest(){
         instance& insA = itrA->second;
         ofMatrix4x4& matA = insA.matrix;
         ofVec3f& sA = insA.scale;
-        itrB = itrA;
-        for(itrB++; itrB!=end; itrB++){
+        
+        INSTANCE_MAP_ITR itrB = instanceMap.begin();
+        std:advance(itrB, i+1);
+        for(; itrB!=end; itrB++){
             instance& insB = itrB->second;
             ofMatrix4x4& matB = insB.matrix;
             ofVec3f& sB = insB.scale;
@@ -594,7 +602,7 @@ void testApp::processCollisionTest(){
             else if(tA==INSTANCE_SPHERE && tB==INSTANCE_CYLINDER)
                 dist = tester.testSphereCylinder(matA,sA,matB,sB);
             else if (tA==INSTANCE_CYLINDER && tB==INSTANCE_SPHERE)
-                dist = tester.testSphereCylinder(matA,sA,matB,sB);
+                dist = tester.testSphereCylinder(matB,sB, matA,sA);
             else if(tA==INSTANCE_CYLINDER && tB==INSTANCE_CYLINDER)
                 dist = tester.testCylinderCylinder(matA,sA,matB,sB);
             else{
@@ -687,14 +695,14 @@ void testApp::processCollisionTest(){
     myLogDebug("change group");
     
     
-    TITR itr = tmap.begin();
-    for(; itr!=tmap.end(); itr++){
-        instance * ins = itr->first;
-        int g = itr->second;
-        sprintf(m, "group %03d", g);
-        myLogDebug(m);
-    }
-        
+//    TITR itr = tmap.begin();
+//    for(; itr!=tmap.end(); itr++){
+//        instance * ins = itr->first;
+//        int g = itr->second;
+//        sprintf(m, "group %03d", g);
+//        myLogDebug(m);
+//    }
+    
     // change group id
     {
         TITR itr = tmap.begin();
@@ -732,6 +740,9 @@ void testApp::processCollisionTest(){
     cylinders.setCltexNeedUpdate(true);
     cylinders.setVtxtexNeedUpdate(true);
     
+    
+    int endTime = ofGetElapsedTimeMillis();
+    myLogRelease("collisionTest endTime:  "+ ofToString(endTime)+", elapsed: " + ofToString((float)(endTime-startTime)/1000.0));
     myLogRelease("finish CollisionTest");
 }
 

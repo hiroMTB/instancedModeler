@@ -453,7 +453,7 @@ vector<string> instancedComponent::printGroupData(bool console){
     for(; itr!=instanceMap.end(); itr=instanceMap.upper_bound(itr->first) ){
         int key = itr->first;
         int n = STL_UTIL::getElementSize(instanceMap, key);
-        sprintf(m, "Group %03d, num %04d", key, n);
+        sprintf(m, "GRP%03d n=%04d", key, n);
         
         if(console)
             myLogRelease(m);
@@ -511,11 +511,22 @@ void instancedComponent::updateInstanceNum(){
 void instancedComponent::resetGroup(){
     
     int defaultGroup = -1;
-    INSTANCE_MAP_ITR itr = instanceMap.begin();
+//    INSTANCE_MAP_ITR itr = instanceMap.begin();
+//    
+//    for(; itr!=instanceMap.end(); itr=instanceMap.upper_bound(itr->first)){
+//        myLogDebug("replace");
+//        STL_UTIL::replace_key(instanceMap, itr->first, defaultGroup);
+//    }
     
-    for(; itr!=instanceMap.end(); itr=instanceMap.upper_bound(itr->first)){
-        STL_UTIL::replace_key(instanceMap, itr->first, defaultGroup);
+    
+    INSTANCE_MAP temp = instanceMap;
+    instanceMap.clear();
+    INSTANCE_MAP_ITR itr = temp.begin();
+    for(; itr!=temp.end(); itr++){
+        instanceMap.insert(pair<int, instance>(-1, itr->second));
     }
+    
+    groupIdMaster = 0;
 }
 
 
