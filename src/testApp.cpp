@@ -1,6 +1,9 @@
 #include "testApp.h"
 #include "ofxMtb.h"
 
+collisionTester testApp::tester;
+
+
 // GUI parts
 const string testApp::RENDER_NORMALS = "RENDER_NORMALS";
 const string testApp::FLAT_SHADING = "FLAT_SHADING";
@@ -14,9 +17,6 @@ const string testApp::REMOVE_GROUPS_MIN_NUM = "REMOVE_MIN_NUM";
 
 void testApp::setup(){
 
-
-    
-    
     
 #ifndef NDEBUG
     ofSetLogLevel(OF_LOG_VERBOSE);
@@ -50,8 +50,8 @@ void testApp::setup(){
     compScale = 1;
     posScale = 100;
 
-    int cylNum = 1000;
-    int sphNum = 10000;
+    int cylNum = 3000;
+    int sphNum = 5000;
     {
         ofSetSphereResolution(5);
         ofMesh sphere = ofGetGLRenderer()->ofGetSphereMesh();
@@ -64,7 +64,7 @@ void testApp::setup(){
 #define SETUP_SPHERE
 #ifdef SETUP_SPHERE
         myLogDebug("setup Spheres");
-#if 0
+#if 1
         spheres.loadInstancePositionFromModel(posModelPath_P, 100);
 #else
        
@@ -296,15 +296,9 @@ void testApp::mainDraw(){
 }
 
 void testApp::keyPressed(int key){}
-
 void testApp::keyReleased(int key){
-	
+
 	switch (key) {
-		case ' ':{
-			isShaderDirty = true;
-		}
-			break;
-			
 			case 'f':
 			ofToggleFullscreen();
 			break;
@@ -358,7 +352,6 @@ void testApp::windowResized(int w, int h){}
 void testApp::gotMessage(ofMessage msg){}
 void testApp::dragEvent(ofDragInfo dragInfo){}
 
-
 void testApp::processGui(){
 
     if (prmBool[CONNECT_RANDOM]) {
@@ -373,7 +366,7 @@ void testApp::processGui(){
         
     if(prmBool[COLLISION_TEST]){
         myLogDebug("proces collision from GUI");
-        processCollisionTest();
+        processCollision();
         prmBool[COLLISION_TEST] = false;
     }else
     
@@ -457,8 +450,6 @@ void testApp::updateShaders(bool doLink){
 
 #include<set>
 void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int numAllCylinders, float minDist, float maxDist){
-
-
 
     vector<idPair> checkList;
     
@@ -553,24 +544,42 @@ void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int
 
 }
 
-void testApp::processCollisionTest(){
+float testApp::getCollisionDistance(instance &insA, instance &insB){
+    float dist=99999;
+
+    ofMatrix4x4& matA = insA.matrix;
+    ofVec3f& sA = insA.scale;
+    INSTANCE_TYPE tA = insA.type;
     
+    ofMatrix4x4& matB = insB.matrix;
+    ofVec3f& sB = insB.scale;
+    INSTANCE_TYPE tB = insB.type;
     
-    instancedComponent::resetGroup();
+    if(tA == INSTANCE_SPHERE && tB==INSTANCE_SPHERE)
+        dist = tester.testSphereSphere(matA,sA,matB,sB);
+    else if(tA==INSTANCE_SPHERE && tB==INSTANCE_CYLINDER)
+        dist = tester.testSphereCylinder(matA,sA,matB,sB);
+    else if (tA==INSTANCE_CYLINDER && tB==INSTANCE_SPHERE)
+        dist = tester.testSphereCylinder(matB,sB, matA,sA);
+    else if(tA==INSTANCE_CYLINDER && tB==INSTANCE_CYLINDER)
+        dist = tester.testCylinderCylinder(matA,sA,matB,sB);
+    else{
+        myLogRelease("Can not test collision");
+        return 98765432;
+    }
+    return dist;
 
-    int startTime = ofGetElapsedTimeMillis();
-    myLogRelease("collisionTest startTime:  "+ ofToString(startTime));
+}
 
-    myLogRelease("Process CollisionTest");
-
-#ifndef NDEBUG
-    instancedComponent::printData();
-#endif
+void testApp::processCollision(){
+#ifdef USE_TBB
+    processCollisionParallel();
+#else
+    
+    int startTime = collisionStart();
     
     INSTANCE_MAP& instanceMap = instancedComponent::getInstanceMap();
     INSTANCE_MAP_ITR itrA = instanceMap.begin();
-    
-    INSTANCE_MAP_ITR end  = instanceMap.end();
     
     typedef map<instance*, int> TMAP;
     typedef pair<instance*, int> TPAIR;
@@ -578,42 +587,26 @@ void testApp::processCollisionTest(){
     TMAP tmap;
     
     char m[255];
-    for(int i=0; itrA!=end; itrA++, i++){
+    for(int i=0; itrA!=instanceMap.end(); itrA++, i++){
         sprintf(m, "processCollisionTest i:%d", i);
-        myLogDebug(ofToString(m));
-        
-        instance& insA = itrA->second;
-        ofMatrix4x4& matA = insA.matrix;
-        ofVec3f& sA = insA.scale;
+        myLogDebug(ofToString(m));        
         
         INSTANCE_MAP_ITR itrB = instanceMap.begin();
         std:advance(itrB, i+1);
-        for(; itrB!=end; itrB++){
+        for(; itrB!=instanceMap.end(); itrB++){
+            instance& insA = itrA->second;
             instance& insB = itrB->second;
-            ofMatrix4x4& matB = insB.matrix;
-            ofVec3f& sB = insB.scale;
             
-            float dist=9999;
-            INSTANCE_TYPE tA = insA.type;
-            INSTANCE_TYPE tB = insB.type;
-            
-            if(tA == INSTANCE_SPHERE && tB==INSTANCE_SPHERE)
-                dist = tester.testSphereSphere(matA,sA,matB,sB);
-            else if(tA==INSTANCE_SPHERE && tB==INSTANCE_CYLINDER)
-                dist = tester.testSphereCylinder(matA,sA,matB,sB);
-            else if (tA==INSTANCE_CYLINDER && tB==INSTANCE_SPHERE)
-                dist = tester.testSphereCylinder(matB,sB, matA,sA);
-            else if(tA==INSTANCE_CYLINDER && tB==INSTANCE_CYLINDER)
-                dist = tester.testCylinderCylinder(matA,sA,matB,sB);
-            else{
-                myLogRelease("Can not test collision");
-                return;
-            }
+            float dist=getCollisionDistance(insA, insB);
             
             if(dist<0.0) {
                 int groupIdA = itrA->first;
                 int groupIdB = itrB->first;
                 
+                //
+                //  check instance is in tempolaly container.
+                //  if existm, it sohuld have non -1 groupId.
+                //
                 TITR titrA = tmap.find(&itrA->second);
                 if(titrA!=tmap.end())
                     groupIdA = titrA->second;
@@ -623,56 +616,35 @@ void testApp::processCollisionTest(){
                     groupIdB = titrB->second;
                 
                 
+                //
+                // it's already same group.
+                // ** this line may break correct grouping process
+                //
                 if( (groupIdA!=-1 && groupIdB!=-1) && groupIdA == groupIdB)
                     continue;
+                
+                //
+                //  grouId -1 means this instance does not have any group
+                //
                 
                 if(groupIdA==-1){
                     if(groupIdB==-1){
                         // move instance A, B to new group
-                        int newId = spheres.incGroupIdMaster();
-                        TITR titrA = tmap.find(&itrA->second);
-                        if(titrA==tmap.end())
-                            tmap.insert(TPAIR(&itrA->second, newId));
-                        else
-                            titrA->second = newId;
-                        
-                        TITR titrB = tmap.find(&itrB->second);
-                        if(titrB==tmap.end())
-                            tmap.insert(TPAIR(&itrB->second, newId));
-                        else
-                            titrB->second = newId;
+                        int newId = instancedComponent::incGroupIdMaster();
+                        tmap.insert(TPAIR(&itrA->second, newId));
+                        tmap.insert(TPAIR(&itrB->second, newId));
                     }else{
                         // move A instance to B group
-                        TITR titrA = tmap.find(&itrA->second);
-                        if(titrA==tmap.end())
-                            tmap.insert(TPAIR(&itrA->second, groupIdB));
-                        else
-                            titrA->second = groupIdB;
+                        tmap.insert(TPAIR(&itrA->second, groupIdB));
                     }
                 }else{
                     if(groupIdB==-1){
                         // move B instance to A group
-                        
-                        TITR titrB = tmap.find(&itrB->second);
-                        if(titrB==tmap.end())
-                            tmap.insert(TPAIR(&itrB->second, groupIdA));
-                        else
-                            titrB->second = groupIdA;
+                       tmap.insert(TPAIR(&itrB->second, groupIdA));
                     }else{
                         // at first move B instance to A group
                         TITR titrB = tmap.find(&itrB->second);
-                        if(titrB==tmap.end())
-                            tmap.insert(TPAIR(&itrB->second, groupIdA));
-                        else
-                            titrB->second = groupIdA;
-                        
-                        // second, move ALL B group instance to A
-                        // search from instanceMap
-                        pair<INSTANCE_MAP_ITR, INSTANCE_MAP_ITR> p = instanceMap.equal_range(groupIdB);
-                        INSTANCE_MAP_ITR ritrB = p.first;
-                        for(; ritrB!=p.second; ritrB++){
-                            tmap.insert(TPAIR(&ritrB->second, groupIdA));
-                        }
+                         titrB->second = groupIdA;
                         
                         // search from tmap
                         TITR titr = tmap.begin();
@@ -684,24 +656,9 @@ void testApp::processCollisionTest(){
                         }
                     }
                 }
-                
-//                ofFloatColor red = ofFloatColor(1.0, 0.0, 0.0);
-//                spheres.setInstanceColor(itrA, red);
-//                spheres.setInstanceColor(itrB, red);
             }
         }
     }
-    
-    myLogDebug("change group");
-    
-    
-//    TITR itr = tmap.begin();
-//    for(; itr!=tmap.end(); itr++){
-//        instance * ins = itr->first;
-//        int g = itr->second;
-//        sprintf(m, "group %03d", g);
-//        myLogDebug(m);
-//    }
     
     // change group id
     {
@@ -723,8 +680,25 @@ void testApp::processCollisionTest(){
         }
     }
     
+    collisionEnd(startTime);
+#endif
+}
+
+
+int testApp::collisionStart(){
+    instancedComponent::resetGroup();
     
+    int startTime = ofGetElapsedTimeMillis();
+    myLogRelease("collisionTest startTime:  "+ ofToString(startTime));
     
+#ifndef NDEBUG
+    instancedComponent::printData();
+#endif
+    return startTime;
+    
+}
+
+void testApp::collisionEnd(int startTime){
     // update group totalNum
     instancedComponent::updateGroupTotalNum();
 
@@ -747,4 +721,34 @@ void testApp::processCollisionTest(){
 }
 
 
+#ifdef USE_TBB
+void testApp::processCollisionParallel(){
+    
+    int startTime = collisionStart();
+    
+    INSTANCE_MAP& instanceMap = instancedComponent::getInstanceMap();
+    int N = instanceMap.size();
+    CollisionTable table;
+    parallel_for(blocked_range<size_t>(0, N), Tally(table, instanceMap));
+    
+    // change group id
+    CollisionTable::iterator itr = table.begin();
+    for(; itr!=table.end(); ++itr){
+        instance * ins = itr->first;
+        int groupId = itr->second;
+        if(ins!=NULL){
+            INSTANCE_MAP_ITR  iitr = instanceMap.begin();
+            for(; iitr!=instanceMap.end(); iitr++){
+                if(&iitr->second == ins){
+                    spheres.changeInstanceGroupId(iitr, groupId);
+                    break;
+                }
+            }
+        }
+    }
+    
+    collisionEnd(startTime);
+    
+}
 
+#endif

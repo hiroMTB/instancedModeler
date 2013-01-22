@@ -64,4 +64,8 @@ private:
    	GL_ShapeDrawer* m_shapeDrawer;
     
     vector<btVector3> contactPts;
+    
+    
+    class	btThreadSupportInterface*		m_threadSupportCollision;
+
 };

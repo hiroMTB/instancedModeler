@@ -6,8 +6,14 @@
 //
 //
 
+#include "testApp.h"
 #include "collisionTester.h"
 #include "ofxMtb.h"
+
+#include "BulletMultiThreaded/SpuGatheringCollisionDispatcher.h"
+#include "BulletMultiThreaded/PlatformDefinitions.h"
+#include "BulletMultiThreaded/PosixThreadSupport.h"
+#include "BulletMultiThreaded/SpuNarrowPhaseCollisionTask/SpuGatheringCollisionTask.h"
 
 btCollisionObject collisionTester::sphereA;
 btCollisionObject collisionTester::sphereB;
@@ -31,12 +37,26 @@ collisionTester::~collisionTester(){
 
 
 void collisionTester::initCollisionWorld(){
-     btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-	btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
-	btVector3	worldAabbMin(-10000,-10000,-10000);
+    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+	
+#ifdef USE_TBB
+    int maxNumOutstandingTasks = 4;
+    PosixThreadSupport::ThreadConstructionInfo constructionInfo("collision",
+                                                                processCollisionTask,
+                                                                createCollisionLocalStoreMemory,
+                                                                maxNumOutstandingTasks);
+
+    m_threadSupportCollision = new PosixThreadSupport(constructionInfo);
+    
+	btCollisionDispatcher * dispatcher = new SpuGatheringCollisionDispatcher(m_threadSupportCollision,maxNumOutstandingTasks, collisionConfiguration);
+#else
+    btCollisionDispatcher * dispatcher = new btCollisionDispatcher(collisionConfiguration);
+#endif
+
+    btVector3	worldAabbMin(-10000,-10000,-10000);
 	btVector3	worldAabbMax( 10000, 10000, 10000);
 	btAxisSweep3*	broadphase = new btAxisSweep3(worldAabbMin,worldAabbMax);
-	collisionWorld = new btCollisionWorld(dispatcher,broadphase,collisionConfiguration);
+	collisionWorld = new btCollisionWorld(dispatcher, broadphase, collisionConfiguration);
 	collisionWorld->setDebugDrawer(&debugDrawer);    
 }
 
@@ -171,8 +191,8 @@ float collisionTester::collisionTest(btCollisionObject * objectA, btCollisionObj
 //			glVertex3d(ptA.x(),ptA.y(),ptA.z());
 //			glVertex3d(ptB.x(),ptB.y(),ptB.z());
             
-            contactPts.push_back(ptA);
-            contactPts.push_back(ptB);
+            //contactPts.push_back(ptA);
+            //contactPts.push_back(ptB);
             
 //			glEnd();
 
