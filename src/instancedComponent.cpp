@@ -542,20 +542,20 @@ void instancedComponent::resetGroup(){
 //
 //  save tp csv
 //
-//  NOTICE: first 2 lines are version and format info
+//  NOTICE: first 3 lines are version and format info
 //
-void instancedComponent::saveInstanceDataToCsv(INSTANCE_TYPE t, string dirName){
+void instancedComponent::saveInstanceDataToCsv(string dirName){
 
     
     float meshScale = 0.00000001;    // TODO:
     
-    string version = "v0.1";
+    string version = "v0.2";
     string meshName;
     
     
-    if(t==INSTANCE_SPHERE){
+    if(insType==INSTANCE_SPHERE){
         meshName = "Spheres";
-    }else if(t==INSTANCE_CYLINDER){
+    }else if(insType==INSTANCE_CYLINDER){
         meshName = "Cylinders";
     }
 
@@ -564,17 +564,17 @@ void instancedComponent::saveInstanceDataToCsv(INSTANCE_TYPE t, string dirName){
     string path     = ofToDataPath(name, true);
     ofstream myfile(path.c_str());
 
-
     if(myfile.is_open()){
         char d[255];
-        sprintf(d, "renature instance data format version= %s", version.c_str());       // line 1
+        sprintf(d, "renature, instance data, format_version= %s", version.c_str());       // line 1
         myfile << d << "\n";
         
-        sprintf(d, "format: position.xyz, rotation.xyz, scale.xyz");    // line 2
+        sprintf(d, "mesh=%s, posScale=%f, instanceNum=%d", meshName.c_str(), meshScale, instanceNum);    // line 2
+        myfile << d << "\n";
+
+        sprintf(d, "position.x,position.y,position.z,rotation.x,rotation.y,rotation.z,scale.x,scale.y,scale.z");    // line 3
         myfile << d << "\n";
         
-        sprintf(d, "mesh data: %s posScale= %f, ", meshName.c_str(), meshScale);    // line 3
-        myfile << d << "\n";
 
         INSTANCE_MAP_ITR itr = instanceMap.begin();
         for(; itr!=instanceMap.end(); itr++){

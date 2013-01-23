@@ -6,18 +6,39 @@
 collisionTester testApp::tester;
 
 // GUI parts
-const string testApp::RENDER_NORMALS = "RENDER_NORMALS";
-const string testApp::FLAT_SHADING = "FLAT_SHADING";
+string testApp::CURRENT_PROCESS = "NONE";
+
 const string testApp::CONNECT_RANDOM = "CONNECT_RANDOM";
 const string testApp::CONNECT_NEAR = "CONNECT_NEAR";
-const string testApp::RESET_CYLINDERS = "RESET_CYLINDERS";
-const string testApp::RESET_SPHERES = "RESET_SPHERES";
 const string testApp::COLLISION_TEST = "COLLISION_TEST";
 const string testApp::REMOVE_GROUPS = "REMOVE_GROUPS";
 const string testApp::REMOVE_GROUPS_MIN_NUM = "REMOVE_MIN_NUM";
+const string testApp::RESET_CYLINDERS = "RESET_CYLINDERS";
+const string testApp::RESET_SPHERES = "RESET_SPHERES";
+const string testApp::RESET_INSTSANCE_SHAPE = "RESET_INSTSANCE_SHAPE";
+const string testApp::SAVE_DATA = "SAVE_DATA";
+
+string testApp::PROCESS_NAME[] = {  CONNECT_RANDOM,
+    CONNECT_NEAR,
+    
+    COLLISION_TEST,
+    REMOVE_GROUPS,
+    
+    RESET_CYLINDERS,
+    RESET_SPHERES,
+    RESET_INSTSANCE_SHAPE,
+    SAVE_DATA
+};
+
+// param
+const string testApp::RENDER_NORMALS = "RENDER_NORMALS";
+const string testApp::FLAT_SHADING = "FLAT_SHADING";
+const string testApp::SPHERE_RADIUS = "SPHERE_RADIUS";
+const string testApp::SPHERE_RESOLUTION = "SPHERE_RESOLUTION";
+const string testApp::CYLINDER_RADIUS = "CYLINDER_RADIUS";
+const string testApp::CYLINDER_RESOLUTION = "CYLINDER_RESOLUTION";
 
 void testApp::setup(){
-
     
 #ifndef NDEBUG
     ofSetLogLevel(OF_LOG_VERBOSE);
@@ -26,15 +47,16 @@ void testApp::setup(){
 #endif
 
     char mes[255];
+    sprintf(mes, "renature modeller start (compiled on %s at time %s JST)\n",__DATE__,__TIME__);
+    myLogRelease(mes);
     sprintf(mes, "using openFrameworks %d.%d", OF_VERSION, OF_VERSION_MINOR);
     myLogRelease(mes);
-    myLogRelease("renature::insecta setup");
     
     isShaderDirty = true;
     bWireframe = false;
     bCollisionDebugDraw = false;
     nowProcessing = false;
-    posModelPath_P = "models/bee_100k_MASTER_mesh_wN.ply";
+    posModelPath_P = "models/bee_60k_MASTER_mesh_wN.ply";
     mShdInstanced = NULL;
     //ofSetFrameRate(60);
 	ofSetVerticalSync(false);
@@ -50,19 +72,13 @@ void testApp::setup(){
     int cylNum = 300;
     int sphNum = 5000;
     {
-        ofSetSphereResolution(5);
-        ofMesh sphere = ofGetGLRenderer()->ofGetSphereMesh();
-        //ofMesh sphere = createQuadSphere(1, 12, 10);
-        float radius = 3;
-        spheres.setInstanceType(INSTANCE_SPHERE);
-        spheres.loadInstanceMesh(sphere, ofVec3f(radius, radius, radius));
-        tester.resetSphereShape(radius);
+        setupSphereShape(1, 8);
 
 #define SETUP_SPHERE
 #ifdef SETUP_SPHERE
         myLogDebug("setup Spheres");
 #if 1
-        spheres.loadInstancePositionFromModel(posModelPath_P, 100);
+        spheres.loadInstancePositionFromModel(posModelPath_P, posScale);
 #else
        
 
@@ -81,10 +97,7 @@ void testApp::setup(){
     }
     
     {
-        ofMesh cylinder = createCylinderZ(0.2, 1, 10, 1);
-        cylinders.setInstanceType(INSTANCE_CYLINDER);
-        cylinders.loadInstanceMesh(cylinder);
-        tester.resetCylinderShape(ofVec3f(0.2, 123, 0.5));  // do not use y value
+        setupCylinderShape(0.2, 8);
 #define SETUP_CYLINDER 1
 #ifdef SETUP_CYLINDER
         myLogDebug("setup Cylinders");
@@ -115,6 +128,22 @@ void testApp::setup(){
     //instancedComponent::printGroupData();
     
     tester.initAlgo();
+}
+
+void testApp::setupSphereShape(float radius, int resolution){
+    ofSetSphereResolution(resolution);
+    ofMesh sphere = ofGetGLRenderer()->ofGetSphereMesh();
+    spheres.setInstanceType(INSTANCE_SPHERE);
+    spheres.loadInstanceMesh(sphere, ofVec3f(radius, radius, radius));
+    tester.resetSphereShape(radius);
+}
+
+
+void testApp::setupCylinderShape(float radius, int resolution){
+    ofMesh cylinder = createCylinderZ(radius, 1, resolution, 1);
+    cylinders.setInstanceType(INSTANCE_CYLINDER);
+    cylinders.loadInstanceMesh(cylinder);
+    tester.resetCylinderShape(ofVec3f(radius*0.5, 123, 0.5));  // do not use y value
 }
 
 void testApp::update(){
@@ -259,8 +288,13 @@ void testApp::mainDraw(){
     
     
     int y = 20;
-    int x = 20;
+    int x = 15;
     int h = 20;
+    
+    ofSetColor(0,1,2,100);
+    ofRect(0, 0, 280, ofGetHeight()-50);
+
+    ofSetColor(255,255,255,255);
 	ofDrawBitmapString("fps : "+ofToString(ofGetFrameRate()), x, y);
     
     ofVec3f cp = camMain.getPosition();
@@ -290,8 +324,6 @@ void testApp::mainDraw(){
     waitDraw();
     
 }
-
-
 
 void testApp::keyPressed(int key){}
 void testApp::keyReleased(int key){
@@ -350,47 +382,72 @@ void testApp::windowResized(int w, int h){}
 void testApp::gotMessage(ofMessage msg){}
 void testApp::dragEvent(ofDragInfo dragInfo){}
 
+
+
 void testApp::processGui(){
-
-    if (prmBool[CONNECT_RANDOM]) {
-//        connectRandom(&spheres, &cylinders, 100, 1, 1000);
-//        prmBool[CONNECT_RANDOM] = false;
-        nowProcessing = true;
-    }else
-
-    if (prmBool[RESET_CYLINDERS]){
-        cylinders.reset();
-        connectionList.clear();
-        prmBool[RESET_CYLINDERS] = false;
-    }else
-        
-    if(prmBool[COLLISION_TEST]){
-        myLogDebug("proces collision from GUI");
-//        processCollision();
-//        prmBool[COLLISION_TEST] = false;
-        nowProcessing = true;
-    }else
-    
-    if(prmBool[REMOVE_GROUPS]){
-        int min = prmInt[REMOVE_GROUPS_MIN_NUM];
-        spheres.removeSmallGroup(min);          // should be static
-        cylinders.removeSmallGroup(min);
-        prmBool[REMOVE_GROUPS] = false;
+    int size = sizeof(PROCESS_NAME)/sizeof(string);
+    for (int i=0; i<size; i++) {
+        if(prmBool[PROCESS_NAME[i]] == true){
+            CURRENT_PROCESS = PROCESS_NAME[i];
+            nowProcessing = true;
+            break;
+        }
     }
-    
 }
 
+/*
+ CONNECT_RANDOM,
+ CONNECT_NEAR,
+ COLLISION_TEST,
+ REMOVE_GROUPS,
+ RESET_CYLINDERS,
+ RESET_SPHERES,
+ RESET_INSTSANCE_SHAPE,
+ SAVE_DATA
+ */
 void testApp::processRequest(){
+
     if(nowProcessing){
-        if (prmBool[COLLISION_TEST]) {
-            processCollision();
-            prmBool[COLLISION_TEST] = false;
-            nowProcessing = false;
-        }else if(prmBool[CONNECT_RANDOM]){
+        if(CURRENT_PROCESS == CONNECT_RANDOM){
             connectRandom(&spheres, &cylinders, 100, 1, 1000);
-            prmBool[CONNECT_RANDOM] = false;
-            nowProcessing = false;
+        }else if (CURRENT_PROCESS == CONNECT_NEAR){
+            
+        }else if (CURRENT_PROCESS == COLLISION_TEST){
+            processCollision();
+        }else if(CURRENT_PROCESS == REMOVE_GROUPS){
+            int min = prmInt[REMOVE_GROUPS_MIN_NUM];
+            spheres.removeSmallGroup(min);          // should be static
+            cylinders.removeSmallGroup(min);
+
+        }else if(CURRENT_PROCESS == RESET_CYLINDERS){
+            cylinders.reset();
+            connectionList.clear();
+        }else if(CURRENT_PROCESS == RESET_SPHERES){
+            
+        }else if(CURRENT_PROCESS == RESET_INSTSANCE_SHAPE){
+            setupSphereShape(prmFloat[SPHERE_RADIUS], prmInt[SPHERE_RESOLUTION]);
+            setupCylinderShape(prmFloat[CYLINDER_RADIUS], prmInt[CYLINDER_RESOLUTION]);
+        }else if(CURRENT_PROCESS == SAVE_DATA){
+            
+            // TOP dir
+            string topDirName = "instanceData";
+            ofDirectory topDir(topDirName);
+            if(!topDir.exists()){
+                topDir.createDirectory(topDirName);
+            }
+            // SUB timestamped dir
+            string subDirName = topDirName + "/" + ofGetTimestampString("%m%d_%H%M_%S");
+            ofDirectory subDir(subDirName);
+            subDir.createDirectory(subDirName);
+
+            string timestamp = ofGetTimestampString();
+            spheres.saveInstanceDataToCsv(subDirName);
+            cylinders.saveInstanceDataToCsv(subDirName);
         }
+        
+        nowProcessing = false;
+        prmBool[CURRENT_PROCESS] = false;
+        CURRENT_PROCESS = "DONE";
     }
 }
 
@@ -408,11 +465,7 @@ void testApp::waitDraw(){
         ofRect(0, 0, w, h);
         
         ofSetColor(255,255,255);
-        if(prmBool[COLLISION_TEST]) {
-            ofDrawBitmapString("PROCESS COLLISION TEST...", -w/3,0);
-        }else if(prmBool[CONNECT_RANDOM]){
-            ofDrawBitmapString("PROCESS CONNECT RANDOM...", -w/3,0);
-        }
+        ofDrawBitmapString("PROCESS " + CURRENT_PROCESS + " ...", -w/3,0);
         ofSetRectMode(OF_RECTMODE_CORNER);
         glPopMatrix();
     }
@@ -426,25 +479,29 @@ void testApp::setupGui(){
 	mainPnl.add(prmBool[RENDER_NORMALS].set(RENDER_NORMALS, false));
 	mainPnl.add(prmBool[FLAT_SHADING].set(FLAT_SHADING, true));
 	
-    mainPnl.add(prmFloat["Particle_Diam"].set("Particle Diam",0,0,1.0));
-    mainPnl.add(prmFloat["Particle_Resolution"].set("Particle Resolution",0,3,12));
+    mainPnl.add(prmFloat[SPHERE_RADIUS].set(SPHERE_RADIUS,0,0,2.0));
+    mainPnl.add(prmInt[SPHERE_RESOLUTION].set(SPHERE_RESOLUTION,0,3,20));
+    mainPnl.add(prmFloat[CYLINDER_RADIUS].set(CYLINDER_RADIUS,0,0,2.0));
+    mainPnl.add(prmInt[CYLINDER_RESOLUTION].set(CYLINDER_RESOLUTION,0,3,20));
     
     mainPnl.add(prmFloat["COLOR_R"].set("Red", 1.0, 0.0, 1.0));
     mainPnl.add(prmFloat["COLOR_G"].set("Green", 1.0, 0.0, 1.0));
     mainPnl.add(prmFloat["COLOR_B"].set("Blue", 1.0, 0.0, 1.0));
-    
 
     mainPnl.add(prmBool[CONNECT_RANDOM].set(CONNECT_RANDOM, false));
-    mainPnl.add(prmBool[RESET_CYLINDERS].set(RESET_CYLINDERS, false));
     mainPnl.add(prmBool[COLLISION_TEST].set(COLLISION_TEST, false));
     
-
     
     mainPnl.add(prmInt[REMOVE_GROUPS_MIN_NUM].set(REMOVE_GROUPS_MIN_NUM, 1, 0, 30));
 
     mainPnl.add(prmBool[REMOVE_GROUPS].set(REMOVE_GROUPS, false));
 
-	
+    mainPnl.add(prmBool[RESET_SPHERES].set(RESET_SPHERES, false));
+    mainPnl.add(prmBool[RESET_CYLINDERS].set(RESET_CYLINDERS, false));
+    mainPnl.add(prmBool[RESET_INSTSANCE_SHAPE].set(RESET_INSTSANCE_SHAPE, false));
+    mainPnl.add(prmBool[SAVE_DATA].set(SAVE_DATA, false));
+
+    
     mainPnl.loadFromFile("settings.xml");
 }
 

@@ -82,6 +82,9 @@ private:
     
    // void checkIntersection(ofVec3f posA, ofVec3f posB, InstanceType type);
     
+    static string CURRENT_PROCESS;
+    
+    static string PROCESS_NAME[];
     
     static const string RENDER_NORMALS;
     static const string FLAT_SHADING;
@@ -92,6 +95,13 @@ private:
     static const string COLLISION_TEST;
     static const string REMOVE_GROUPS;
     static const string REMOVE_GROUPS_MIN_NUM;
+
+    static const string SPHERE_RADIUS;
+    static const string SPHERE_RESOLUTION;
+    static const string CYLINDER_RADIUS;
+    static const string CYLINDER_RESOLUTION;
+    static const string RESET_INSTSANCE_SHAPE;
+    static const string SAVE_DATA;
     
     void updateShaders(bool doLink=true);
     
@@ -113,6 +123,9 @@ private:
     
     vector<idPair> connectionList;   // store connection
     bool connectInstanace(instance& insA, instance& insB, float minDist, float maxDist, instance& newIns);
+
+    void setupCylinderShape(float radius, int resolution);
+    void setupSphereShape(float radius, int resolution);
     
 };
 

@@ -161,7 +161,7 @@ public:
     // group func
     static void resetGroup();
     
-    void saveInstanceDataToCsv(INSTANCE_TYPE t, string dirName);
+    void saveInstanceDataToCsv(string dirName);
     
 private:
 
