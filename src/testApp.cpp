@@ -1,8 +1,9 @@
 #include "testApp.h"
 #include "ofxMtb.h"
 
-collisionTester testApp::tester;
+#include<set>
 
+collisionTester testApp::tester;
 
 // GUI parts
 const string testApp::RENDER_NORMALS = "RENDER_NORMALS";
@@ -26,31 +27,27 @@ void testApp::setup(){
 
     char mes[255];
     sprintf(mes, "using openFrameworks %d.%d", OF_VERSION, OF_VERSION_MINOR);
-    myLogDebug(mes);
+    myLogRelease(mes);
     myLogRelease("renature::insecta setup");
     
     isShaderDirty = true;
-    mShdInstanced = NULL;
     bWireframe = false;
     bCollisionDebugDraw = false;
+    nowProcessing = false;
     posModelPath_P = "models/bee_100k_MASTER_mesh_wN.ply";
-    
-    
-//	ofSetFrameRate(60);
+    mShdInstanced = NULL;
+    //ofSetFrameRate(60);
 	ofSetVerticalSync(false);
-	ofSetColor(255);
-    setupCameraLightMaterial();
+	setupCameraLightMaterial();
     setupGui();
-
     updateShaders();
 
     
     // ---------------------------------------------------
-
     compScale = 1;
     posScale = 100;
 
-    int cylNum = 3000;
+    int cylNum = 300;
     int sphNum = 5000;
     {
         ofSetSphereResolution(5);
@@ -82,8 +79,6 @@ void testApp::setup(){
 #endif
 #endif
     }
-
-    
     
     {
         ofMesh cylinder = createCylinderZ(0.2, 1, 10, 1);
@@ -123,14 +118,14 @@ void testApp::setup(){
 }
 
 void testApp::update(){
+    
+    processRequest();
 	updateShaders();
 	
 	camMain.setNearClip(prmFloat["zNear"]);
 	camMain.setFarClip(prmFloat["zFar"]);
 
     processGui();
-    
-    
     spheres.update();
     cylinders.update();
 
@@ -290,10 +285,13 @@ void testApp::mainDraw(){
         if(ofGetHeight()-2*h<y){
             y=startY; x += 140;
         }
-        
     }
     
+    waitDraw();
+    
 }
+
+
 
 void testApp::keyPressed(int key){}
 void testApp::keyReleased(int key){
@@ -355,19 +353,22 @@ void testApp::dragEvent(ofDragInfo dragInfo){}
 void testApp::processGui(){
 
     if (prmBool[CONNECT_RANDOM]) {
-        connectRandom(&spheres, &cylinders, ofRandom(100,300), ofRandom(200, 400), ofRandom(401, 600));
-        prmBool[CONNECT_RANDOM] = false;
+//        connectRandom(&spheres, &cylinders, 100, 1, 1000);
+//        prmBool[CONNECT_RANDOM] = false;
+        nowProcessing = true;
     }else
 
     if (prmBool[RESET_CYLINDERS]){
         cylinders.reset();
+        connectionList.clear();
         prmBool[RESET_CYLINDERS] = false;
     }else
         
     if(prmBool[COLLISION_TEST]){
         myLogDebug("proces collision from GUI");
-        processCollision();
-        prmBool[COLLISION_TEST] = false;
+//        processCollision();
+//        prmBool[COLLISION_TEST] = false;
+        nowProcessing = true;
     }else
     
     if(prmBool[REMOVE_GROUPS]){
@@ -377,6 +378,44 @@ void testApp::processGui(){
         prmBool[REMOVE_GROUPS] = false;
     }
     
+}
+
+void testApp::processRequest(){
+    if(nowProcessing){
+        if (prmBool[COLLISION_TEST]) {
+            processCollision();
+            prmBool[COLLISION_TEST] = false;
+            nowProcessing = false;
+        }else if(prmBool[CONNECT_RANDOM]){
+            connectRandom(&spheres, &cylinders, 100, 1, 1000);
+            prmBool[CONNECT_RANDOM] = false;
+            nowProcessing = false;
+        }
+    }
+}
+
+void testApp::waitDraw(){
+    if(nowProcessing){
+        float x = ofGetWidth()  * 0.5;
+        float y = ofGetHeight() * 0.5;
+        float w = ofGetWidth()  * 0.27;
+        float h = ofGetHeight() * 0.27;
+
+        glPushMatrix();
+        glTranslatef(x, y, 0);
+        ofSetRectMode(OF_RECTMODE_CENTER);
+        ofSetColor(0, 10, 20, 200);
+        ofRect(0, 0, w, h);
+        
+        ofSetColor(255,255,255);
+        if(prmBool[COLLISION_TEST]) {
+            ofDrawBitmapString("PROCESS COLLISION TEST...", -w/3,0);
+        }else if(prmBool[CONNECT_RANDOM]){
+            ofDrawBitmapString("PROCESS CONNECT RANDOM...", -w/3,0);
+        }
+        ofSetRectMode(OF_RECTMODE_CORNER);
+        glPopMatrix();
+    }
 }
 
 void testApp::setupGui(){
@@ -448,13 +487,46 @@ void testApp::updateShaders(bool doLink){
 	}
 }
 
-#include<set>
+bool testApp::connectInstanace(instance &instA, instance &instB, float minDist, float maxDist, instance& newIns){
+    
+    // 3. check A - B distance
+    ofVec3f vA = instA.matrix.getTranslation();
+    ofVec3f vB = instB.matrix.getTranslation();
+
+    ofVec3f vAB = vB - vA;
+    float dist = vAB.length();
+
+    if(minDist<dist && dist<maxDist){
+
+        // 4. put
+//        ofMatrix4x4 mat;
+//        ofVec3f scale;
+//        ofVec3f pos = vA + vAB*0.5;
+
+        ofVec3f yAxis(0,0,1);
+        float angle = yAxis.angle(vAB);
+        ofVec3f prep = yAxis.cross(vAB);
+
+        newIns.scale.set(1, 1, dist);
+        newIns.matrix.rotate(angle, prep.x, prep.y, prep.z);
+        newIns.matrix.translate(vA + vAB*0.5);
+        return true;
+    }else{
+        return false;
+    }
+}
+
+// should be used parallel_for
 void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int numAllCylinders, float minDist, float maxDist){
 
-    vector<idPair> checkList;
+    int startTime = ofGetElapsedTimeMillis();
+    myLogRelease("Start ConnectRandom Process : time : " + ofToString(startTime));
+    
+
     
     INSTANCE_MAP& instanceMap = instancedComponent::getInstanceMap();
     int numGroups = STL_UTIL::getAllKeySize(instanceMap);
+    int numInstances = instanceMap.size();
     
     int index = 0;
     int numFind = 0;
@@ -464,21 +536,15 @@ void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int
         bool find = false;
         
         do{
-            // 1. select group
-            int groupIdA = ofRandom(-2, numGroups-2);               // todo: invalid
-            int groupIdB = ofRandom(-2, numGroups-2);
+            // 1. select instance
+            int indexA = ofRandom(numInstances);               // todo: invalid
+            int indexB = ofRandom(numInstances);
             
-            int numInstancesA = instanceMap.count(groupIdA);
-            int numInstancesB = instanceMap.count(groupIdB);
-            
-            // 2. select instance
-            int indexA = ofRandom(numInstancesA);
-            int indexB = ofRandom(numInstancesB);
-            
+            // 2. check if pair is already connected
             bool same = false;
             idPair idp(indexA, indexB);
-            for(int i=0; i<checkList.size(); i++){
-                if(idp == checkList[i]){
+            for(int i=0; i<connectionList.size(); i++){
+                if(idp == connectionList[i]){
                     same = true;
                     cout << "same";
                     break;
@@ -486,46 +552,23 @@ void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int
             }
             
             if(!same){
-            
-                INSTANCE_MAP_ITR itrA = instanceMap.find(groupIdA);
-                INSTANCE_MAP_ITR itrB = instanceMap.find(groupIdB);
-                
+                INSTANCE_MAP_ITR itrA = instanceMap.begin();
+                INSTANCE_MAP_ITR itrB = instanceMap.begin();
                 std::advance(itrA, indexA);
                 std::advance(itrB, indexB);
                 
                 instance instA = itrA->second;
                 instance instB = itrB->second;
-                
+
                 if(instA.type!= INSTANCE_CYLINDER && instB.type!=INSTANCE_CYLINDER ){
-                    
-                    // 3. check A - B distance
-                    ofVec3f vA = instA.matrix.getTranslation();
-                    ofVec3f vB = instB.matrix.getTranslation();
-                    
-                    ofVec3f vAB = vB - vA;
-                    float dist = vAB.length();
-                    
-                    if(minDist<dist && dist<maxDist){
-                        
-                        // 4. put
-                        ofMatrix4x4 mat;
-                        ofVec3f scale;
-                        ofVec3f pos = vA + vAB*0.5;
-                        
-                        ofVec3f yAxis(0,0,1);
-                        float angle = yAxis.angle(vAB);
-                        ofVec3f prep = yAxis.cross(vAB);
-                        
-                        scale.set(1, 1, dist);
-                        mat.rotate(angle, prep.x, prep.y, prep.z);
-                        mat.translate(pos);
-                        
+                    instance newCylinder;
+                    newCylinder.type = INSTANCE_CYLINDER;
+                    find = connectInstanace(instA, instB, minDist, maxDist, newCylinder);
+                    if(find){
                         // add to deafault group
-                        ic2->addInstanceMatrix(mat, scale);
-                        find = true;
+                        ic2->addInstance(newCylinder);
                         numFind++;
-                        
-                        checkList.push_back(idp);
+                        connectionList.push_back(idp);
                     }
                 }
             }
@@ -541,6 +584,10 @@ void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int
 //    ic2->setInstanceNum(instanceNum + numFind);
     
     cylinders.updateInstanceNum();
+    
+    
+    int endTime = ofGetElapsedTimeMillis();
+    myLogRelease("Finish ConnectRandom process : elapsed " + ofToString((float)(endTime-startTime)/1000.0)+" sec");
 
 }
 
@@ -572,7 +619,7 @@ float testApp::getCollisionDistance(instance &insA, instance &insB){
 }
 
 void testApp::processCollision(){
-#ifdef USE_TBB
+#if defined (USE_TBB) && defined(USE_TBB_COLLISIION)
     processCollisionParallel();
 #else
     
@@ -684,7 +731,6 @@ void testApp::processCollision(){
 #endif
 }
 
-
 int testApp::collisionStart(){
     instancedComponent::resetGroup();
     
@@ -721,7 +767,7 @@ void testApp::collisionEnd(int startTime){
 }
 
 
-#ifdef USE_TBB
+#if defined (USE_TBB) && defined(USE_TBB_COLLISIION)
 void testApp::processCollisionParallel(){
     
     int startTime = collisionStart();
@@ -750,5 +796,4 @@ void testApp::processCollisionParallel(){
     collisionEnd(startTime);
     
 }
-
 #endif

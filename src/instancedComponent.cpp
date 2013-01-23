@@ -87,7 +87,7 @@ void instancedComponent::updateVertexTexture(){
     
         if(vtxtexId==GL_NONE){
             glGenTextures(1, &vtxtexId);
-            myLogRelease("Generate vertex texture with id: " + ofToString(vtxtexId));
+            myLogDebug("Generate vertex texture with id: " + ofToString(vtxtexId));
         }
 
         glBindTexture(GL_TEXTURE_2D, vtxtexId);
@@ -124,7 +124,7 @@ void instancedComponent::updateColorTexture(){
         
         if(cltexId == GL_NONE){
             glGenTextures(1, &cltexId);
-            myLogRelease("Generate color texture with id: " + ofToString(cltexId));
+            myLogDebug("Generate color texture with id: " + ofToString(cltexId));
         }
         
         glBindTexture(GL_TEXTURE_2D, cltexId);
@@ -208,9 +208,10 @@ void instancedComponent::addInstanceMatrix(ofMatrix4x4 m, ofVec3f s, int groupId
         return;
     }
     
-    instance ins(insType);
+    instance ins;
     ins.matrix = m;
     ins.scale = s;
+    ins.type = insType;
     addInstance(ins);
 }
 
@@ -273,10 +274,16 @@ void instancedComponent::loadInstancePositionFromMatrices(ofMatrix4x4 *ms, ofVec
 
 void instancedComponent::clearInstanceMatrices(){
 
-    instanceMap.clear();
+    INSTANCE_MAP_ITR itr = instanceMap.begin();
+    for(; itr!=instanceMap.end(); itr++){
+        if(itr->second.type==insType){
+            instanceMap.erase(itr);
+        }
+    }
+    
     updateInstanceNum();
     
-    myLogDebug("clear all group data");
+    myLogDebug("clear instance data");
     bVtxtexNeedUpdate = true;
     bCltexNeedUpdate  = true;
 }
@@ -314,6 +321,8 @@ void instancedComponent::loadInstanceMesh(ofMesh mesh, ofVec3f scale){
 
 void instancedComponent::reset(){
     clearInstanceMatrices();
+    
+
 }
 
 void instancedComponent::setInstanceColor(int index, ofFloatColor color){
@@ -518,7 +527,7 @@ void instancedComponent::resetGroup(){
 //        STL_UTIL::replace_key(instanceMap, itr->first, defaultGroup);
 //    }
     
-    
+    char d[255];
     INSTANCE_MAP temp = instanceMap;
     instanceMap.clear();
     INSTANCE_MAP_ITR itr = temp.begin();
@@ -528,5 +537,66 @@ void instancedComponent::resetGroup(){
     
     groupIdMaster = 0;
 }
+
+
+//
+//  save tp csv
+//
+//  NOTICE: first 2 lines are version and format info
+//
+void instancedComponent::saveInstanceDataToCsv(INSTANCE_TYPE t, string dirName){
+
+    
+    float meshScale = 0.00000001;    // TODO:
+    
+    string version = "v0.1";
+    string meshName;
+    
+    
+    if(t==INSTANCE_SPHERE){
+        meshName = "Spheres";
+    }else if(t==INSTANCE_CYLINDER){
+        meshName = "Cylinders";
+    }
+
+    string fileName =  meshName + ".csv";
+    string name     = dirName +  "/" + fileName;
+    string path     = ofToDataPath(name, true);
+    ofstream myfile(path.c_str());
+
+
+    if(myfile.is_open()){
+        char d[255];
+        sprintf(d, "renature instance data format version= %s", version.c_str());       // line 1
+        myfile << d << "\n";
+        
+        sprintf(d, "format: position.xyz, rotation.xyz, scale.xyz");    // line 2
+        myfile << d << "\n";
+        
+        sprintf(d, "mesh data: %s posScale= %f, ", meshName.c_str(), meshScale);    // line 3
+        myfile << d << "\n";
+
+        INSTANCE_MAP_ITR itr = instanceMap.begin();
+        for(; itr!=instanceMap.end(); itr++){
+            
+            instance& ins       = itr->second;
+            ofMatrix4x4& mat    = ins.matrix;
+            ofVec3f pos         = mat.getTranslation();
+            ofQuaternion quat   = mat.getRotate();       // TODO double check blender side rotation compatibility
+            ofVec3f rot         = quat.getEuler();
+            ofVec3f& sc         = ins.scale;
+            
+            sprintf(d, "%f,%f,%f,%f,%f,%f,%f,%f,%f", pos.x, pos.y, pos.z, rot.x, rot.y, rot.z, sc.x, sc.y, sc.z);
+            myfile << d << "\n";
+        }
+        
+        myfile.close();
+    }
+}
+
+
+
+
+
 
 

@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include "myDef.h"
 
 #include "ofMain.h"
 #include "btBulletCollisionCommon.h"
-
 
 #include "LinearMath/btIDebugDraw.h"
 #include "GL_ShapeDrawer.h"
@@ -65,7 +65,8 @@ private:
     
     vector<btVector3> contactPts;
     
-    
+#if defined (USE_TBB) && defined(USE_TBB_COLLISIION)
     class	btThreadSupportInterface*		m_threadSupportCollision;
-
+#endif
+    
 };

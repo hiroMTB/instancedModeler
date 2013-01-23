@@ -221,6 +221,7 @@
 		2b40eda85beb63e46785bc299a638898 /* tinyxml.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = tinyxml.cpp; path = ../../../addons/ofxXmlSettings/libs/tinyxml.cpp; sourceTree = SOURCE_ROOT; };
 		4D159999168B215400D10232 /* instancedTexTrans.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = instancedTexTrans.frag; sourceTree = "<group>"; };
 		4D15999A168B215400D10232 /* instancedTexTrans.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = instancedTexTrans.vert; sourceTree = "<group>"; };
+		4D27813016AF3FB800BBD8E2 /* myDef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = myDef.h; sourceTree = "<group>"; };
 		4D37C1A51692E2EC006FD104 /* instancedComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = instancedComponent.h; sourceTree = "<group>"; };
 		4D3A44BC16A4F8AE00328314 /* collisionTester.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = collisionTester.cpp; sourceTree = "<group>"; };
 		4D3A44BD16A4F8AE00328314 /* collisionTester.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = collisionTester.h; sourceTree = "<group>"; };
@@ -1956,6 +1957,7 @@
 				4D3A44BC16A4F8AE00328314 /* collisionTester.cpp */,
 				4D3A44BD16A4F8AE00328314 /* collisionTester.h */,
 				4DB98A8116AD4A0900F0864B /* performanceMemo.rtf */,
+				4D27813016AF3FB800BBD8E2 /* myDef.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;

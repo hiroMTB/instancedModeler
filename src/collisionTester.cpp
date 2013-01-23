@@ -6,7 +6,7 @@
 //
 //
 
-#include "testApp.h"
+#include "myDef.h"
 #include "collisionTester.h"
 #include "ofxMtb.h"
 
@@ -39,7 +39,7 @@ collisionTester::~collisionTester(){
 void collisionTester::initCollisionWorld(){
     btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
 	
-#ifdef USE_TBB
+#if defined (USE_TBB) && defined(USE_TBB_COLLISIION)
     int maxNumOutstandingTasks = 4;
     PosixThreadSupport::ThreadConstructionInfo constructionInfo("collision",
                                                                 processCollisionTask,

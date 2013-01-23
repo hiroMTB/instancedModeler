@@ -30,6 +30,7 @@
 //
 #pragma once
 
+#include "myDef.h"
 #include "ofMain.h"
 #include "ofxVboMeshInstanced.h"
 #include "ofxMtb.h"
@@ -59,10 +60,10 @@ enum INSTANCE_TYPE{
 
 struct instance{
 public:
-    instance(INSTANCE_TYPE t){
-        color = ofFloatColor(1.0, 1.0, 1.0);
-        type = t;
-    }
+//    instance(INSTANCE_TYPE t){
+//        color = ofFloatColor(1.0, 1.0, 1.0);
+//        type = t;
+//    }
     instance(const instance& i){
         color = i.color;
         type = i.type;
@@ -73,7 +74,7 @@ public:
     ofVec3f         scale;
     ofFloatColor    color;
     INSTANCE_TYPE   type;
-private:
+//private:
     instance(){};
 };
 
@@ -160,6 +161,7 @@ public:
     // group func
     static void resetGroup();
     
+    void saveInstanceDataToCsv(INSTANCE_TYPE t, string dirName);
     
 private:
 

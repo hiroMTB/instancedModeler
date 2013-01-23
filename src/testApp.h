@@ -1,5 +1,7 @@
 #pragma once
 
+#include "myDef.h"
+
 #include "btBulletCollisionCommon.h"
 
 #include "ofMain.h"
@@ -11,7 +13,7 @@
 #include "collisionTester.h"
 
 
-//#define USE_TBB
+
 
 class testApp : public ofBaseApp{
 
@@ -44,8 +46,6 @@ class testApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
-        void mainDraw();
-        void testDraw();
 
 		void keyPressed  (int key);
 		void keyReleased(int key);
@@ -56,10 +56,17 @@ class testApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-    
+
+private:
         void setupGui();
+
         void processGui();
+        void processRequest();
     
+        void mainDraw();
+        void testDraw();
+    void waitDraw();
+
         void setupCameraLightMaterial();
     
         instancedComponent spheres;
@@ -96,9 +103,16 @@ class testApp : public ofBaseApp{
     int collisionStart();
     void collisionEnd(int startTime);
     
-#ifdef USE_TBB
+#if defined (USE_TBB) && defined(USE_TBB_COLLISIION)
     void processCollisionParallel();
 #endif
+    
+private:
+    
+    bool nowProcessing;
+    
+    vector<idPair> connectionList;   // store connection
+    bool connectInstanace(instance& insA, instance& insB, float minDist, float maxDist, instance& newIns);
     
 };
 
@@ -112,12 +126,14 @@ class testApp : public ofBaseApp{
 using namespace tbb;
 using namespace std;
 
+#endif
+
 //struct MyHashCompare{
 //
 //};
 
 
-
+#if defined (USE_TBB) && defined(USE_TBB_COLLISIION)
 typedef concurrent_hash_map<instance*, int> CollisionTable;
 typedef CollisionTable::iterator CollisionTableItr;
 
