@@ -26,7 +26,28 @@ collisionTester::collisionTester(){
     initCollisionWorld();
     //resetSphereShape(0.5);
     //resetCylinderShape(ofVec3f(0.5, 0.5, 0.5));
-//    initAlgo();
+    
+    float radius = 1;
+    btSphereShape * sA = new btSphereShape(radius);
+    btSphereShape * sB = new btSphereShape(radius);
+    sA->setMargin(0.0);
+    sB->setMargin(0.0);
+    sphereA.setCollisionShape(sA);
+    sphereB.setCollisionShape(sB);
+
+    btVector3 half(1,1,1);
+    btCylinderShape * cA = new btCylinderShapeZ(half);
+    btCylinderShape * cB = new btCylinderShapeZ(half);
+    cA->setMargin(0.0);
+    cB->setMargin(0.0);
+        
+    cylinderA.setCollisionShape(cA);
+    cylinderB.setCollisionShape(cB);
+    
+    initAlgo();
+    
+    uId = ofRandom(10000);
+    cout << "uid = " << ofToString(uId) << endl;
 }
 
 
@@ -61,23 +82,29 @@ void collisionTester::initCollisionWorld(){
 }
 
 
+void collisionTester::initAlgo(){
+    
+    btCollisionObjectWrapper sA(0,sphereA.getCollisionShape(), &sphereA, sphereA.getWorldTransform());
+    btCollisionObjectWrapper sB(0,sphereB.getCollisionShape(), &sphereB, sphereB.getWorldTransform());
+    btCollisionObjectWrapper cA(0,cylinderA.getCollisionShape(), &cylinderA, sphereA.getWorldTransform());
+    btCollisionObjectWrapper cB(0,cylinderB.getCollisionShape(), &cylinderB, sphereB.getWorldTransform());
+    
+	algoSS = collisionWorld->getDispatcher()->findAlgorithm(&sA, &sB);
+  	algoSC = collisionWorld->getDispatcher()->findAlgorithm(&sA, &cA);
+    algoCC = collisionWorld->getDispatcher()->findAlgorithm(&cA, &cB);
+}
+
+
 void collisionTester::resetSphereShape(float radius){
-    btSphereShape * sA = new btSphereShape(radius);
-    btSphereShape * sB = new btSphereShape(radius);
-    sA->setMargin(0.0);
-    sB->setMargin(0.0);
-    sphereA.setCollisionShape(sA);
-    sphereB.setCollisionShape(sB);
+    btVector3 scaling(radius, radius, radius);
+    sphereA.getCollisionShape()->setLocalScaling(scaling);
+    sphereB.getCollisionShape()->setLocalScaling(scaling);
 }
 
 void collisionTester::resetCylinderShape(ofVec3f halfExtent){
-    btCylinderShape * cA = new btCylinderShapeZ(btVector3(halfExtent.x, halfExtent.y, halfExtent.z));
-    btCylinderShape * cB = new btCylinderShapeZ(btVector3(halfExtent.x, halfExtent.y, halfExtent.z));
-    cA->setMargin(0.0);
-    cB->setMargin(0.0);
-    
-    cylinderA.setCollisionShape(cA);
-    cylinderB.setCollisionShape(cB);
+    btVector3 scaling(halfExtent.x, halfExtent.y, halfExtent.z);
+    cylinderA.getCollisionShape()->setLocalScaling(scaling);
+    cylinderB.getCollisionShape()->setLocalScaling(scaling);
 }
 
 void collisionTester::destroy(){
@@ -107,18 +134,6 @@ void collisionTester::debugDraw(ofMatrix4x4& mat, ofVec3f& scale, int shapeType)
 
 
 
-void collisionTester::initAlgo(){
-    
-    // sphere : sphere
-    btCollisionObjectWrapper sA(0,sphereA.getCollisionShape(), &sphereA, sphereA.getWorldTransform());
-    btCollisionObjectWrapper sB(0,sphereB.getCollisionShape(), &sphereB, sphereB.getWorldTransform());
-    btCollisionObjectWrapper cA(0,cylinderA.getCollisionShape(), &cylinderA, sphereA.getWorldTransform());
-    btCollisionObjectWrapper cB(0,cylinderB.getCollisionShape(), &cylinderB, sphereB.getWorldTransform());
-
-	algoSS = collisionWorld->getDispatcher()->findAlgorithm(&sA, &sB);
-  	algoSC = collisionWorld->getDispatcher()->findAlgorithm(&sA, &cA);
-    algoCC = collisionWorld->getDispatcher()->findAlgorithm(&cA, &cB);
-}
 
 
 void collisionTester::setTransformFromOF(ofMatrix4x4& mat, ofVec3f& s, btCollisionObject& obj){

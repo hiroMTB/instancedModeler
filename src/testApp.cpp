@@ -3,12 +3,13 @@
 
 #include<set>
 
-collisionTester testApp::tester;
+collisionTester * testApp::tester = NULL;
 
 // GUI parts
 string testApp::CURRENT_PROCESS = "NONE";
 
 const string testApp::CONNECT_RANDOM = "CONNECT_RANDOM";
+const string testApp::CONNECT_GROUP = "CONNECT_GROUP";
 const string testApp::CONNECT_NEAR = "CONNECT_NEAR";
 const string testApp::COLLISION_TEST = "COLLISION_TEST";
 const string testApp::REMOVE_GROUPS = "REMOVE_GROUPS";
@@ -17,13 +18,15 @@ const string testApp::RESET_CYLINDERS = "RESET_CYLINDERS";
 const string testApp::RESET_SPHERES = "RESET_SPHERES";
 const string testApp::RESET_INSTSANCE_SHAPE = "RESET_INSTSANCE_SHAPE";
 const string testApp::SAVE_DATA = "SAVE_DATA";
+const string testApp::REMOVE_DUPLICATION = "REMOVE_DUPLICATION";
 
-string testApp::PROCESS_NAME[] = {  CONNECT_RANDOM,
+string testApp::PROCESS_NAME[] = {
+    CONNECT_RANDOM,
     CONNECT_NEAR,
-    
+    CONNECT_GROUP,
     COLLISION_TEST,
     REMOVE_GROUPS,
-    
+    REMOVE_DUPLICATION,
     RESET_CYLINDERS,
     RESET_SPHERES,
     RESET_INSTSANCE_SHAPE,
@@ -52,32 +55,36 @@ void testApp::setup(){
     sprintf(mes, "using openFrameworks %d.%d", OF_VERSION, OF_VERSION_MINOR);
     myLogRelease(mes);
     
-    isShaderDirty = true;
     bWireframe = false;
     bCollisionDebugDraw = false;
-    nowProcessing = false;
+    bNowProcessing = false;
+    
     posModelPath_P = "models/bee_60k_MASTER_mesh_wN.ply";
     mShdInstanced = NULL;
+    
     //ofSetFrameRate(60);
 	ofSetVerticalSync(false);
 	setupCameraLightMaterial();
     setupGui();
-    updateShaders();
+    setupShaders();
 
+    
+    tester = new collisionTester();
     
     // ---------------------------------------------------
     compScale = 1;
     posScale = 100;
 
-    int cylNum = 300;
-    int sphNum = 5000;
+    int cylNum = 4;
+    int sphNum = 6;
     {
         setupSphereShape(1, 8);
-
+        setupCylinderShape(0.2, 8);
+        
 #define SETUP_SPHERE
 #ifdef SETUP_SPHERE
         myLogDebug("setup Spheres");
-#if 1
+#if 0
         spheres.loadInstancePositionFromModel(posModelPath_P, posScale);
 #else
        
@@ -97,7 +104,7 @@ void testApp::setup(){
     }
     
     {
-        setupCylinderShape(0.2, 8);
+
 #define SETUP_CYLINDER 1
 #ifdef SETUP_CYLINDER
         myLogDebug("setup Cylinders");
@@ -125,9 +132,7 @@ void testApp::setup(){
 #endif
     }
     
-    //instancedComponent::printGroupData();
-    
-    tester.initAlgo();
+    //tester.initAlgo();
 }
 
 void testApp::setupSphereShape(float radius, int resolution){
@@ -135,7 +140,7 @@ void testApp::setupSphereShape(float radius, int resolution){
     ofMesh sphere = ofGetGLRenderer()->ofGetSphereMesh();
     spheres.setInstanceType(INSTANCE_SPHERE);
     spheres.loadInstanceMesh(sphere, ofVec3f(radius, radius, radius));
-    tester.resetSphereShape(radius);
+    collisionTester::resetSphereShape(radius);
 }
 
 
@@ -143,14 +148,12 @@ void testApp::setupCylinderShape(float radius, int resolution){
     ofMesh cylinder = createCylinderZ(radius, 1, resolution, 1);
     cylinders.setInstanceType(INSTANCE_CYLINDER);
     cylinders.loadInstanceMesh(cylinder);
-    tester.resetCylinderShape(ofVec3f(radius*0.5, 123, 0.5));  // do not use y value
+    collisionTester::resetCylinderShape(ofVec3f(radius, 123, 0.5));  // do not use y value
 }
 
 void testApp::update(){
     
     processRequest();
-	updateShaders();
-	
 	camMain.setNearClip(prmFloat["zNear"]);
 	camMain.setFarClip(prmFloat["zFar"]);
 
@@ -278,7 +281,7 @@ void testApp::mainDraw(){
 
     if(bCollisionDebugDraw){
         instancedComponent::debugDraw();
-        tester.drawAllContanctPts();
+        tester->drawAllContanctPts();
     }
 
     camMain.end();
@@ -389,44 +392,47 @@ void testApp::processGui(){
     for (int i=0; i<size; i++) {
         if(prmBool[PROCESS_NAME[i]] == true){
             CURRENT_PROCESS = PROCESS_NAME[i];
-            nowProcessing = true;
+            bNowProcessing = true;
             break;
         }
     }
 }
 
-/*
- CONNECT_RANDOM,
- CONNECT_NEAR,
- COLLISION_TEST,
- REMOVE_GROUPS,
- RESET_CYLINDERS,
- RESET_SPHERES,
- RESET_INSTSANCE_SHAPE,
- SAVE_DATA
- */
+
 void testApp::processRequest(){
 
-    if(nowProcessing){
+    if(bNowProcessing){
         if(CURRENT_PROCESS == CONNECT_RANDOM){
             connectRandom(&spheres, &cylinders, 100, 1, 1000);
+        
+        }else if(CURRENT_PROCESS == CONNECT_GROUP){
+            connectGroup(&spheres, &cylinders, 3, 1, 1000);
+        
         }else if (CURRENT_PROCESS == CONNECT_NEAR){
             
+        
         }else if (CURRENT_PROCESS == COLLISION_TEST){
             processCollision();
+        
         }else if(CURRENT_PROCESS == REMOVE_GROUPS){
             int min = prmInt[REMOVE_GROUPS_MIN_NUM];
             spheres.removeSmallGroup(min);          // should be static
             cylinders.removeSmallGroup(min);
-
+        
+        }else if(CURRENT_PROCESS == REMOVE_DUPLICATION){
+            instancedComponent::removeDuplication();
+            spheres.updateRequest();
+            cylinders.updateRequest();
+            
         }else if(CURRENT_PROCESS == RESET_CYLINDERS){
-            cylinders.reset();
-            connectionList.clear();
+            cylinders.reset();            
+        
         }else if(CURRENT_PROCESS == RESET_SPHERES){
             
         }else if(CURRENT_PROCESS == RESET_INSTSANCE_SHAPE){
             setupSphereShape(prmFloat[SPHERE_RADIUS], prmInt[SPHERE_RESOLUTION]);
             setupCylinderShape(prmFloat[CYLINDER_RADIUS], prmInt[CYLINDER_RESOLUTION]);
+        
         }else if(CURRENT_PROCESS == SAVE_DATA){
             
             // TOP dir
@@ -445,14 +451,14 @@ void testApp::processRequest(){
             cylinders.saveInstanceDataToCsv(subDirName);
         }
         
-        nowProcessing = false;
+        bNowProcessing = false;
         prmBool[CURRENT_PROCESS] = false;
         CURRENT_PROCESS = "DONE";
     }
 }
 
 void testApp::waitDraw(){
-    if(nowProcessing){
+    if(bNowProcessing){
         float x = ofGetWidth()  * 0.5;
         float y = ofGetHeight() * 0.5;
         float w = ofGetWidth()  * 0.27;
@@ -489,10 +495,13 @@ void testApp::setupGui(){
     mainPnl.add(prmFloat["COLOR_B"].set("Blue", 1.0, 0.0, 1.0));
 
     mainPnl.add(prmBool[CONNECT_RANDOM].set(CONNECT_RANDOM, false));
+    mainPnl.add(prmBool[CONNECT_GROUP].set(CONNECT_GROUP, false));
+
     mainPnl.add(prmBool[COLLISION_TEST].set(COLLISION_TEST, false));
     
     
     mainPnl.add(prmInt[REMOVE_GROUPS_MIN_NUM].set(REMOVE_GROUPS_MIN_NUM, 1, 0, 30));
+    mainPnl.add(prmBool[REMOVE_DUPLICATION].set(REMOVE_DUPLICATION, false));
 
     mainPnl.add(prmBool[REMOVE_GROUPS].set(REMOVE_GROUPS, false));
 
@@ -522,335 +531,21 @@ void testApp::setupCameraLightMaterial(){
 	mMatMainMaterial.setShininess(10.1f);
 }
 
-void testApp::updateShaders(bool doLink){
-    if (isShaderDirty){
-		
-		GLuint err = glGetError();	// we need this to clear out the error buffer.
-        
-		if (mShdInstanced != NULL ) delete mShdInstanced;
-		mShdInstanced = new ofShader();
-        
-        //		mShdInstanced->load("shaders/instancedTexTrans");
-        mShdInstanced->setupShaderFromFile(GL_VERTEX_SHADER, "shaders/instancedTexTrans.vert");
-        mShdInstanced->setupShaderFromFile(GL_FRAGMENT_SHADER, "shaders/instancedTexTrans.frag");
-        
-        if(doLink){
-            mShdInstanced->linkProgram();
-            err = glGetError();
-            ofLogNotice() << "Loaded instanced Shader: " << err;
-        }
-        
-		isShaderDirty = false;
-	}
-}
-
-bool testApp::connectInstanace(instance &instA, instance &instB, float minDist, float maxDist, instance& newIns){
+void testApp::setupShaders(bool doLink){
+    GLuint err = glGetError();	// we need this to clear out the error buffer.
     
-    // 3. check A - B distance
-    ofVec3f vA = instA.matrix.getTranslation();
-    ofVec3f vB = instB.matrix.getTranslation();
-
-    ofVec3f vAB = vB - vA;
-    float dist = vAB.length();
-
-    if(minDist<dist && dist<maxDist){
-
-        // 4. put
-//        ofMatrix4x4 mat;
-//        ofVec3f scale;
-//        ofVec3f pos = vA + vAB*0.5;
-
-        ofVec3f yAxis(0,0,1);
-        float angle = yAxis.angle(vAB);
-        ofVec3f prep = yAxis.cross(vAB);
-
-        newIns.scale.set(1, 1, dist);
-        newIns.matrix.rotate(angle, prep.x, prep.y, prep.z);
-        newIns.matrix.translate(vA + vAB*0.5);
-        return true;
-    }else{
-        return false;
+    if (mShdInstanced != NULL ) delete mShdInstanced;
+    mShdInstanced = new ofShader();
+    
+    //		mShdInstanced->load("shaders/instancedTexTrans");
+    mShdInstanced->setupShaderFromFile(GL_VERTEX_SHADER, "shaders/instancedTexTrans.vert");
+    mShdInstanced->setupShaderFromFile(GL_FRAGMENT_SHADER, "shaders/instancedTexTrans.frag");
+    
+    if(doLink){
+        mShdInstanced->linkProgram();
+        err = glGetError();
+        ofLogNotice() << "Loaded instanced Shader: " << err;
     }
 }
 
-// should be used parallel_for
-void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int numAllCylinders, float minDist, float maxDist){
 
-    int startTime = ofGetElapsedTimeMillis();
-    myLogRelease("Start ConnectRandom Process : time : " + ofToString(startTime));
-    
-
-    
-    INSTANCE_MAP& instanceMap = instancedComponent::getInstanceMap();
-    int numGroups = STL_UTIL::getAllKeySize(instanceMap);
-    int numInstances = instanceMap.size();
-    
-    int index = 0;
-    int numFind = 0;
-    for(int i=0; i<numAllCylinders; i++){
-        int numTry = 0;
-        int maxTry = 10000;
-        bool find = false;
-        
-        do{
-            // 1. select instance
-            int indexA = ofRandom(numInstances);               // todo: invalid
-            int indexB = ofRandom(numInstances);
-            
-            // 2. check if pair is already connected
-            bool same = false;
-            idPair idp(indexA, indexB);
-            for(int i=0; i<connectionList.size(); i++){
-                if(idp == connectionList[i]){
-                    same = true;
-                    cout << "same";
-                    break;
-                }
-            }
-            
-            if(!same){
-                INSTANCE_MAP_ITR itrA = instanceMap.begin();
-                INSTANCE_MAP_ITR itrB = instanceMap.begin();
-                std::advance(itrA, indexA);
-                std::advance(itrB, indexB);
-                
-                instance instA = itrA->second;
-                instance instB = itrB->second;
-
-                if(instA.type!= INSTANCE_CYLINDER && instB.type!=INSTANCE_CYLINDER ){
-                    instance newCylinder;
-                    newCylinder.type = INSTANCE_CYLINDER;
-                    find = connectInstanace(instA, instB, minDist, maxDist, newCylinder);
-                    if(find){
-                        // add to deafault group
-                        ic2->addInstance(newCylinder);
-                        numFind++;
-                        connectionList.push_back(idp);
-                    }
-                }
-            }
-            
-            numTry++;
-            
-            if(maxTry < numTry)
-                find = true;
-        }while (!find);
-    }
-    
-//    int instanceNum = ic2->getInstanceNum();
-//    ic2->setInstanceNum(instanceNum + numFind);
-    
-    cylinders.updateInstanceNum();
-    
-    
-    int endTime = ofGetElapsedTimeMillis();
-    myLogRelease("Finish ConnectRandom process : elapsed " + ofToString((float)(endTime-startTime)/1000.0)+" sec");
-
-}
-
-float testApp::getCollisionDistance(instance &insA, instance &insB){
-    float dist=99999;
-
-    ofMatrix4x4& matA = insA.matrix;
-    ofVec3f& sA = insA.scale;
-    INSTANCE_TYPE tA = insA.type;
-    
-    ofMatrix4x4& matB = insB.matrix;
-    ofVec3f& sB = insB.scale;
-    INSTANCE_TYPE tB = insB.type;
-    
-    if(tA == INSTANCE_SPHERE && tB==INSTANCE_SPHERE)
-        dist = tester.testSphereSphere(matA,sA,matB,sB);
-    else if(tA==INSTANCE_SPHERE && tB==INSTANCE_CYLINDER)
-        dist = tester.testSphereCylinder(matA,sA,matB,sB);
-    else if (tA==INSTANCE_CYLINDER && tB==INSTANCE_SPHERE)
-        dist = tester.testSphereCylinder(matB,sB, matA,sA);
-    else if(tA==INSTANCE_CYLINDER && tB==INSTANCE_CYLINDER)
-        dist = tester.testCylinderCylinder(matA,sA,matB,sB);
-    else{
-        myLogRelease("Can not test collision");
-        return 98765432;
-    }
-    return dist;
-
-}
-
-void testApp::processCollision(){
-#if defined (USE_TBB) && defined(USE_TBB_COLLISIION)
-    processCollisionParallel();
-#else
-    
-    int startTime = collisionStart();
-    
-    INSTANCE_MAP& instanceMap = instancedComponent::getInstanceMap();
-    INSTANCE_MAP_ITR itrA = instanceMap.begin();
-    
-    typedef map<instance*, int> TMAP;
-    typedef pair<instance*, int> TPAIR;
-    typedef TMAP::iterator TITR;
-    TMAP tmap;
-    
-    char m[255];
-    for(int i=0; itrA!=instanceMap.end(); itrA++, i++){
-        sprintf(m, "processCollisionTest i:%d", i);
-        myLogDebug(ofToString(m));        
-        
-        INSTANCE_MAP_ITR itrB = instanceMap.begin();
-        std:advance(itrB, i+1);
-        for(; itrB!=instanceMap.end(); itrB++){
-            instance& insA = itrA->second;
-            instance& insB = itrB->second;
-            
-            float dist=getCollisionDistance(insA, insB);
-            
-            if(dist<0.0) {
-                int groupIdA = itrA->first;
-                int groupIdB = itrB->first;
-                
-                //
-                //  check instance is in tempolaly container.
-                //  if existm, it sohuld have non -1 groupId.
-                //
-                TITR titrA = tmap.find(&itrA->second);
-                if(titrA!=tmap.end())
-                    groupIdA = titrA->second;
-                
-                TITR titrB = tmap.find(&itrB->second);
-                if(titrB!=tmap.end())
-                    groupIdB = titrB->second;
-                
-                
-                //
-                // it's already same group.
-                // ** this line may break correct grouping process
-                //
-                if( (groupIdA!=-1 && groupIdB!=-1) && groupIdA == groupIdB)
-                    continue;
-                
-                //
-                //  grouId -1 means this instance does not have any group
-                //
-                
-                if(groupIdA==-1){
-                    if(groupIdB==-1){
-                        // move instance A, B to new group
-                        int newId = instancedComponent::incGroupIdMaster();
-                        tmap.insert(TPAIR(&itrA->second, newId));
-                        tmap.insert(TPAIR(&itrB->second, newId));
-                    }else{
-                        // move A instance to B group
-                        tmap.insert(TPAIR(&itrA->second, groupIdB));
-                    }
-                }else{
-                    if(groupIdB==-1){
-                        // move B instance to A group
-                       tmap.insert(TPAIR(&itrB->second, groupIdA));
-                    }else{
-                        // at first move B instance to A group
-                        TITR titrB = tmap.find(&itrB->second);
-                         titrB->second = groupIdA;
-                        
-                        // search from tmap
-                        TITR titr = tmap.begin();
-                        
-                        for(; titr!=tmap.end(); titr++){
-                            if(titr->second == groupIdB){
-                                titr->second =groupIdA;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    // change group id
-    {
-        TITR itr = tmap.begin();
-        for(; itr!=tmap.end(); itr++){
-            instance * ins = itr->first;
-            int groupId = itr->second;
-            
-            if(ins!=NULL){
-                INSTANCE_MAP_ITR  iitr = instanceMap.begin();
-                for(; iitr!=instanceMap.end(); iitr++){
-                    if(&iitr->second == ins){
-                        spheres.changeInstanceGroupId(iitr, groupId);
-                        
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    
-    collisionEnd(startTime);
-#endif
-}
-
-int testApp::collisionStart(){
-    instancedComponent::resetGroup();
-    
-    int startTime = ofGetElapsedTimeMillis();
-    myLogRelease("collisionTest startTime:  "+ ofToString(startTime));
-    
-#ifndef NDEBUG
-    instancedComponent::printData();
-#endif
-    return startTime;
-    
-}
-
-void testApp::collisionEnd(int startTime){
-    // update group totalNum
-    instancedComponent::updateGroupTotalNum();
-
-    // coloring
-    ofColor c;
-    spheres.setGroupColorGradient();
-    spheres.setGroupColor(-1, ofColor(0,0,0));
-
-    
-    spheres.setCltexNeedUpdate(true);
-    spheres.setVtxtexNeedUpdate(true);
-    
-    cylinders.setCltexNeedUpdate(true);
-    cylinders.setVtxtexNeedUpdate(true);
-    
-    
-    int endTime = ofGetElapsedTimeMillis();
-    myLogRelease("collisionTest endTime:  "+ ofToString(endTime)+", elapsed: " + ofToString((float)(endTime-startTime)/1000.0));
-    myLogRelease("finish CollisionTest");
-}
-
-
-#if defined (USE_TBB) && defined(USE_TBB_COLLISIION)
-void testApp::processCollisionParallel(){
-    
-    int startTime = collisionStart();
-    
-    INSTANCE_MAP& instanceMap = instancedComponent::getInstanceMap();
-    int N = instanceMap.size();
-    CollisionTable table;
-    parallel_for(blocked_range<size_t>(0, N), Tally(table, instanceMap));
-    
-    // change group id
-    CollisionTable::iterator itr = table.begin();
-    for(; itr!=table.end(); ++itr){
-        instance * ins = itr->first;
-        int groupId = itr->second;
-        if(ins!=NULL){
-            INSTANCE_MAP_ITR  iitr = instanceMap.begin();
-            for(; iitr!=instanceMap.end(); iitr++){
-                if(&iitr->second == ins){
-                    spheres.changeInstanceGroupId(iitr, groupId);
-                    break;
-                }
-            }
-        }
-    }
-    
-    collisionEnd(startTime);
-    
-}
-#endif

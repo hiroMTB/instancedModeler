@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		4D15999B168B215400D10232 /* instancedTexTrans.frag in Sources */ = {isa = PBXBuildFile; fileRef = 4D159999168B215400D10232 /* instancedTexTrans.frag */; };
 		4D15999C168B215400D10232 /* instancedTexTrans.vert in Sources */ = {isa = PBXBuildFile; fileRef = 4D15999A168B215400D10232 /* instancedTexTrans.vert */; };
+		4D339CC816B24E6300B46DA0 /* testApp_connect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D339CC616B24E6300B46DA0 /* testApp_connect.cpp */; };
+		4D339CCB16B24F9300B46DA0 /* testApp_collision.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D339CC916B24F9300B46DA0 /* testApp_collision.cpp */; };
 		4D3A44BE16A4F8AE00328314 /* collisionTester.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A44BC16A4F8AE00328314 /* collisionTester.cpp */; };
 		4D3A451016A5001700328314 /* DemoApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A44F416A5001700328314 /* DemoApplication.cpp */; };
 		4D3A451116A5001700328314 /* GL_DialogDynamicsWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A44F616A5001700328314 /* GL_DialogDynamicsWorld.cpp */; };
@@ -222,6 +224,8 @@
 		4D159999168B215400D10232 /* instancedTexTrans.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = instancedTexTrans.frag; sourceTree = "<group>"; };
 		4D15999A168B215400D10232 /* instancedTexTrans.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = instancedTexTrans.vert; sourceTree = "<group>"; };
 		4D27813016AF3FB800BBD8E2 /* myDef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = myDef.h; sourceTree = "<group>"; };
+		4D339CC616B24E6300B46DA0 /* testApp_connect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testApp_connect.cpp; sourceTree = "<group>"; };
+		4D339CC916B24F9300B46DA0 /* testApp_collision.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testApp_collision.cpp; sourceTree = "<group>"; };
 		4D37C1A51692E2EC006FD104 /* instancedComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = instancedComponent.h; sourceTree = "<group>"; };
 		4D3A44BC16A4F8AE00328314 /* collisionTester.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = collisionTester.cpp; sourceTree = "<group>"; };
 		4D3A44BD16A4F8AE00328314 /* collisionTester.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = collisionTester.h; sourceTree = "<group>"; };
@@ -1948,8 +1952,10 @@
 			children = (
 				4D65FB961689630E00D7B2F5 /* shaders */,
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
-				E4B69E1E0A3A1BDC003C02F2 /* testApp.cpp */,
 				E4B69E1F0A3A1BDC003C02F2 /* testApp.h */,
+				E4B69E1E0A3A1BDC003C02F2 /* testApp.cpp */,
+				4D339CC916B24F9300B46DA0 /* testApp_collision.cpp */,
+				4D339CC616B24E6300B46DA0 /* testApp_connect.cpp */,
 				4D37C1A51692E2EC006FD104 /* instancedComponent.h */,
 				4DA082A41693D7C300DF20AD /* instancedComponent.cpp */,
 				4DA082A61693E5CD00DF20AD /* ofxMtb.h */,
@@ -2216,6 +2222,8 @@
 				4DB98FC416ADD89200F0864B /* MiniCL.cpp in Sources */,
 				4DB98FC516ADD89200F0864B /* MiniCLTask.cpp in Sources */,
 				4DB98FC616ADD89200F0864B /* MiniCLTaskScheduler.cpp in Sources */,
+				4D339CC816B24E6300B46DA0 /* testApp_connect.cpp in Sources */,
+				4D339CCB16B24F9300B46DA0 /* testApp_collision.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

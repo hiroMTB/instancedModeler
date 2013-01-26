@@ -19,14 +19,15 @@
 
 class collisionTester{
     
+    int uId;
     
 public:
     collisionTester();
     ~collisionTester();
 
     // should be call before usinge this class
-    void resetSphereShape(float radius);
-    void resetCylinderShape(ofVec3f halfExtent);
+    static void resetSphereShape(float radius);
+    static void resetCylinderShape(ofVec3f halfExtent);
 
     
     float collisionTest(btCollisionObject * objectA, btCollisionObject * objectB, btCollisionAlgorithm * algo);

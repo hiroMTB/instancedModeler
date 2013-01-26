@@ -22,9 +22,6 @@ cltexId(GL_NONE)
     shaderVtxTextureName = "vtxtex";
     shaderColorTextureName = "cltex";
     
-    offsetPosition.set(0,0,0);
-    offsetRotation.set(0, 0, 0, 0);
-    offsetScale.set(1,1,1);
 }
 
 instancedComponent::~instancedComponent(){
@@ -43,17 +40,18 @@ void instancedComponent::destroy(){
 
 void instancedComponent::setInstanceType(INSTANCE_TYPE t){
     insType = t;
-
-//    INSTANCE_MAP_ITR itr = instanceMap.begin();
-//    for(; itr!=instanceMap.end(); itr++){
-//        itr->second.type = t;
-//    }
 }
 
 void instancedComponent::update(){
     updateVertexTexture();
     
     updateColorTexture();
+}
+
+void instancedComponent::updateRequest(){
+    updateInstanceNum();
+    bCltexNeedUpdate = true;
+	bVtxtexNeedUpdate = true;
 }
 
 void instancedComponent::updateVertexTexture(){
@@ -141,10 +139,6 @@ void instancedComponent::updateColorTexture(){
 void instancedComponent::draw(ofShader * shader){
     
     glPushMatrix();
-    
-//    glScalef(offsetScale.x, offsetScale.y, offsetScale.z);
-//    glRotatef(offsetRotation.w, offsetRotation.x, offsetRotation.y, offsetRotation.z);
-//    glTranslatef(offsetPosition.x, offsetPosition.y, offsetPosition.z);
     
     if(vtxtexId!=GL_NONE)
         shader->setUniformTexture(shaderVtxTextureName.c_str(), GL_TEXTURE_2D, vtxtexId, 0);
@@ -599,4 +593,25 @@ void instancedComponent::saveInstanceDataToCsv(string dirName){
 
 
 
+void instancedComponent::removeDuplication(){
+    
+    INSTANCE_MAP_ITR itrA = instanceMap.begin();
+    int indexA = -1;
+    for(; itrA!=instanceMap.end(); itrA++){
+        indexA++;
+        instance& insA = itrA->second;
+
+        int indexB = indexA+1;
+        INSTANCE_MAP_ITR itrB = instanceMap.begin();
+        std::advance(itrB, indexB);
+
+        for(; itrB!=instanceMap.end(); itrB++, indexB++){
+            instance& insB = itrB->second;
+            if(insA == insB){
+                instanceMap.erase(itrB++);
+                myLogRelease("remove dupliated instance");
+            }
+        }
+    }
+}
 

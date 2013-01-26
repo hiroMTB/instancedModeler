@@ -6,27 +6,7 @@
 //
 //  Data Hierarchy
 //
-//  model - component - instance(sphere, cylinder, etc)
-//
-//  GUI should show data itself without transformation
-//
-//
-//  :::Usage:::
-//
-//  setup
-//      instancedComponent ic;
-//      ic.setInstanceMesh(sphere);
-//      ic.setInstancePositionFromModel("myBee.pcl");
-//
-//
-//  update
-//      ic.setInstanceMatrix(12, newMat);
-//      ic.update();
-//
-//
-//  draw
-//      ic.draw(myShader);
-//
+//  model - component - instance - mesh
 //
 #pragma once
 
@@ -45,13 +25,6 @@
 #define CL_TEX_HEIGHT       512
 
 
-//
-//  <map> instanceGroups
-//      class instanceGroup
-//          <vector> instances
-//              class instance
-//
-
 enum INSTANCE_TYPE{
     INSTANCE_NONE = 0,
     INSTANCE_SPHERE = SPHERE_SHAPE_PROXYTYPE,
@@ -60,22 +33,26 @@ enum INSTANCE_TYPE{
 
 struct instance{
 public:
-//    instance(INSTANCE_TYPE t){
-//        color = ofFloatColor(1.0, 1.0, 1.0);
-//        type = t;
-//    }
     instance(const instance& i){
-        color = i.color;
-        type = i.type;
-        matrix = i.matrix;
-        scale = i.scale;
+        color   = i.color;
+        type    = i.type;
+        matrix  = i.matrix;
+        scale   = i.scale;
     }
-    ofMatrix4x4     matrix;     // NOTICE dont use scaling func
+    ofMatrix4x4     matrix;     // NOTICE dont set scaling value
     ofVec3f         scale;
     ofFloatColor    color;
     INSTANCE_TYPE   type;
-//private:
     instance(){};
+    
+    bool operator==(const instance& o){
+
+        if(type == o.type)
+            if(scale == o.scale)
+                if(matrix.getTranslation() == o.matrix.getTranslation())
+                        return true;
+        return false;
+    }
 };
 
 
@@ -83,22 +60,32 @@ typedef multimap<int, instance> INSTANCE_MAP;
 typedef INSTANCE_MAP::iterator INSTANCE_MAP_ITR;
 
 class instancedComponent{
-public:
-
-    static INSTANCE_MAP &getInstanceMap(){ return instanceMap; }
     
 private:
     static INSTANCE_MAP instanceMap;
     static int groupIdMaster;
     static int groupTotalNum;
+    
+    bool    bVtxtexNeedUpdate;
+    bool    bCltexNeedUpdate;
+    int     instanceNum;
+    
+    string  shaderVtxTextureName;
+    string  shaderColorTextureName;
+    
+    GLuint  vtxtexId;
+    GLuint  cltexId;
 
     INSTANCE_TYPE insType;
+    
+    ofxVboMeshInstanced * vmi;
+
     
 public:
     instancedComponent();
     ~instancedComponent();
     
-    //void allocate();
+    static INSTANCE_MAP &getInstanceMap(){ return instanceMap; }
     
     void destroy();
     void reset();
@@ -108,6 +95,8 @@ public:
     void update();
     void updateVertexTexture();
     void updateColorTexture();
+    void updateRequest();
+    
     void draw(ofShader * shader);
     void drawWireframe(ofShader * shader);
     static void debugDraw();
@@ -117,89 +106,44 @@ public:
     void loadInstancePositionFromMatrices(ofMatrix4x4 * ms, ofVec3f * ss, int size);
 
     // instance param
-    //
     void addInstance(instance ins, int groupId=-1);
     void addInstanceMatrix      (ofMatrix4x4 m, ofVec3f s, int groupId=-1);
-    //void addInstanceMatrix      (INSTANCE_TYPE t, ofVec3f p, ofVec4f r=ofVec4f(0,0,0,0), ofVec3f s=ofVec3f(1,1,1), int groupId=-1);
     void clearInstanceMatrices();
-
-    void setGroupColor(int groupId, ofFloatColor color);
-    void setGroupColorGradient();
-    
     void setInstanceColor(INSTANCE_MAP_ITR itr, ofFloatColor color);
     void setInstanceColor(int index, ofFloatColor color);
-    int initGroup();
-    
-    ofxVboMeshInstanced * getVboMeshInstanced(){ return vmi; }
-    
-    inline void setInstanceNum(int i){ instanceNum = i; }
-    inline int getInstanceNum(){ return instanceNum; }
-    
-    
-    static void changeInstanceGroupId(INSTANCE_MAP_ITR& itr, int groupId);
-    static void mergeInstanceGroup(int groupIdA, int groupIdB);
-
-    static void mergeInstanceGroupAll(int groupId);
-    
-    static vector<string> printData(bool outputConsole=true);
-    static vector<string> printGroupData(bool outputConsole=true);
-    
-    static int getGroupIdMaster(){ return groupIdMaster;}
-    static int incGroupIdMaster(){ return ++groupIdMaster; }
-    
-    void setCltexNeedUpdate(bool b){ bCltexNeedUpdate = b; }
-    void setVtxtexNeedUpdate(bool b){ bVtxtexNeedUpdate = b; }
-    
-    static int    updateGroupTotalNum();
-    static int    getGroupTotalNum(){ return groupTotalNum;}
-    
-    void removeGroup(int groupId);
-    void removeSmallGroup(int minNum);
-  
     void updateInstanceNum();
+  
     
     // group func
     static void resetGroup();
+    static void changeInstanceGroupId(INSTANCE_MAP_ITR& itr, int groupId);
+    static void mergeInstanceGroup(int groupIdA, int groupIdB);
+    static void mergeInstanceGroupAll(int groupId);
+    static int  updateGroupTotalNum();
+    static int  getGroupTotalNum(){ return groupTotalNum;}
     
+    void removeGroup(int groupId);
+    void removeSmallGroup(int minNum);
+    void setGroupColor(int groupId, ofFloatColor color);
+    void setGroupColorGradient();
+    
+    
+    // util
     void saveInstanceDataToCsv(string dirName);
-    
-private:
+    static vector<string> printData(bool outputConsole=true);
+    static vector<string> printGroupData(bool outputConsole=true);
 
-    // component param
-    //
-    ofVec3f offsetPosition;
-    ofVec4f offsetRotation;
-    ofVec3f offsetScale;
+    // validate
+    static void removeDuplication();
     
+    // accessor
+    inline static int getGroupIdMaster(){ return groupIdMaster;}
+    inline static int incGroupIdMaster(){ return ++groupIdMaster; }
+    inline void setInstanceNum(int i){ instanceNum = i; }
+    inline int getInstanceNum(){ return instanceNum; }
     
-    // instance param
-    //
-    bool    bVtxtexNeedUpdate;
-    bool    bCltexNeedUpdate;
-    int     instanceNum;
-
-    GLuint  vtxtexId;
-    GLuint  cltexId;
-    
-    ofxVboMeshInstanced * vmi;
-    
-    string shaderVtxTextureName;
-    string shaderColorTextureName;
-    
-    
-    
-    //
-    //  Rycycle bin
-    //
-    
-    //bool    bTexAllocated;
-    //float * matrices;       // don't want to keep this here. but new float[????] is expensive and glGetTexImage is slow as well.
-
-
-    //    void setInstancePosition    (int index, ofVec3f p);
-    //    void setInstanceRotattion   (int index, ofVec4f r);
-    //    void setInstanceScale       (int index, ofVec3f s);
- 
-    //void sendVertexData(ofShader * shader, GLuint loc);
-    
+    inline void setCltexNeedUpdate(bool b){ bCltexNeedUpdate = b; }
+    inline void setVtxtexNeedUpdate(bool b){ bVtxtexNeedUpdate = b; }
+    inline ofxVboMeshInstanced * getVboMeshInstanced(){ return vmi; }
+  
 };

@@ -17,115 +17,108 @@
 
 class testApp : public ofBaseApp{
 
-	bool isShaderDirty;
-    bool bWireframe;
-    bool bCollisionDebugDraw;
+    bool    bWireframe;
+    bool    bCollisionDebugDraw;
+    bool    bNowProcessing;
+
+    float   compScale;
+    float   posScale;
     
-    float compScale;
-    float posScale;
+    string  posModelPath_P;
     
-    string posModelPath_P;
-    
-    ofShader* mShdInstanced;
-	
-	ofxVboMeshInstanced * mMshSphere;
-   	ofxVboMeshInstanced * mMshCylinder;
-    
+    ofShader*       mShdInstanced;
 	ofEasyCam       camMain;
 	ofLight         mLigDirectional;
 	ofMaterial      mMatMainMaterial;
 
-	
+
+    static collisionTester * tester;
+
+    instancedComponent spheres;
+    instancedComponent cylinders;
+    
     // GUI
-	ofxPanel        mainPnl;
-	map<string, ofxParameter<int> > prmInt;
-	map<string, ofxParameter<float> > prmFloat;
-	map<string, ofxParameter<bool> > prmBool;
-	
-	public:
-		void setup();
-		void update();
-		void draw();
-
-		void keyPressed  (int key);
-		void keyReleased(int key);
-		void mouseMoved(int x, int y );
-		void mouseDragged(int x, int y, int button);
-		void mousePressed(int x, int y, int button);
-		void mouseReleased(int x, int y, int button);
-		void windowResized(int w, int h);
-		void dragEvent(ofDragInfo dragInfo);
-		void gotMessage(ofMessage msg);
-
-private:
-        void setupGui();
-
-        void processGui();
-        void processRequest();
-    
-        void mainDraw();
-        void testDraw();
-    void waitDraw();
-
-        void setupCameraLightMaterial();
-    
-        instancedComponent spheres;
-        instancedComponent cylinders;
-    
-    
-    // operation func
-    void connectRandom(instancedComponent * ic, instancedComponent * ic2, int numAllCylinders, float minDist, float maxDist);
-    void connectNear(int numNearCylinders, float minDist=0, float maxDist=9999999999);
-    
-    void makeGroup();
-    void removeGroup();
-    
-   // void checkIntersection(ofVec3f posA, ofVec3f posB, InstanceType type);
-    
-    static string CURRENT_PROCESS;
-    
-    static string PROCESS_NAME[];
-    
+    static string       CURRENT_PROCESS;
+    static string       PROCESS_NAME[];
     static const string RENDER_NORMALS;
     static const string FLAT_SHADING;
     static const string CONNECT_RANDOM;
+    static const string CONNECT_GROUP;
     static const string CONNECT_NEAR;
     static const string RESET_CYLINDERS;
     static const string RESET_SPHERES;
     static const string COLLISION_TEST;
     static const string REMOVE_GROUPS;
     static const string REMOVE_GROUPS_MIN_NUM;
-
+    
     static const string SPHERE_RADIUS;
     static const string SPHERE_RESOLUTION;
     static const string CYLINDER_RADIUS;
     static const string CYLINDER_RESOLUTION;
     static const string RESET_INSTSANCE_SHAPE;
     static const string SAVE_DATA;
+    static const string REMOVE_DUPLICATION;
     
-    void updateShaders(bool doLink=true);
-    
-    // collision
-    static collisionTester tester;
-    void processCollision();
-    static float getCollisionDistance(instance& insA, instance& insB);
+	ofxPanel    mainPnl;
+	map<string, ofxParameter<int> > prmInt;
+	map<string, ofxParameter<float> > prmFloat;
+	map<string, ofxParameter<bool> > prmBool;
+	
+public:
+    void setup();
+    void update();
+    void draw();
 
-    int collisionStart();
-    void collisionEnd(int startTime);
-    
-#if defined (USE_TBB) && defined(USE_TBB_COLLISIION)
-    void processCollisionParallel();
-#endif
-    
+    void keyPressed(int key);
+    void keyReleased(int key);
+    void mouseMoved(int x, int y );
+    void mouseDragged(int x, int y, int button);
+    void mousePressed(int x, int y, int button);
+    void mouseReleased(int x, int y, int button);
+    void windowResized(int w, int h);
+    void dragEvent(ofDragInfo dragInfo);
+    void gotMessage(ofMessage msg);
+
 private:
-    
-    bool nowProcessing;
-    
-    vector<idPair> connectionList;   // store connection
-    bool connectInstanace(instance& insA, instance& insB, float minDist, float maxDist, instance& newIns);
-
+    void setupGui();
+    void setupCameraLightMaterial();
     void setupCylinderShape(float radius, int resolution);
     void setupSphereShape(float radius, int resolution);
+    void setupShaders(bool doLink=true);
+
+    void mainDraw();
+    void testDraw();
+    void waitDraw();
+    
+    void processGui();
+    void processRequest();
+
+    
+    
+        //
+        // testApp_collision.cpp
+        //
+        void processCollision();
+        static float getCollisionDistance(instance& insA, instance& insB);
+        int collisionStart();
+        void collisionEnd(int startTime);
+        
+        #if defined (USE_TBB) && defined(USE_TBB_COLLISIION)
+        void processCollisionParallel();
+        #endif
+    
+    
+    
+        //
+        // testApp_connect.cpp
+        //
+        bool connectInstanace   (INSTANCE_MAP_ITR& itrA, INSTANCE_MAP_ITR& itrB, float minDist, float maxDist, instance& newIns);
+        bool connectInstanace   (instance& insA, instance& insB, float minDist, float maxDist, instance& newIns);
+        void connectRandom      (instancedComponent * ic, instancedComponent * ic2, int numAllCylinders, float minDist, float maxDist);
+        void connectGroup       (instancedComponent * ic, instancedComponent * ic2, int numAllCylinders, float minDist, float maxDist);
+        void connectNear        (int numNearCylinders, float minDist=0, float maxDist=9999999999);
+    
+    
     
 };
 
