@@ -84,10 +84,10 @@ struct idPair{
     
 private:
     idPair();
+
+public:
     int a;
     int b;
-public:
-    
     idPair(int _a, int _b):
     a(_a),
     b(_b)
@@ -96,19 +96,16 @@ public:
     idPair(const idPair& ip){
         a=ip.a; b=ip.b;
     }
-    
-
-    
-    bool operator<(const idPair& other){
-        return a<other.a;
-    }
-        
-    bool operator==(const idPair& other){
-        bool aabb = (a==other.a) && (b==other.b);
-        bool abba =(a==other.b) && (b==other.a);
-        return aabb || abba;
-    }
 };
 
+    
+bool operator<(const idPair& lhs, const idPair& rhs ){
+    return lhs.a<rhs.a;
+}
 
 
+bool operator==(const idPair& lhs, const idPair& rhs ){
+    bool aabb = (lhs.a==rhs.a) && (lhs.b==rhs.b);
+    bool abba =(lhs.a==rhs.b) && (lhs.b==rhs.a);
+    return aabb || abba;
+}

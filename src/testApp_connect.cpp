@@ -40,6 +40,9 @@
 
 bool testApp::connectInstanace(INSTANCE_MAP_ITR& itrA, INSTANCE_MAP_ITR& itrB, float minDist, float maxDist, instance& newIns){
     
+    minDist = MIN(minDist, maxDist);
+    maxDist = MAX(minDist, maxDist);
+    
     instance& instA = itrA->second;
     instance& instB = itrB->second;
     
@@ -55,7 +58,7 @@ bool testApp::connectInstanace(INSTANCE_MAP_ITR& itrA, INSTANCE_MAP_ITR& itrB, f
         ofVec3f vAB = vB - vA;
         float dist = vAB.length();
     
-        if(minDist<dist && dist<maxDist){
+        if(minDist<=dist && dist<=maxDist){
             // put cylinder
             ofVec3f yAxis(0,0,1);
             float angle = yAxis.angle(vAB);
@@ -72,6 +75,8 @@ bool testApp::connectInstanace(INSTANCE_MAP_ITR& itrA, INSTANCE_MAP_ITR& itrB, f
 
 void testApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int numAllCylinders, float minDist, float maxDist){
     
+    char m[255];
+    
     int startTime = ofGetElapsedTimeMillis();
     myLogRelease("Start ConnectGroup Process : time : " + ofToString(startTime));
     
@@ -85,12 +90,12 @@ void testApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int 
     
     int numFind = 0;
 
-    vector<idPair>  connectionList;   // store connection
+    map<idPair, instance>  connectionList;   // store connection
 
     INSTANCE_MAP_ITR itr  = instanceMap.begin();
     
     // loop all group
-    int indexA = 0;
+    int groupIndexA = 0;
     int groupSizeA = 0;
     int groupIdA = 0;
     int groupKeyA = 0;
@@ -101,16 +106,16 @@ void testApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int 
         myLogDebug("start process connect groupKeyA " + ofToString(groupKeyA) + ", groupIdA " + ofToString(groupIdA));
         
         groupSizeA = STL_UTIL::getElementSize(instanceMap, itr->first);
-        indexA += groupSizeA;
+        groupIndexA += groupSizeA;
         
         for(int i=0; i<numAllCylinders; i++){
             int numTry = 0;
-            int maxTry = 10000;
+            int maxTry = 1000;
             bool find = false;
         
             do{
                 // 1. select group and get group top itr
-                int indexB      = 0;
+                int groupIndexB      = 0;
                 int groupSizeB  = 0;
                 int groupKeyB   = 0;
                 int groupIdB    = 0;
@@ -127,7 +132,7 @@ void testApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int 
 
                 for(int j=0; itrB!=instanceMap.end(); itrB=instanceMap.upper_bound(itrB->first), j++){
                     groupSizeB = STL_UTIL::getElementSize(instanceMap, itrB->first);
-                    indexB += groupSizeB;
+                    groupIndexB += groupSizeB;
 
                     if(j==groupIdB){
                         groupKeyB = itrB->first;
@@ -141,34 +146,28 @@ void testApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int 
                 int indexInGroupA = ofRandom(groupSizeA);
                 int indexInGroupB = ofRandom(groupSizeB);
                 
-                indexA += indexInGroupA;
-                indexB += indexInGroupB;
+                int indexA = groupIndexA + indexInGroupA;
+                int indexB = groupIndexB + indexInGroupB;
                 
                 // 3. check if pair is already connected
-                bool same = false;
                 idPair idp(indexA, indexB);
-                for(int j=0; j<connectionList.size(); j++){
-                    if(idp == connectionList[j]){
-                        same = true;
-                        cout << "same" << endl;;
-                        break;
-                    }
-                }
+                bool unique = (connectionList.find(idp) == connectionList.end());
                 
-                if(!same){
+                if(unique){
                     INSTANCE_MAP_ITR itrA = instanceMap.begin();
                     std::advance(itrA, indexA);
                     std::advance(itrB, indexInGroupB);
                     instance newCylinder;
                     find = connectInstanace(itrA, itrB, minDist, maxDist, newCylinder);
                     if(find){
-                        myLogRelease("connect group: " + ofToString(groupKeyA) + " + " + ofToString(groupKeyB));
+                        sprintf(m, "connect group (key-index) %d_%d + %d_%d", groupKeyA, indexA, groupKeyB, indexB);
+                        myLogRelease(m);
 
                         // add
                         newCylinder.type = INSTANCE_CYLINDER;
-                        ic2->addInstance(newCylinder);
+                        //ic2->addInstance(newCylinder);
                         numFind++;
-                        connectionList.push_back(idp);
+                        connectionList.insert(pair<idPair, instance>(idp, newCylinder));
                     }
                 }
                 
@@ -180,7 +179,18 @@ void testApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int 
         }
     }
     
-    cylinders.updateInstanceNum();
+    {
+        map<idPair, instance>::iterator itr = connectionList.begin();
+        for(; itr!=connectionList.end(); itr++){
+            int indexA = itr->first.a;
+            int indexB = itr->first.b;
+            instance& cyl = itr->second;
+            ic2->addInstance(cyl);
+        }
+    }
+    
+    // insert process
+    cylinders.updateRequest();
     
     int endTime = ofGetElapsedTimeMillis();
     myLogRelease("Finish ConnectGroup process : elapsed " + ofToString((float)(endTime-startTime)/1000.0)+" sec");
@@ -199,7 +209,7 @@ void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int
     
     int numFind = 0;
 
-    vector<idPair>  connectionList;   // store connection
+    map<idPair, instance>  connectionList;   // store connection
     
     for(int i=0; i<numAllCylinders; i++){
         int numTry = 0;
@@ -212,17 +222,10 @@ void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int
             int indexB = ofRandom(numInstances);
             
             // 2. check if pair is already connected
-            bool same = false;
             idPair idp(indexA, indexB);
-            for(int i=0; i<connectionList.size(); i++){
-                if(idp == connectionList[i]){
-                    same = true;
-                    cout << "same";
-                    break;
-                }
-            }
+            bool unique = connectionList.find(idp) == connectionList.end();
             
-            if(!same){
+            if(unique){
                 INSTANCE_MAP_ITR itrA = instanceMap.begin();
                 INSTANCE_MAP_ITR itrB = instanceMap.begin();
                 std::advance(itrA, indexA);
@@ -232,10 +235,9 @@ void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int
                 if(find){
                     // add
                     newCylinder.type = INSTANCE_CYLINDER;
-                    ic2->addInstance(newCylinder);
+//                  ic2->addInstance(newCylinder);
                     numFind++;
-                    connectionList.push_back(idp);
-                
+                    connectionList.insert(pair<idPair, instance>(idp, newCylinder));
                 }
             }
             
@@ -246,8 +248,15 @@ void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int
         }while (!find);
     }
     
-    //    int instanceNum = ic2->getInstanceNum();
-    //    ic2->setInstanceNum(instanceNum + numFind);
+    {
+        map<idPair, instance>::iterator itr = connectionList.begin();
+        for(; itr!=connectionList.end(); itr++){
+            int indexA = itr->first.a;
+            int indexB = itr->first.b;
+            instance& cyl = itr->second;
+            ic2->addInstance(cyl);
+        }
+    }
     
     cylinders.updateInstanceNum();
     
@@ -255,3 +264,5 @@ void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int
     myLogRelease("Finish ConnectRandom process : elapsed " + ofToString((float)(endTime-startTime)/1000.0)+" sec");
     
 }
+
+

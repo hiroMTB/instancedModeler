@@ -3,6 +3,7 @@
 
 #include<set>
 
+
 collisionTester * testApp::tester = NULL;
 
 // GUI parts
@@ -11,14 +12,17 @@ string testApp::CURRENT_PROCESS = "NONE";
 const string testApp::CONNECT_RANDOM = "CONNECT_RANDOM";
 const string testApp::CONNECT_GROUP = "CONNECT_GROUP";
 const string testApp::CONNECT_NEAR = "CONNECT_NEAR";
+
+const string testApp::COLLISION_MARGIN = "COLLISION_MARGIN";
 const string testApp::COLLISION_TEST = "COLLISION_TEST";
+
 const string testApp::REMOVE_GROUPS = "REMOVE_GROUPS";
-const string testApp::REMOVE_GROUPS_MIN_NUM = "REMOVE_MIN_NUM";
-const string testApp::RESET_CYLINDERS = "RESET_CYLINDERS";
-const string testApp::RESET_SPHERES = "RESET_SPHERES";
+const string testApp::REMOVE_GROUPS_MIN_NUM = "REMOVE_GROUPS_MIN_NUM";
+const string testApp::REMOVE_ALL_CYLINDERS = "REMOVE_ALL_CYLINDERS";
+
 const string testApp::RESET_INSTSANCE_SHAPE = "RESET_INSTSANCE_SHAPE";
 const string testApp::SAVE_DATA = "SAVE_DATA";
-const string testApp::REMOVE_DUPLICATION = "REMOVE_DUPLICATION";
+const string testApp::REMOVE_DUPLICATE = "REMOVE_DUPLICATE";
 
 string testApp::PROCESS_NAME[] = {
     CONNECT_RANDOM,
@@ -26,22 +30,38 @@ string testApp::PROCESS_NAME[] = {
     CONNECT_GROUP,
     COLLISION_TEST,
     REMOVE_GROUPS,
-    REMOVE_DUPLICATION,
-    RESET_CYLINDERS,
-    RESET_SPHERES,
+    REMOVE_DUPLICATE,
+    REMOVE_ALL_CYLINDERS,
     RESET_INSTSANCE_SHAPE,
     SAVE_DATA
 };
 
 // param
-const string testApp::RENDER_NORMALS = "RENDER_NORMALS";
-const string testApp::FLAT_SHADING = "FLAT_SHADING";
-const string testApp::SPHERE_RADIUS = "SPHERE_RADIUS";
-const string testApp::SPHERE_RESOLUTION = "SPHERE_RESOLUTION";
-const string testApp::CYLINDER_RADIUS = "CYLINDER_RADIUS";
-const string testApp::CYLINDER_RESOLUTION = "CYLINDER_RESOLUTION";
+const string testApp::SPHERE_RADIUS                 = "SPHERE_RADIUS";
+const string testApp::SPHERE_RESOLUTION             = "SPHERE_RESOLUTION";
+const string testApp::CYLINDER_RADIUS               = "CYLINDER_RADIUS";
+const string testApp::CYLINDER_RESOLUTION           = "CYLINDER_RESOLUTION";
+
+const string testApp::CONNECT_GROUP_CYLINDER_NUM    = "CONNECT_GROUP_CYLINDER_NUM";
+const string testApp::CONNECT_GROUP_MIN_DIST        = "CONNECT_GROUP_MIN_DIST";
+const string testApp::CONNECT_GROUP_MAX_DIST        = "CONNECT_GROUP_MAX_DIST";
+
+const string testApp::CONNECT_RANDOM_CYLINDER_NUM   = "CONNECT_RANDOM_CYLINDER_NUM";
+const string testApp::CONNECT_RANDOM_MIN_DIST       = "CONNECT_RANDOM_MIN_DIST";
+const string testApp::CONNECT_RANDOM_MAX_DIST       = "CONNECT_RANDOM_MAX_DIST";
+
+const string testApp::DRAW_WIREFRAME                = "DRAW_WIREFRAME";
+const string testApp::DRAW_COLLISION_SHAPE          = "DRAW_COLLISION_SHAPE";
+const string testApp::DRAW_COLLISION_DISTANCE       = "DRAW_COLLISION_DISTANCE";
+
+#include "assimp.h"
+#include "aiScene.h"
 
 void testApp::setup(){
+
+//    int m = aiGetVersionMajor();
+//    
+//    
     
 #ifndef NDEBUG
     ofSetLogLevel(OF_LOG_VERBOSE);
@@ -75,16 +95,16 @@ void testApp::setup(){
     compScale = 1;
     posScale = 100;
 
-    int cylNum = 4;
-    int sphNum = 6;
+    int sphNum = 100;
+    int cylNum = 400;
     {
-        setupSphereShape(1, 8);
-        setupCylinderShape(0.2, 8);
+        setupSphereShape(3.2, 8);
+        setupCylinderShape(0.8, 8);
         
 #define SETUP_SPHERE
 #ifdef SETUP_SPHERE
         myLogDebug("setup Spheres");
-#if 0
+#if 1
         spheres.loadInstancePositionFromModel(posModelPath_P, posScale);
 #else
        
@@ -131,8 +151,9 @@ void testApp::setup(){
 #endif
 #endif
     }
+
     
-    //tester.initAlgo();
+    finishSound.loadSound("sound/finishSound.wav");
 }
 
 void testApp::setupSphereShape(float radius, int resolution){
@@ -154,8 +175,7 @@ void testApp::setupCylinderShape(float radius, int resolution){
 void testApp::update(){
     
     processRequest();
-	camMain.setNearClip(prmFloat["zNear"]);
-	camMain.setFarClip(prmFloat["zFar"]);
+
 
     processGui();
     spheres.update();
@@ -230,34 +250,20 @@ void testApp::mainDraw(){
 	mLigDirectional.lookAt(ofVec3f(0,0,0));
 	ofEnableSeparateSpecularLight();
 
-	glProvokingVertex(GL_LAST_VERTEX_CONVENTION);
+    glShadeModel(GL_FLAT);
+    glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);		// OpenGL default is GL_LAST_VERTEX_CONVENTION
+
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
     
 	mShdInstanced->begin();
-        if (prmBool[RENDER_NORMALS]){
-            mShdInstanced->setUniform1f(RENDER_NORMALS.c_str(), 1.0);
-        } else {
-            mShdInstanced->setUniform1f(RENDER_NORMALS.c_str(), 0.0);
-        }
-
-        if (prmBool[FLAT_SHADING]){
-            mShdInstanced->setUniform1f(FLAT_SHADING.c_str(), 1.0);
-            glShadeModel(GL_FLAT);
-            glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);		// OpenGL default is GL_LAST_VERTEX_CONVENTION
-        } else {
-            mShdInstanced->setUniform1f(FLAT_SHADING.c_str(), 0.0);
-            glShadeModel(GL_SMOOTH);
-            glProvokingVertex(GL_LAST_VERTEX_CONVENTION);
-        }
-
 
         mLigDirectional.enable();
         mMatMainMaterial.begin();
     
         ofSetColor(ofFloatColor(prmFloat["COLOR_R"], prmFloat["COLOR_G"], prmFloat["COLOR_B"]));
-        if (bWireframe) {
+        if (prmBool[DRAW_WIREFRAME]) {
             spheres.drawWireframe(mShdInstanced);
             cylinders.drawWireframe(mShdInstanced);
         }else{
@@ -279,16 +285,23 @@ void testApp::mainDraw(){
     ofSetColor(255,255,255);
 	ofDisableLighting();
 
-    if(bCollisionDebugDraw){
+    if(prmBool[DRAW_COLLISION_SHAPE]){
         instancedComponent::debugDraw();
+    }
+    
+    if(prmBool[DRAW_COLLISION_DISTANCE]){
         tester->drawAllContanctPts();
     }
 
     camMain.end();
 	
     //  GUI draw
-	mainPnl.draw();
-    
+	pnlMain.draw();
+    pnlShape.draw();
+	pnlRemove.draw();
+	pnlCollision.draw();
+    pnlConnectR.draw();
+    pnlConnectG.draw();
     
     int y = 20;
     int x = 15;
@@ -306,15 +319,18 @@ void testApp::mainDraw(){
     //ofVec3f tp = camMain.getTarget().getPosition();
     //ofDrawBitmapString("target position: "+ofToString(tp.x)+", "+ofToString(tp.y)+", "+ofToString(tp.z), x, y+=h);
     
-    ofDrawBitmapString("instance total : "+ofToString(instancedComponent::getInstanceMap().size()), x, y+=h);
-    ofDrawBitmapString("group total : "+ofToString(instancedComponent::getGroupTotalNum()), x, y+=h);
-    
+    ofDrawBitmapString("Instance Info ------", x, y+=(h*2));    
     ofDrawBitmapString("particle total : "+ofToString(spheres.getInstanceNum()), x, y+=h);
     ofDrawBitmapString("line total : "+ofToString(cylinders.getInstanceNum()), x, y+=h);
+    ofDrawBitmapString("instance total : "+ofToString(instancedComponent::getInstanceMap().size()), x, y+=h);
     
     
     vector<string> strings = instancedComponent::printGroupData(false);
 
+    ofDrawBitmapString("Group Info ------", x, y+=(h*2));
+    ofDrawBitmapString("group total : "+ofToString(instancedComponent::getGroupTotalNum()), x, y+=h);
+
+    y+=h;
     int startY = y;
     for(int i=0; i<strings.size(); i++){
         
@@ -349,37 +365,39 @@ void testApp::keyReleased(int key){
 	}
 	
 }
-void testApp::mouseMoved(int x, int y ){
-    ofRectangle area = mainPnl.getShape();
-    bool in = area.inside(x, y);
 
-    if(!in){
+bool testApp::guiMouseCheck(int x, int y){
+    if(pnlMain.getShape().inside(x, y))
+        return true;
+    if(pnlRemove.getShape().inside(x, y))
+        return true;
+    if(pnlConnectR.getShape().inside(x, y))
+        return true;
+    if(pnlConnectG.getShape().inside(x, y))
+        return true;
+    if(pnlCollision.getShape().inside(x, y))
+        return true;
+    if(pnlShape.getShape().inside(x, y))
+        return true;
+
+    return false;
+}
+
+void testApp::mouseMoved(int x, int y ){
+    if(!guiMouseCheck(x, y))
         camMain.mouseMoved(x, y);
-    }
 }
 void testApp::mouseDragged(int x, int y, int button){
-    ofRectangle area = mainPnl.getShape();
-    bool in = area.inside(x, y);
-    
-    if(!in){
+    if(!guiMouseCheck(x, y))
         camMain.mouseDragged(x, y, button);
-    }
 }
 void testApp::mousePressed(int x, int y, int button){
-    ofRectangle area = mainPnl.getShape();
-    bool in = area.inside(x, y);
-    
-    if(!in){
+    if(!guiMouseCheck(x, y))
         camMain.mousePressed(x, y, button);
-    }
 }
 void testApp::mouseReleased(int x, int y, int button){
-    ofRectangle area = mainPnl.getShape();
-    bool in = area.inside(x, y);
-    
-    if(!in){
+//    if(!guiMouseCheck(x, y))
         camMain.mouseReleased(x, y, button);
-    }
 }
 void testApp::windowResized(int w, int h){}
 void testApp::gotMessage(ofMessage msg){}
@@ -399,40 +417,45 @@ void testApp::processGui(){
 }
 
 
+
 void testApp::processRequest(){
 
     if(bNowProcessing){
         if(CURRENT_PROCESS == CONNECT_RANDOM){
-            connectRandom(&spheres, &cylinders, 100, 1, 1000);
+            int num = prmInt[CONNECT_RANDOM_CYLINDER_NUM];
+            float min = prmFloat[CONNECT_RANDOM_MIN_DIST];
+            float max = prmFloat[CONNECT_RANDOM_MAX_DIST];
+            connectRandom(&spheres, &cylinders, num, min, max);
         
         }else if(CURRENT_PROCESS == CONNECT_GROUP){
-            connectGroup(&spheres, &cylinders, 3, 1, 1000);
-        
+            int num = prmInt[CONNECT_GROUP_CYLINDER_NUM];
+            float min = prmFloat[CONNECT_GROUP_MIN_DIST];
+            float max = prmFloat[CONNECT_GROUP_MAX_DIST];
+            connectGroup(&spheres, &cylinders, num, min, max);
+            playFinishSound();
         }else if (CURRENT_PROCESS == CONNECT_NEAR){
             
         
         }else if (CURRENT_PROCESS == COLLISION_TEST){
             processCollision();
-        
+            playFinishSound();
         }else if(CURRENT_PROCESS == REMOVE_GROUPS){
             int min = prmInt[REMOVE_GROUPS_MIN_NUM];
             spheres.removeSmallGroup(min);          // should be static
             cylinders.removeSmallGroup(min);
         
-        }else if(CURRENT_PROCESS == REMOVE_DUPLICATION){
+        }else if(CURRENT_PROCESS == REMOVE_DUPLICATE){
             instancedComponent::removeDuplication();
             spheres.updateRequest();
             cylinders.updateRequest();
-            
-        }else if(CURRENT_PROCESS == RESET_CYLINDERS){
-            cylinders.reset();            
-        
-        }else if(CURRENT_PROCESS == RESET_SPHERES){
+            playFinishSound();
+        }else if(CURRENT_PROCESS == REMOVE_ALL_CYLINDERS){
+            cylinders.reset();
             
         }else if(CURRENT_PROCESS == RESET_INSTSANCE_SHAPE){
             setupSphereShape(prmFloat[SPHERE_RADIUS], prmInt[SPHERE_RESOLUTION]);
             setupCylinderShape(prmFloat[CYLINDER_RADIUS], prmInt[CYLINDER_RESOLUTION]);
-        
+    
         }else if(CURRENT_PROCESS == SAVE_DATA){
             
             // TOP dir
@@ -449,6 +472,7 @@ void testApp::processRequest(){
             string timestamp = ofGetTimestampString();
             spheres.saveInstanceDataToCsv(subDirName);
             cylinders.saveInstanceDataToCsv(subDirName);
+            playFinishSound();
         }
         
         bNowProcessing = false;
@@ -479,45 +503,72 @@ void testApp::waitDraw(){
 
 void testApp::setupGui(){
     
-	mainPnl.setup("MAIN SETTINGS", "settings.xml", ofGetWidth() - 300, 50);
-	mainPnl.add(prmFloat["zNear"].set("Near Clip",0,0,100));
-	mainPnl.add(prmFloat["zFar"].set("Far Clip",0,0,5000.0));
-	mainPnl.add(prmBool[RENDER_NORMALS].set(RENDER_NORMALS, false));
-	mainPnl.add(prmBool[FLAT_SHADING].set(FLAT_SHADING, true));
-	
-    mainPnl.add(prmFloat[SPHERE_RADIUS].set(SPHERE_RADIUS,0,0,2.0));
-    mainPnl.add(prmInt[SPHERE_RESOLUTION].set(SPHERE_RESOLUTION,0,3,20));
-    mainPnl.add(prmFloat[CYLINDER_RADIUS].set(CYLINDER_RADIUS,0,0,2.0));
-    mainPnl.add(prmInt[CYLINDER_RESOLUTION].set(CYLINDER_RESOLUTION,0,3,20));
+    int x = ofGetWidth() - 350;
+    int y = 50;
+    int h = 50;
+    int w = 250;
+	pnlMain.setup("MAIN", "gui/mainSettings.xml", x, y);
+    pnlMain.add(prmFloat["COLOR_R"].set("Red", 1.0, 0.0, 1.0));
+    pnlMain.add(prmFloat["COLOR_G"].set("Green", 1.0, 0.0, 1.0));
+    pnlMain.add(prmFloat["COLOR_B"].set("Blue", 1.0, 0.0, 1.0));
+    pnlMain.add(prmBool[DRAW_WIREFRAME].set(DRAW_WIREFRAME, false));
+    pnlMain.add(prmBool[DRAW_COLLISION_SHAPE].set(DRAW_COLLISION_SHAPE, false));
+    pnlMain.add(prmBool[DRAW_COLLISION_DISTANCE].set(DRAW_COLLISION_DISTANCE, false));
     
-    mainPnl.add(prmFloat["COLOR_R"].set("Red", 1.0, 0.0, 1.0));
-    mainPnl.add(prmFloat["COLOR_G"].set("Green", 1.0, 0.0, 1.0));
-    mainPnl.add(prmFloat["COLOR_B"].set("Blue", 1.0, 0.0, 1.0));
-
-    mainPnl.add(prmBool[CONNECT_RANDOM].set(CONNECT_RANDOM, false));
-    mainPnl.add(prmBool[CONNECT_GROUP].set(CONNECT_GROUP, false));
-
-    mainPnl.add(prmBool[COLLISION_TEST].set(COLLISION_TEST, false));
+    pnlMain.add(prmBool[SAVE_DATA].set(SAVE_DATA, false));
+	y += (pnlMain.getHeight() + h);
     
+   	pnlShape.setup("SHAPE", "gui/shapeSettings.xml", x, y);
+    pnlShape.add(prmFloat [SPHERE_RADIUS].set(SPHERE_RADIUS,0,0,4.0));
+    pnlShape.add(prmInt   [SPHERE_RESOLUTION].set(SPHERE_RESOLUTION,0,3,20));
+    pnlShape.add(prmFloat [CYLINDER_RADIUS].set(CYLINDER_RADIUS,0,0,4.0));
+    pnlShape.add(prmInt   [CYLINDER_RESOLUTION].set(CYLINDER_RESOLUTION,0,3,20));
+    pnlShape.add(prmBool  [RESET_INSTSANCE_SHAPE].set(RESET_INSTSANCE_SHAPE, false));
+    y += (pnlShape.getHeight() + h);
     
-    mainPnl.add(prmInt[REMOVE_GROUPS_MIN_NUM].set(REMOVE_GROUPS_MIN_NUM, 1, 0, 30));
-    mainPnl.add(prmBool[REMOVE_DUPLICATION].set(REMOVE_DUPLICATION, false));
+    pnlConnectR.setup("CONNECT RANDOM", "gui/connectRandomSettings.xml", x, y);
+    pnlConnectR.add(prmInt[CONNECT_RANDOM_CYLINDER_NUM].set(CONNECT_RANDOM_CYLINDER_NUM, 1, 1, 300));
+    pnlConnectR.add(prmFloat[CONNECT_RANDOM_MIN_DIST].set(CONNECT_RANDOM_MIN_DIST, 0.0, 0.0, 1000));
+    pnlConnectR.add(prmFloat[CONNECT_RANDOM_MAX_DIST].set(CONNECT_RANDOM_MAX_DIST, 9999, 0.0, 1000));
+    pnlConnectR.add(prmBool[CONNECT_RANDOM].set(CONNECT_RANDOM, false));
+    y += pnlConnectR.getHeight() + h;
 
-    mainPnl.add(prmBool[REMOVE_GROUPS].set(REMOVE_GROUPS, false));
 
-    mainPnl.add(prmBool[RESET_SPHERES].set(RESET_SPHERES, false));
-    mainPnl.add(prmBool[RESET_CYLINDERS].set(RESET_CYLINDERS, false));
-    mainPnl.add(prmBool[RESET_INSTSANCE_SHAPE].set(RESET_INSTSANCE_SHAPE, false));
-    mainPnl.add(prmBool[SAVE_DATA].set(SAVE_DATA, false));
-
+    pnlConnectG.setup("CONNECT GROUP", "gui/connectGroupSettings.xml", x, y);
+    pnlConnectG.add(prmInt[CONNECT_GROUP_CYLINDER_NUM].set(CONNECT_GROUP_CYLINDER_NUM, 1, 1, 10));
+    pnlConnectG.add(prmFloat[CONNECT_GROUP_MIN_DIST].set(CONNECT_GROUP_MIN_DIST, 0.0, 0.0, 1000));
+    pnlConnectG.add(prmFloat[CONNECT_GROUP_MAX_DIST].set(CONNECT_GROUP_MAX_DIST, 9999, 0.0, 1000));
+    pnlConnectG.add(prmBool[CONNECT_GROUP].set(CONNECT_GROUP, false));
+    y += pnlConnectG.getHeight() + h;
     
-    mainPnl.loadFromFile("settings.xml");
+    pnlCollision.setup("COLLISION", "gui/collisionSettings.xml", x, y);
+    pnlCollision.add(prmFloat[COLLISION_MARGIN].set(COLLISION_MARGIN, 0, -3.0, 3.0));
+    pnlCollision.add(prmBool[COLLISION_TEST].set(COLLISION_TEST, false));
+    y+= (pnlCollision.getHeight() + h);
+    
+    pnlRemove.setup("REMOVE", "gui/removeSettings.xml", x, y);
+    pnlRemove.add(prmInt [REMOVE_GROUPS_MIN_NUM].set(REMOVE_GROUPS_MIN_NUM, 1, 0, 30));
+    pnlRemove.add(prmBool[REMOVE_GROUPS].set(REMOVE_GROUPS, false));
+    
+    pnlRemove.add(prmBool[REMOVE_DUPLICATE].set(REMOVE_DUPLICATE, false));
+    pnlRemove.add(prmBool[REMOVE_ALL_CYLINDERS].set(REMOVE_ALL_CYLINDERS, false));
+    
+
+    pnlMain.loadFromFile("gui/mainSettings.xml");
+    pnlShape.loadFromFile("gui/shapeSettings.xml");
+    pnlConnectR.loadFromFile("gui/connectRandomSettings.xml");
+    pnlConnectG.loadFromFile("gui/connectGroupSettings.xml");
+    pnlCollision.loadFromFile("gui/collisionSettings.xml");
+    pnlRemove.loadFromFile("gu/removeSettings.xml");
+    
 }
 
 void testApp::setupCameraLightMaterial(){
     camMain.setupPerspective(false);
     camMain.setDistance(400);
     camMain.disableMouseInput();
+    camMain.setNearClip(1);
+	camMain.setFarClip(10000);
     
 	mLigDirectional.setup();
 	mLigDirectional.setDirectional();

@@ -38,31 +38,56 @@ class testApp : public ofBaseApp{
     instancedComponent cylinders;
     
     // GUI
+    ofxPanel    pnlMain;
+    ofxPanel    pnlRemove;
+    ofxPanel    pnlCollision;
+    ofxPanel    pnlConnectR, pnlConnectG;
+    ofxPanel    pnlShape;
+    
+    
+	map<string, ofxParameter<int> > prmInt;
+	map<string, ofxParameter<float> > prmFloat;
+	map<string, ofxParameter<bool> > prmBool;
+    
     static string       CURRENT_PROCESS;
     static string       PROCESS_NAME[];
-    static const string RENDER_NORMALS;
-    static const string FLAT_SHADING;
-    static const string CONNECT_RANDOM;
+
     static const string CONNECT_GROUP;
+    static const string CONNECT_GROUP_MIN_DIST;
+    static const string CONNECT_GROUP_MAX_DIST;
+    static const string CONNECT_GROUP_CYLINDER_NUM;
+
+    static const string CONNECT_RANDOM;
+    static const string CONNECT_RANDOM_MIN_DIST;
+    static const string CONNECT_RANDOM_MAX_DIST;
+    static const string CONNECT_RANDOM_CYLINDER_NUM;
+
     static const string CONNECT_NEAR;
-    static const string RESET_CYLINDERS;
-    static const string RESET_SPHERES;
+    
+    static const string COLLISION_MARGIN;
     static const string COLLISION_TEST;
+
     static const string REMOVE_GROUPS;
     static const string REMOVE_GROUPS_MIN_NUM;
+    static const string REMOVE_DUPLICATE;
+    static const string REMOVE_ALL_CYLINDERS;
     
     static const string SPHERE_RADIUS;
     static const string SPHERE_RESOLUTION;
     static const string CYLINDER_RADIUS;
     static const string CYLINDER_RESOLUTION;
     static const string RESET_INSTSANCE_SHAPE;
+
+    static const string DRAW_WIREFRAME;
+    static const string DRAW_COLLISION_SHAPE;
+    static const string DRAW_COLLISION_DISTANCE;
     static const string SAVE_DATA;
-    static const string REMOVE_DUPLICATION;
-    
-	ofxPanel    mainPnl;
-	map<string, ofxParameter<int> > prmInt;
-	map<string, ofxParameter<float> > prmFloat;
-	map<string, ofxParameter<bool> > prmBool;
+
+    // shader uniform name
+    static const string RENDER_NORMALS;
+    static const string FLAT_SHADING;
+
+
 	
 public:
     void setup();
@@ -90,6 +115,7 @@ private:
     void testDraw();
     void waitDraw();
     
+    bool guiMouseCheck(int x, int y);
     void processGui();
     void processRequest();
 
@@ -119,7 +145,8 @@ private:
         void connectNear        (int numNearCylinders, float minDist=0, float maxDist=9999999999);
     
     
-    
+    ofSoundPlayer finishSound;
+    void playFinishSound(){ finishSound.play(); }
 };
 
 

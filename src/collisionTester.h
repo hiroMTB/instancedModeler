@@ -19,8 +19,6 @@
 
 class collisionTester{
     
-    int uId;
-    
 public:
     collisionTester();
     ~collisionTester();

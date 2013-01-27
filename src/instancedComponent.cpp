@@ -560,7 +560,7 @@ void instancedComponent::saveInstanceDataToCsv(string dirName){
 
     if(myfile.is_open()){
         char d[255];
-        sprintf(d, "renature, instance data, format_version= %s", version.c_str());       // line 1
+        sprintf(d, "renature,instance data,format=%s", version.c_str());       // line 1
         myfile << d << "\n";
         
         sprintf(d, "mesh=%s, posScale=%f, instanceNum=%d", meshName.c_str(), meshScale, instanceNum);    // line 2
@@ -571,17 +571,39 @@ void instancedComponent::saveInstanceDataToCsv(string dirName){
         
 
         INSTANCE_MAP_ITR itr = instanceMap.begin();
-        for(; itr!=instanceMap.end(); itr++){
+        for(int i=0; itr!=instanceMap.end(); itr++, i++){
             
             instance& ins       = itr->second;
-            ofMatrix4x4& mat    = ins.matrix;
-            ofVec3f pos         = mat.getTranslation();
-            ofQuaternion quat   = mat.getRotate();       // TODO double check blender side rotation compatibility
-            ofVec3f rot         = quat.getEuler();
-            ofVec3f& sc         = ins.scale;
+            INSTANCE_TYPE t     = ins.type;
+            string typeName;
+            if (t == INSTANCE_SPHERE) {
+                typeName = "sphere";
+            }else if(t == INSTANCE_CYLINDER){
+                typeName = "cylinder";
+            }else{
+                typeName = "unknownType";
+            }
             
-            sprintf(d, "%f,%f,%f,%f,%f,%f,%f,%f,%f", pos.x, pos.y, pos.z, rot.x, rot.y, rot.z, sc.x, sc.y, sc.z);
-            myfile << d << "\n";
+            if(t==insType){
+                char    name[255];
+                sprintf(name, "%s%05d", typeName.c_str(), i);
+                ofMatrix4x4& mat    = ins.matrix;
+                ofVec3f pos         = mat.getTranslation();
+                ofQuaternion quat   = mat.getRotate();       // TODO double check blender side rotation compatibility
+                ofVec3f axis;
+                float angle;
+                quat.getRotate(angle, axis);
+                axis.normalize();
+                ofVec3f& sc         = ins.scale;
+                
+                sprintf(d, "%s,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%i",
+                        name,
+                        pos.x, pos.y, pos.z,
+                        angle, axis.x, axis.y, axis.z,
+                        sc.x, sc.y, sc.z,
+                        t);
+                myfile << d << "\n";
+            }
         }
         
         myfile.close();

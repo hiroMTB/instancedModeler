@@ -45,9 +45,6 @@ collisionTester::collisionTester(){
     cylinderB.setCollisionShape(cB);
     
     initAlgo();
-    
-    uId = ofRandom(10000);
-    cout << "uid = " << ofToString(uId) << endl;
 }
 
 
@@ -96,16 +93,43 @@ void collisionTester::initAlgo(){
 
 
 void collisionTester::resetSphereShape(float radius){
-    btVector3 scaling(radius, radius, radius);
-    sphereA.getCollisionShape()->setLocalScaling(scaling);
-    sphereB.getCollisionShape()->setLocalScaling(scaling);
+    
+    btCollisionShape * sA = sphereA.getCollisionShape();
+    btCollisionShape * sB = sphereB.getCollisionShape();
+    
+    if(sA) delete sA;
+    if(sB) delete sB;
+    
+    sA = new btSphereShape(radius);
+    sB = new btSphereShape(radius);
+
+    sA->setMargin(0.0);
+    sB->setMargin(0.0);
+
+    sphereA.setCollisionShape(sA);
+    sphereB.setCollisionShape(sB);
 }
 
 void collisionTester::resetCylinderShape(ofVec3f halfExtent){
-    btVector3 scaling(halfExtent.x, halfExtent.y, halfExtent.z);
-    cylinderA.getCollisionShape()->setLocalScaling(scaling);
-    cylinderB.getCollisionShape()->setLocalScaling(scaling);
+    btVector3 half(halfExtent.x, halfExtent.y, halfExtent.z);
+    
+    btCollisionShape * cA = cylinderA.getCollisionShape();
+    btCollisionShape * cB = cylinderB.getCollisionShape();
+    
+    if(cA) delete cA;
+    if(cB) delete cB;
+
+    cA = new btCylinderShapeZ(half);
+    cB = new btCylinderShapeZ(half);
+
+    cA->setMargin(0.0);
+    cB->setMargin(0.0);
+
+    cylinderA.setCollisionShape(cA);
+    cylinderA.setCollisionShape(cB);
 }
+
+
 
 void collisionTester::destroy(){
     delete sphereA.getCollisionShape();

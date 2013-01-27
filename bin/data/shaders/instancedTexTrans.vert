@@ -5,9 +5,11 @@
 uniform sampler2D vtxtex;
 uniform sampler2D cltex;
 
-varying vec3 normal, screenSpaceNormal, lightDir, eyeVec;
+//varying vec3 normal, screenSpaceNormal;
+//flat varying vec3  screenSpaceflatNormal;
+
+varying vec3 lightDir, eyeVec;
 flat varying vec3  flatNormal;
-flat varying vec3  screenSpaceflatNormal;
 
 varying vec2 texCoord;
 varying vec4 customColor;
@@ -42,9 +44,9 @@ void main()
     vec3 inNormal = rotMat * gl_Normal;
     vec4 inVertex = mvp * gl_Vertex;
     
-    screenSpaceNormal = (gl_ModelViewMatrix * vec4(inNormal,1.0)).xyz;
-    screenSpaceflatNormal = (gl_ModelViewMatrix * vec4(inNormal,1.0)).xyz;
-    normal = gl_NormalMatrix * inNormal;
+//    screenSpaceNormal = (gl_ModelViewMatrix * vec4(inNormal,1.0)).xyz;
+//    screenSpaceflatNormal = (gl_ModelViewMatrix * vec4(inNormal,1.0)).xyz;
+//    normal = gl_NormalMatrix * inNormal;
     flatNormal = gl_NormalMatrix * inNormal;
     vec3 vVertex = vec3(gl_ModelViewMatrix * inVertex);
     lightDir = vec3(gl_LightSource[0].position.xyz - vVertex);
@@ -62,7 +64,5 @@ void main()
         float v = y_f / cltex_h_f;
         
         customColor = texture2D(cltex, vec2(float(gl_InstanceID%cltex_w)/cltex_w_f, v));
-        //customColor = vec4(-1.0, -1.0, 0.0, 1.0);
-        //customColor = inVertex / 255.0;
     }
 }

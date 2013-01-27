@@ -155,9 +155,9 @@ int testApp::collisionStart(){
     int startTime = ofGetElapsedTimeMillis();
     myLogRelease("collisionTest startTime:  "+ ofToString(startTime));
     
-#ifndef NDEBUG
-    instancedComponent::printData();
-#endif
+//#ifndef NDEBUG
+//    instancedComponent::printData();
+//#endif
     return startTime;
     
 }
