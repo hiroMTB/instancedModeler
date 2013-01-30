@@ -6,4 +6,7 @@ instancedModeler
 requirements:
 
 openFrameworks
+
 ofxVboMeshInstanced
+
+bullet
