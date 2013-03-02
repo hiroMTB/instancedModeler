@@ -14,10 +14,10 @@ flat varying vec3  flatNormal;
 varying vec2 texCoord;
 varying vec4 customColor;
 
-int tex_w = 1024;
-int tex_h = 512;
-int cltex_w = 512;
-int cltex_h = 512;
+int tex_w = 2048;
+int tex_h = 2048;
+int cltex_w = 1024;
+int cltex_h = 1024;
 
 
 float tex_w_f = float(tex_w);

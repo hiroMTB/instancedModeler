@@ -126,7 +126,7 @@ void collisionTester::resetCylinderShape(ofVec3f halfExtent){
     cB->setMargin(0.0);
 
     cylinderA.setCollisionShape(cA);
-    cylinderA.setCollisionShape(cB);
+    cylinderB.setCollisionShape(cB);
 }
 
 

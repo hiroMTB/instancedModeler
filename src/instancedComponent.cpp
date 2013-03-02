@@ -219,33 +219,41 @@ void instancedComponent::loadInstancePositionFromModel(string path, float posSca
     }
     
     
-    ofVboMesh mesh;	
     ofxAssimpModelLoader model;
+    
     if(model.loadModel(path)){
-        mesh = model.getMesh(0);
-    }
     
-    int numVertices = mesh.getNumVertices();
-    int numNormals = mesh.getNumNormals();
-    int numIndices = mesh.getNumIndices();
-    
-    myLogDebug("load model for position");
-    myLogDebug("numVertices = " + ofToString(numVertices));
-    myLogDebug("numNormals = "  + ofToString(numNormals) );
-    myLogDebug("numIndices = " + ofToString(numIndices));
-    
-    
-    ofMatrix4x4 m;
-    for(int i=0; i<numVertices; i++){
-        ofVec3f position = (mesh.getVertex(i)* posScale);     // SCALE POSITION!!
-        //float angle = 0;
+        ofMatrix4x4 m;
+        int numMeshs = model.getNumMeshes();
+
+        myLogRelease("load model for position, including "+ofToString(numMeshs)+" meshs.");
         
-        m.makeIdentityMatrix();
-        //m.rotate(angle, 1, 0, 0);
-        m.translate(position);
-        ofVec3f s(1,1,1);
-        addInstanceMatrix(m, s, insType);
+        for(int i=0; i<numMeshs; i++){
+            
+            myLogRelease("load mesh(" +ofToString(i)+ ")");
+            ofVboMesh mesh;
+            mesh = model.getMesh(i);
+            int numVertices = mesh.getNumVertices();
+            int numNormals = mesh.getNumNormals();
+            int numIndices = mesh.getNumIndices();
+            
+            myLogRelease("numVertices = " + ofToString(numVertices));
+            myLogRelease("numNormals = "  + ofToString(numNormals) );
+            myLogRelease("numIndices = " + ofToString(numIndices));
+
+            
+            for(int j=0; j<numVertices; j++){
+                ofVec3f position = (mesh.getVertex(j)* posScale);     // SCALE POSITION!!
+                m.makeIdentityMatrix();
+                m.translate(position);
+                ofVec3f s(1,1,1);
+                
+                addInstanceMatrix(m, s, insType);
+            }
+        }
     }
+    
+    
 
     bVtxtexNeedUpdate = true;
     

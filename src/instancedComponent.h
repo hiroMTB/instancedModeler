@@ -18,11 +18,13 @@
 
 #include <map>
 
-#define VTX_TEX_WIDTH       1024
-#define VTX_TEX_HEIGHT      512
+// texture for VERTEX
+#define VTX_TEX_WIDTH       2048    // 2048*2048/4 = 1,048,576
+#define VTX_TEX_HEIGHT      2048
 
-#define CL_TEX_WIDTH        512     // 262,144
-#define CL_TEX_HEIGHT       512
+// texture for COLOR
+#define CL_TEX_WIDTH        1024     // 1024 * 1024 = 1,048,576
+#define CL_TEX_HEIGHT       1024
 
 
 enum INSTANCE_TYPE{

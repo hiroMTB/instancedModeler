@@ -79,7 +79,7 @@ void testApp::setup(){
     bCollisionDebugDraw = false;
     bNowProcessing = false;
     
-    posModelPath_P = "models/bee_60k_MASTER_mesh_wN.ply";
+    posModelPath_P = "models/bee_20k_MASTER_mesh_wN.ply";
     mShdInstanced = NULL;
     
     //ofSetFrameRate(60);
@@ -93,13 +93,17 @@ void testApp::setup(){
     
     // ---------------------------------------------------
     compScale = 1;
-    posScale = 100;
+    posScale = 33; // 33cm box sizes
 
-    int sphNum = 100;
-    int cylNum = 400;
+    int sphNum = 10;
+    int cylNum = 4;
     {
-        setupSphereShape(3.2, 8);
-        setupCylinderShape(0.8, 8);
+        float   sRad = prmFloat[SPHERE_RADIUS];
+        int     sRes = prmInt[SPHERE_RESOLUTION];
+        float   cRad = prmFloat[CYLINDER_RADIUS];
+        int     cRes = prmInt[CYLINDER_RESOLUTION];
+        setupSphereShape(sRad, sRes);
+        setupCylinderShape(cRad, cRes);
         
 #define SETUP_SPHERE
 #ifdef SETUP_SPHERE
@@ -245,6 +249,9 @@ void testApp::mainDraw(){
 	ofBackgroundGradient(ofColor::fromHsb(0, 0, 175), ofColor::fromHsb(0, 0, 20), OF_GRADIENT_LINEAR);
 	camMain.begin();
 	
+    ofNoFill();
+    ofBox(0, 0, 0, posScale*10);
+    
     ofEnableLighting();
 	mLigDirectional.setGlobalPosition(1000, 1000, 1000);
 	mLigDirectional.lookAt(ofVec3f(0,0,0));
@@ -293,6 +300,8 @@ void testApp::mainDraw(){
         tester->drawAllContanctPts();
     }
 
+
+    
     camMain.end();
 	
     //  GUI draw
@@ -352,13 +361,13 @@ void testApp::keyReleased(int key){
 			ofToggleFullscreen();
 			break;
 	
-        case 'w':
-			bWireframe = !bWireframe;
-			break;
-            
-        case 'd':
-            bCollisionDebugDraw = !bCollisionDebugDraw;
-            break;
+//        case 'w':
+//			bWireframe = !bWireframe;
+//			break;
+//            
+//        case 'd':
+//            bCollisionDebugDraw = !bCollisionDebugDraw;
+//            break;
             
 		default:
 			break;
@@ -399,7 +408,29 @@ void testApp::mouseReleased(int x, int y, int button){
 //    if(!guiMouseCheck(x, y))
         camMain.mouseReleased(x, y, button);
 }
-void testApp::windowResized(int w, int h){}
+void testApp::windowResized(int w, int h){
+    int space = 10;
+    int x = w - pnlMain.getShape().width - space;
+    int y = 10;
+    pnlMain.setPosition(x, y);
+    y += pnlMain.getShape().height + space;
+    
+    pnlShape.setPosition(x, y);
+    y += pnlShape.getShape().height + space;
+
+    pnlConnectR.setPosition(x, y);
+    y += pnlConnectR.getShape().height + space;
+
+    pnlConnectG.setPosition(x, y);
+    y += pnlConnectG.getShape().height + space;
+
+    pnlCollision.setPosition(x, y);
+    y += pnlCollision.getShape().height + space;
+
+    pnlRemove.setPosition(x, y);
+    y += pnlRemove.getShape().height + space;
+
+}
 void testApp::gotMessage(ofMessage msg){}
 void testApp::dragEvent(ofDragInfo dragInfo){}
 
@@ -565,7 +596,7 @@ void testApp::setupGui(){
 
 void testApp::setupCameraLightMaterial(){
     camMain.setupPerspective(false);
-    camMain.setDistance(400);
+    camMain.setDistance(800);
     camMain.disableMouseInput();
     camMain.setNearClip(1);
 	camMain.setFarClip(10000);
