@@ -150,3 +150,27 @@ ofMesh createQuadSphere(float r, int lats, int longs){
       sp.setMode(OF_PRIMITIVE_QUAD_STRIP);
     return sp;
 }
+
+
+idPair::idPair(){}
+    
+idPair::idPair(int _a, int _b):
+a(_a),
+b(_b)
+{}
+
+idPair::idPair(const idPair& ip){
+    a=ip.a; b=ip.b;
+}
+
+
+bool operator<(const idPair& lhs, const idPair& rhs ){
+    return lhs.a<rhs.a;
+}
+
+
+bool operator==(const idPair& lhs, const idPair& rhs ){
+    bool aabb = (lhs.a==rhs.a) && (lhs.b==rhs.b);
+    bool abba =(lhs.a==rhs.b) && (lhs.b==rhs.a);
+    return aabb || abba;
+}

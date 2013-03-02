@@ -1,6 +1,7 @@
 //
 //  ofxMtb.h
 //
+// ここに定義を書いたらLinkエラーになるので注意。
 
 #pragma once
 
@@ -17,7 +18,20 @@ ofMesh createCylinderY(float radius, float height, int slices, int stacks);
 
 ofMesh createQuadSphere(float r, int lats, int longs);
 
+struct idPair{
+    private:
+        idPair();
+        
+    public:
+        int a;
+        int b;
+        idPair(int _a, int _b);
+        idPair(const idPair& ip);
+};
 
+bool operator<(const idPair& lhs, const idPair& rhs );
+bool operator==(const idPair& lhs, const idPair& rhs );    
+   
 namespace STL_UTIL{
     template <typename CONTAINER>
     void replace_key(CONTAINER& container,
@@ -77,35 +91,4 @@ namespace STL_UTIL{
         }
         return size;
     }
-}
-
-
-struct idPair{
-    
-private:
-    idPair();
-
-public:
-    int a;
-    int b;
-    idPair(int _a, int _b):
-    a(_a),
-    b(_b)
-    {}
-    
-    idPair(const idPair& ip){
-        a=ip.a; b=ip.b;
-    }
-};
-
-    
-bool operator<(const idPair& lhs, const idPair& rhs ){
-    return lhs.a<rhs.a;
-}
-
-
-bool operator==(const idPair& lhs, const idPair& rhs ){
-    bool aabb = (lhs.a==rhs.a) && (lhs.b==rhs.b);
-    bool abba =(lhs.a==rhs.b) && (lhs.b==rhs.a);
-    return aabb || abba;
 }
