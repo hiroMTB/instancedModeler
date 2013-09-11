@@ -1,13 +1,13 @@
 #import "rnMainGLView.h"
 #include "testApp.h"
-#include "rnUIController.h"
+#include "MainWindowController.h"
 
 @implementation rnMainGLView
 
 
 - (void)setup{
 
-    [rnUIController setupDefault];
+    [MainWindowController setupDefault];
 
     string newPath = [[NSString stringWithFormat:@"%@/../data/", [[NSBundle mainBundle] bundlePath]] cString];
     ofSetDataPathRoot(newPath);

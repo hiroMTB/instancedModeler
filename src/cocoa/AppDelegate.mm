@@ -2,31 +2,24 @@
 
 @implementation AppDelegate
 
-@synthesize window;
-@synthesize prefController = _prefController;
-
 
 - (void)applicationDidFinishLaunching:(NSNotification *)anotification
 {
+    if(mainWindowController == NULL){
+        mainWindowController = [[MainWindowController alloc] initWithWindowNibName:@"MainWindow"];
+    }
+
+    [mainWindowController showWindow:self];
 }
 
 -(IBAction)showPreference:(id)sender
 {
-    if(!self.prefController)
-        self.prefController = [[PreferenceController alloc] initWithWindowNibName:@"Preference"];
+    if(prefController == NULL){
+        prefController = [[PreferenceController alloc] initWithWindowNibName:@"Preference"];
+    }
     
-    [self.prefController showWindow:self];
+    [prefController showWindow:self];
 }
 
-
-
-- (void)dealloc
-{
-    [super dealloc];
-}
-
-- (void)windowWillEnterFullScreen:(NSNotification *)notification{
-    cout << "AppDelegate" << endl;
-}
 
 @end

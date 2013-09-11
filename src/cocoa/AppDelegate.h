@@ -2,19 +2,15 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "PreferenceController.h"
+#include "MainWindowController.h"
+#include "PreferenceController.h"
 
-#include "ofMain.h"
-    
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 {
-    NSWindow * window;
-    PreferenceController * _prefController;
+    MainWindowController * mainWindowController;
+    PreferenceController * prefController;
 }
 
-@property (assign) IBOutlet NSWindow *window;
-
-@property (retain) PreferenceController * prefController;
 
 -(IBAction)showPreference:(id)sender;
 

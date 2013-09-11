@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D0A2D9617E0A44F00E026EF /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D0A2D9517E0A44F00E026EF /* MainWindow.xib */; };
 		4D15999B168B215400D10232 /* instancedTexTrans.frag in Sources */ = {isa = PBXBuildFile; fileRef = 4D159999168B215400D10232 /* instancedTexTrans.frag */; };
 		4D15999C168B215400D10232 /* instancedTexTrans.vert in Sources */ = {isa = PBXBuildFile; fileRef = 4D15999A168B215400D10232 /* instancedTexTrans.vert */; };
 		4D339CC816B24E6300B46DA0 /* testApp_connect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D339CC616B24E6300B46DA0 /* testApp_connect.cpp */; };
@@ -28,7 +29,7 @@
 		4D4F588817E015C300E72686 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F587E17E015C300E72686 /* AppDelegate.mm */; };
 		4D4F588917E015C300E72686 /* PreferenceController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F588217E015C300E72686 /* PreferenceController.mm */; };
 		4D4F588A17E015C300E72686 /* rnMainGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F588417E015C300E72686 /* rnMainGLView.mm */; };
-		4D4F588B17E015C300E72686 /* rnUIController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F588617E015C300E72686 /* rnUIController.mm */; };
+		4D4F588B17E015C300E72686 /* MainWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F588617E015C300E72686 /* MainWindowController.mm */; };
 		4D4F588E17E0171500E72686 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D4F588D17E0171500E72686 /* QTKit.framework */; };
 		4D4F589017E0171C00E72686 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D4F588F17E0171C00E72686 /* CoreVideo.framework */; };
 		4D4F58C717E0175E00E72686 /* ofxCocoaGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F58BE17E0175E00E72686 /* ofxCocoaGLView.mm */; };
@@ -229,6 +230,7 @@
 /* Begin PBXFileReference section */
 		01dcc0911400f9acf5b65578af4ec8f9 /* ofxXmlSettings.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxXmlSettings.h; path = ../../../addons/ofxXmlSettings/src/ofxXmlSettings.h; sourceTree = SOURCE_ROOT; };
 		2b40eda85beb63e46785bc299a638898 /* tinyxml.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = tinyxml.cpp; path = ../../../addons/ofxXmlSettings/libs/tinyxml.cpp; sourceTree = SOURCE_ROOT; };
+		4D0A2D9517E0A44F00E026EF /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		4D159999168B215400D10232 /* instancedTexTrans.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = instancedTexTrans.frag; sourceTree = "<group>"; };
 		4D15999A168B215400D10232 /* instancedTexTrans.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = instancedTexTrans.vert; sourceTree = "<group>"; };
 		4D27813016AF3FB800BBD8E2 /* myDef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = myDef.h; sourceTree = "<group>"; };
@@ -276,8 +278,8 @@
 		4D4F588217E015C300E72686 /* PreferenceController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PreferenceController.mm; sourceTree = "<group>"; };
 		4D4F588317E015C300E72686 /* rnMainGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rnMainGLView.h; sourceTree = "<group>"; };
 		4D4F588417E015C300E72686 /* rnMainGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = rnMainGLView.mm; sourceTree = "<group>"; };
-		4D4F588517E015C300E72686 /* rnUIController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rnUIController.h; sourceTree = "<group>"; };
-		4D4F588617E015C300E72686 /* rnUIController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = rnUIController.mm; sourceTree = "<group>"; };
+		4D4F588517E015C300E72686 /* MainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainWindowController.h; sourceTree = "<group>"; };
+		4D4F588617E015C300E72686 /* MainWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainWindowController.mm; sourceTree = "<group>"; };
 		4D4F588717E015C300E72686 /* UserDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = UserDefaults.plist; sourceTree = "<group>"; };
 		4D4F588D17E0171500E72686 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		4D4F588F17E0171C00E72686 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
@@ -930,16 +932,18 @@
 		4D4F587C17E015C300E72686 /* cocoa */ = {
 			isa = PBXGroup;
 			children = (
+				E4B69E1D0A3A1BDC003C02F2 /* main.mm */,
+				4D4F587F17E015C300E72686 /* MainMenu.xib */,
 				4D4F587D17E015C300E72686 /* AppDelegate.h */,
 				4D4F587E17E015C300E72686 /* AppDelegate.mm */,
-				4D4F587F17E015C300E72686 /* MainMenu.xib */,
+				4D4F588517E015C300E72686 /* MainWindowController.h */,
+				4D4F588617E015C300E72686 /* MainWindowController.mm */,
+				4D0A2D9517E0A44F00E026EF /* MainWindow.xib */,
+				4D4F588317E015C300E72686 /* rnMainGLView.h */,
+				4D4F588417E015C300E72686 /* rnMainGLView.mm */,
 				4D4F588017E015C300E72686 /* Preference.xib */,
 				4D4F588117E015C300E72686 /* PreferenceController.h */,
 				4D4F588217E015C300E72686 /* PreferenceController.mm */,
-				4D4F588317E015C300E72686 /* rnMainGLView.h */,
-				4D4F588417E015C300E72686 /* rnMainGLView.mm */,
-				4D4F588517E015C300E72686 /* rnUIController.h */,
-				4D4F588617E015C300E72686 /* rnUIController.mm */,
 				4D4F588717E015C300E72686 /* UserDefaults.plist */,
 			);
 			path = cocoa;
@@ -2016,7 +2020,6 @@
 			children = (
 				4D4F587C17E015C300E72686 /* cocoa */,
 				4D65FB961689630E00D7B2F5 /* shaders */,
-				E4B69E1D0A3A1BDC003C02F2 /* main.mm */,
 				E4B69E1F0A3A1BDC003C02F2 /* testApp.h */,
 				E4B69E1E0A3A1BDC003C02F2 /* testApp.mm */,
 				4D339CC916B24F9300B46DA0 /* testApp_collision.cpp */,
@@ -2116,6 +2119,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D4F58CF17E01C9800E72686 /* MainMenu.xib in Resources */,
+				4D0A2D9617E0A44F00E026EF /* MainWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2304,7 +2308,7 @@
 				4D4F588817E015C300E72686 /* AppDelegate.mm in Sources */,
 				4D4F588917E015C300E72686 /* PreferenceController.mm in Sources */,
 				4D4F588A17E015C300E72686 /* rnMainGLView.mm in Sources */,
-				4D4F588B17E015C300E72686 /* rnUIController.mm in Sources */,
+				4D4F588B17E015C300E72686 /* MainWindowController.mm in Sources */,
 				4D4F58C717E0175E00E72686 /* ofxCocoaGLView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

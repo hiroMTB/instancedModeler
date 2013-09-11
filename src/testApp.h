@@ -95,8 +95,7 @@ public:
     static const string RENDER_NORMALS;
     static const string FLAT_SHADING;
 
-    static ofColor bg;
-	
+    
 public:
     void setup();
     void update();
@@ -112,8 +111,17 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
 
-    static const ofColor& getBackgroundColor(){ return bg; }
-    static void setBackgroundColor(int r, int g, int b);
+    // element color
+    static ofColor colorSphere, colorCylinder;
+    
+    
+    // bg
+    static int bgType;
+    static ofColor bgNormal;
+    static ofColor bgLinear0,   bgLinear1;
+    static ofColor bgCircular0, bgCircular1;
+    static ofColor bgBar0,      bgBar1;
+    
     
 private:
     void setupGui();

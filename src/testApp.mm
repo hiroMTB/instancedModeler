@@ -7,6 +7,13 @@
 collisionTester * testApp::tester = NULL;
 testApp * testApp::singleton = NULL;
 
+ofColor testApp::colorSphere;   ofColor testApp::colorCylinder;
+
+int testApp::bgType = 0;
+ofColor testApp::bgNormal;
+ofColor testApp::bgLinear0;     ofColor testApp::bgLinear1;
+ofColor testApp::bgCircular0;   ofColor testApp::bgCircular1;
+ofColor testApp::bgBar0;        ofColor testApp::bgBar1;
 
 // GUI parts
 string testApp::CURRENT_PROCESS = "NONE";
@@ -251,10 +258,29 @@ void testApp::testDraw(){
 }
 
 void testApp::mainDraw(){
-    ofSetColor(255);
-	ofBackgroundGradient(ofColor::fromHsb(0, 0, 175), ofColor::fromHsb(0, 0, 20), OF_GRADIENT_LINEAR);
-	camMain.begin();
 	
+    switch (bgType) {
+        case 0:
+            ofBackground(bgNormal);
+            break;
+        case 1:
+            ofBackgroundGradient(bgLinear0, bgLinear1, OF_GRADIENT_LINEAR);
+            break;
+        case 2:
+            ofBackgroundGradient(bgCircular0, bgCircular1, OF_GRADIENT_CIRCULAR);
+            break;
+        case 3:
+            ofBackgroundGradient(bgBar0, bgBar1, OF_GRADIENT_BAR);
+            break;
+        default:
+            ofBackground(0);
+            break;
+    }
+    
+	camMain.begin();
+
+    ofSetColor(255);
+
     ofNoFill();
     ofBox(0, 0, 0, posScale*10);
     
@@ -275,12 +301,15 @@ void testApp::mainDraw(){
         mLigDirectional.enable();
         mMatMainMaterial.begin();
     
-        ofSetColor(ofFloatColor(prmFloat["COLOR_R"], prmFloat["COLOR_G"], prmFloat["COLOR_B"]));
         if (prmBool[DRAW_WIREFRAME]) {
+            ofSetColor(colorSphere);
             spheres.drawWireframe(mShdInstanced);
+            ofSetColor(colorCylinder);
             cylinders.drawWireframe(mShdInstanced);
         }else{
+            ofSetColor(colorSphere);
             spheres.draw(mShdInstanced);
+            ofSetColor(colorCylinder);
             cylinders.draw(mShdInstanced);
         }
     
@@ -541,13 +570,9 @@ void testApp::setupGui(){
     int h = 50;
     int w = 250;
 	pnlMain.setup("MAIN", "gui/mainSettings.xml", x, y);
-    pnlMain.add(prmFloat["COLOR_R"].set("Red", 1.0, 0.0, 1.0));
-    pnlMain.add(prmFloat["COLOR_G"].set("Green", 1.0, 0.0, 1.0));
-    pnlMain.add(prmFloat["COLOR_B"].set("Blue", 1.0, 0.0, 1.0));
     pnlMain.add(prmBool[DRAW_WIREFRAME].set(DRAW_WIREFRAME, false));
     pnlMain.add(prmBool[DRAW_COLLISION_SHAPE].set(DRAW_COLLISION_SHAPE, false));
-    pnlMain.add(prmBool[DRAW_COLLISION_DISTANCE].set(DRAW_COLLISION_DISTANCE, false));
-    
+    pnlMain.add(prmBool[DRAW_COLLISION_DISTANCE].set(DRAW_COLLISION_DISTANCE, false));    
     pnlMain.add(prmBool[SAVE_DATA].set(SAVE_DATA, false));
 	y += (pnlMain.getHeight() + h);
     
