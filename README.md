@@ -7,6 +7,6 @@ requirements:
 
 openFrameworks
 
-ofxVboMeshInstanced
 
 bullet
+ofxVboMeshInstanced

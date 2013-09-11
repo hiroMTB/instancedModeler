@@ -25,6 +25,14 @@
 		4D3A451A16A5001700328314 /* stb_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A450B16A5001700328314 /* stb_image.cpp */; };
 		4D3A451B16A5001700328314 /* Win32AppMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A450D16A5001700328314 /* Win32AppMain.cpp */; };
 		4D3A451C16A5001700328314 /* Win32DemoApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A450E16A5001700328314 /* Win32DemoApplication.cpp */; };
+		4D4F588817E015C300E72686 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F587E17E015C300E72686 /* AppDelegate.mm */; };
+		4D4F588917E015C300E72686 /* PreferenceController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F588217E015C300E72686 /* PreferenceController.mm */; };
+		4D4F588A17E015C300E72686 /* rnMainGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F588417E015C300E72686 /* rnMainGLView.mm */; };
+		4D4F588B17E015C300E72686 /* rnUIController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F588617E015C300E72686 /* rnUIController.mm */; };
+		4D4F588E17E0171500E72686 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D4F588D17E0171500E72686 /* QTKit.framework */; };
+		4D4F589017E0171C00E72686 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D4F588F17E0171C00E72686 /* CoreVideo.framework */; };
+		4D4F58C717E0175E00E72686 /* ofxCocoaGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F58BE17E0175E00E72686 /* ofxCocoaGLView.mm */; };
+		4D4F58CF17E01C9800E72686 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D4F587F17E015C300E72686 /* MainMenu.xib */; };
 		4D598A4D16947EA500EECD95 /* ofxBaseGui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D598A4016947EA500EECD95 /* ofxBaseGui.cpp */; };
 		4D598A4E16947EA500EECD95 /* ofxButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D598A4216947EA500EECD95 /* ofxButton.cpp */; };
 		4D598A4F16947EA500EECD95 /* ofxLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D598A4516947EA500EECD95 /* ofxLabel.cpp */; };
@@ -180,8 +188,8 @@
 		E45BE9810E8CC7DD009D7055 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9770E8CC7DD009D7055 /* CoreServices.framework */; };
 		E45BE9830E8CC7DD009D7055 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9790E8CC7DD009D7055 /* OpenGL.framework */; };
 		E45BE9840E8CC7DD009D7055 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE97A0E8CC7DD009D7055 /* QuickTime.framework */; };
-		E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B69E1D0A3A1BDC003C02F2 /* main.cpp */; };
-		E4B69E210A3A1BDC003C02F2 /* testApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B69E1E0A3A1BDC003C02F2 /* testApp.cpp */; };
+		E4B69E200A3A1BDC003C02F2 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = E4B69E1D0A3A1BDC003C02F2 /* main.mm */; };
+		E4B69E210A3A1BDC003C02F2 /* testApp.mm in Sources */ = {isa = PBXBuildFile; fileRef = E4B69E1E0A3A1BDC003C02F2 /* testApp.mm */; };
 		E4C2424710CC5A17004149E2 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424410CC5A17004149E2 /* AppKit.framework */; };
 		E4C2424810CC5A17004149E2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424510CC5A17004149E2 /* Cocoa.framework */; };
 		E4C2424910CC5A17004149E2 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424610CC5A17004149E2 /* IOKit.framework */; };
@@ -260,6 +268,21 @@
 		4D3A450D16A5001700328314 /* Win32AppMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Win32AppMain.cpp; sourceTree = "<group>"; };
 		4D3A450E16A5001700328314 /* Win32DemoApplication.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Win32DemoApplication.cpp; sourceTree = "<group>"; };
 		4D3A450F16A5001700328314 /* Win32DemoApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Win32DemoApplication.h; sourceTree = "<group>"; };
+		4D4F587D17E015C300E72686 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		4D4F587E17E015C300E72686 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
+		4D4F587F17E015C300E72686 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
+		4D4F588017E015C300E72686 /* Preference.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preference.xib; sourceTree = "<group>"; };
+		4D4F588117E015C300E72686 /* PreferenceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferenceController.h; sourceTree = "<group>"; };
+		4D4F588217E015C300E72686 /* PreferenceController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PreferenceController.mm; sourceTree = "<group>"; };
+		4D4F588317E015C300E72686 /* rnMainGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rnMainGLView.h; sourceTree = "<group>"; };
+		4D4F588417E015C300E72686 /* rnMainGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = rnMainGLView.mm; sourceTree = "<group>"; };
+		4D4F588517E015C300E72686 /* rnUIController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rnUIController.h; sourceTree = "<group>"; };
+		4D4F588617E015C300E72686 /* rnUIController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = rnUIController.mm; sourceTree = "<group>"; };
+		4D4F588717E015C300E72686 /* UserDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = UserDefaults.plist; sourceTree = "<group>"; };
+		4D4F588D17E0171500E72686 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
+		4D4F588F17E0171C00E72686 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		4D4F58BD17E0175E00E72686 /* ofxCocoaGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxCocoaGLView.h; sourceTree = "<group>"; };
+		4D4F58BE17E0175E00E72686 /* ofxCocoaGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxCocoaGLView.mm; sourceTree = "<group>"; };
 		4D598A3E16947EA500EECD95 /* ofOscParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofOscParameter.h; sourceTree = "<group>"; };
 		4D598A3F16947EA500EECD95 /* ofParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofParameter.h; sourceTree = "<group>"; };
 		4D598A4016947EA500EECD95 /* ofxBaseGui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBaseGui.cpp; sourceTree = "<group>"; };
@@ -811,9 +834,9 @@
 		E45BE9770E8CC7DD009D7055 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		E45BE9790E8CC7DD009D7055 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		E45BE97A0E8CC7DD009D7055 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
-		E4B69B5B0A3A1756003C02F2 /* instancedModelerDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = instancedModelerDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		E4B69E1D0A3A1BDC003C02F2 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = src/main.cpp; sourceTree = SOURCE_ROOT; };
-		E4B69E1E0A3A1BDC003C02F2 /* testApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = testApp.cpp; path = src/testApp.cpp; sourceTree = SOURCE_ROOT; };
+		E4B69B5B0A3A1756003C02F2 /* instancedModeler_rev20Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = instancedModeler_rev20Debug.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4B69E1D0A3A1BDC003C02F2 /* main.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = main.mm; path = src/main.mm; sourceTree = SOURCE_ROOT; };
+		E4B69E1E0A3A1BDC003C02F2 /* testApp.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = testApp.mm; path = src/testApp.mm; sourceTree = SOURCE_ROOT; };
 		E4B69E1F0A3A1BDC003C02F2 /* testApp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = testApp.h; path = src/testApp.h; sourceTree = SOURCE_ROOT; };
 		E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "openFrameworks-Info.plist"; sourceTree = "<group>"; };
 		E4C2424410CC5A17004149E2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -830,6 +853,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4D4F589017E0171C00E72686 /* CoreVideo.framework in Frameworks */,
+				4D4F588E17E0171500E72686 /* QTKit.framework in Frameworks */,
 				4DB98FB716ADD66600F0864B /* OpenCL.framework in Frameworks */,
 				E4EB6799138ADC1D00A09F29 /* GLUT.framework in Frameworks */,
 				E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */,
@@ -900,6 +925,42 @@
 				4D3A450F16A5001700328314 /* Win32DemoApplication.h */,
 			);
 			path = OpenGL;
+			sourceTree = "<group>";
+		};
+		4D4F587C17E015C300E72686 /* cocoa */ = {
+			isa = PBXGroup;
+			children = (
+				4D4F587D17E015C300E72686 /* AppDelegate.h */,
+				4D4F587E17E015C300E72686 /* AppDelegate.mm */,
+				4D4F587F17E015C300E72686 /* MainMenu.xib */,
+				4D4F588017E015C300E72686 /* Preference.xib */,
+				4D4F588117E015C300E72686 /* PreferenceController.h */,
+				4D4F588217E015C300E72686 /* PreferenceController.mm */,
+				4D4F588317E015C300E72686 /* rnMainGLView.h */,
+				4D4F588417E015C300E72686 /* rnMainGLView.mm */,
+				4D4F588517E015C300E72686 /* rnUIController.h */,
+				4D4F588617E015C300E72686 /* rnUIController.mm */,
+				4D4F588717E015C300E72686 /* UserDefaults.plist */,
+			);
+			path = cocoa;
+			sourceTree = "<group>";
+		};
+		4D4F589117E0175D00E72686 /* ofxCocoaGLView */ = {
+			isa = PBXGroup;
+			children = (
+				4D4F58BC17E0175E00E72686 /* src */,
+			);
+			name = ofxCocoaGLView;
+			path = ../../../addons/ofxCocoaGLView;
+			sourceTree = "<group>";
+		};
+		4D4F58BC17E0175E00E72686 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				4D4F58BD17E0175E00E72686 /* ofxCocoaGLView.h */,
+				4D4F58BE17E0175E00E72686 /* ofxCocoaGLView.mm */,
+			);
+			path = src;
 			sourceTree = "<group>";
 		};
 		4D598A3C16947EA500EECD95 /* ofxGui */ = {
@@ -1876,6 +1937,7 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				4D4F589117E0175D00E72686 /* ofxCocoaGLView */,
 				4DB98A8616AD9FC000F0864B /* tbb41_20121003oss */,
 				4D9E67A21697C5D40033C2DC /* bullet281 */,
 				4D598A3C16947EA500EECD95 /* ofxGui */,
@@ -1935,6 +1997,8 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
+				4D4F588F17E0171C00E72686 /* CoreVideo.framework */,
+				4D4F588D17E0171500E72686 /* QTKit.framework */,
 				4DB98FB616ADD66600F0864B /* OpenCL.framework */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				4D9D72471688FE6500CE7F68 /* Project_extra.xcconfig */,
@@ -1943,17 +2007,18 @@
 				E4EEC9E9138DF44700A80321 /* openFrameworks */,
 				BB4B014C10F69532006C3DED /* addons */,
 				E45BE5980E8CC70C009D7055 /* frameworks */,
-				E4B69B5B0A3A1756003C02F2 /* instancedModelerDebug.app */,
+				E4B69B5B0A3A1756003C02F2 /* instancedModeler_rev20Debug.app */,
 			);
 			sourceTree = "<group>";
 		};
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				4D4F587C17E015C300E72686 /* cocoa */,
 				4D65FB961689630E00D7B2F5 /* shaders */,
-				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
+				E4B69E1D0A3A1BDC003C02F2 /* main.mm */,
 				E4B69E1F0A3A1BDC003C02F2 /* testApp.h */,
-				E4B69E1E0A3A1BDC003C02F2 /* testApp.cpp */,
+				E4B69E1E0A3A1BDC003C02F2 /* testApp.mm */,
 				4D339CC916B24F9300B46DA0 /* testApp_collision.cpp */,
 				4D339CC616B24E6300B46DA0 /* testApp_connect.cpp */,
 				4D37C1A51692E2EC006FD104 /* instancedComponent.h */,
@@ -1980,23 +2045,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E4B69B5A0A3A1756003C02F2 /* instancedModeler */ = {
+		E4B69B5A0A3A1756003C02F2 /* instancedModeler_rev20 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "instancedModeler" */;
+			buildConfigurationList = E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "instancedModeler_rev20" */;
 			buildPhases = (
 				E4B69B580A3A1756003C02F2 /* Sources */,
 				E4B69B590A3A1756003C02F2 /* Frameworks */,
 				E4B6FFFD0C3F9AB9008CF71C /* ShellScript */,
 				E4C2427710CC5ABF004149E2 /* CopyFiles */,
+				4D4F58CE17E01C9200E72686 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				E4EEB9AC138B136A00A80321 /* PBXTargetDependency */,
 			);
-			name = instancedModeler;
+			name = instancedModeler_rev20;
 			productName = myOFApp;
-			productReference = E4B69B5B0A3A1756003C02F2 /* instancedModelerDebug.app */;
+			productReference = E4B69B5B0A3A1756003C02F2 /* instancedModeler_rev20Debug.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -2007,7 +2073,7 @@
 			attributes = {
 				LastUpgradeCheck = 0450;
 			};
-			buildConfigurationList = E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "instancedModeler" */;
+			buildConfigurationList = E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "instancedModeler_rev20" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -2029,7 +2095,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				E4B69B5A0A3A1756003C02F2 /* instancedModeler */,
+				E4B69B5A0A3A1756003C02F2 /* instancedModeler_rev20 */,
 			);
 		};
 /* End PBXProject section */
@@ -2043,6 +2109,17 @@
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4D4F58CE17E01C9200E72686 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4D4F58CF17E01C9800E72686 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		E4B6FFFD0C3F9AB9008CF71C /* ShellScript */ = {
@@ -2065,8 +2142,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
-				E4B69E210A3A1BDC003C02F2 /* testApp.cpp in Sources */,
+				E4B69E200A3A1BDC003C02F2 /* main.mm in Sources */,
+				E4B69E210A3A1BDC003C02F2 /* testApp.mm in Sources */,
 				63b57ac5bf4ef088491e0317dbb2ecaa /* ofxXmlSettings.cpp in Sources */,
 				933a2227713c720ceff80fd967d0a8ee /* tinyxml.cpp in Sources */,
 				9d44dc88ef9e7991b4a09951e2e4769f /* tinyxmlerror.cpp in Sources */,
@@ -2224,6 +2301,11 @@
 				4DB98FC616ADD89200F0864B /* MiniCLTaskScheduler.cpp in Sources */,
 				4D339CC816B24E6300B46DA0 /* testApp_connect.cpp in Sources */,
 				4D339CCB16B24F9300B46DA0 /* testApp_collision.cpp in Sources */,
+				4D4F588817E015C300E72686 /* AppDelegate.mm in Sources */,
+				4D4F588917E015C300E72686 /* PreferenceController.mm in Sources */,
+				4D4F588A17E015C300E72686 /* rnMainGLView.mm in Sources */,
+				4D4F588B17E015C300E72686 /* rnUIController.mm in Sources */,
+				4D4F58C717E0175E00E72686 /* ofxCocoaGLView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2391,7 +2473,7 @@
 					"\"$(SRCROOT)/../../../addons/tbb41_20121003oss/lib\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../addons/ofxAssimpModelLoader/libs/assimp/lib/osx\"";
-				PRODUCT_NAME = instancedModelerDebug;
+				PRODUCT_NAME = instancedModeler_rev20Debug;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2479,7 +2561,7 @@
 					"\"$(SRCROOT)/../../../addons/tbb41_20121003oss/lib\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../addons/ofxAssimpModelLoader/libs/assimp/lib/osx\"";
-				PRODUCT_NAME = instancedModeler;
+				PRODUCT_NAME = instancedModeler_rev20;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -2487,7 +2569,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "instancedModeler" */ = {
+		E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "instancedModeler_rev20" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E4B69B4E0A3A1720003C02F2 /* Debug */,
@@ -2496,7 +2578,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "instancedModeler" */ = {
+		E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "instancedModeler_rev20" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E4B69B600A3A1757003C02F2 /* Debug */,

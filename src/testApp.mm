@@ -5,6 +5,8 @@
 
 
 collisionTester * testApp::tester = NULL;
+testApp * testApp::singleton = NULL;
+
 
 // GUI parts
 string testApp::CURRENT_PROCESS = "NONE";
@@ -74,6 +76,9 @@ void testApp::setup(){
     myLogRelease(mes);
     sprintf(mes, "using openFrameworks %d.%d", OF_VERSION, OF_VERSION_MINOR);
     myLogRelease(mes);
+    
+    glEnable(GL_DEPTH_TEST);
+    
     
     bWireframe = false;
     bCollisionDebugDraw = false;
@@ -180,7 +185,6 @@ void testApp::update(){
     
     processRequest();
 
-
     processGui();
     spheres.update();
     cylinders.update();
@@ -193,54 +197,75 @@ void testApp::draw(){
 }
 
 void testApp::testDraw(){
+
+
+    
     ofBackground(200, 200, 200);
     
     camMain.begin();
-    ofEnableLighting();
-	mLigDirectional.setGlobalPosition(1000, 1000, 1000);
-	mLigDirectional.lookAt(ofVec3f(0,0,0));
-	ofEnableSeparateSpecularLight();
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-    glShadeModel(GL_FLAT);
     
-    mLigDirectional.enable();
-    mMatMainMaterial.begin();
+    int w = ofGetWidth();
+    int h = ofGetHeight();
+    int x = 0;  //w/2;
+    int y = 0;//h/2;
     
-    {
-        glPushMatrix();
-        glTranslatef(-10, 0, 0);
-        ofMesh cyl = createCylinderZ(4, 7, 12, 1);
-        ofSetColor(200,200,200);
-        //cyl.drawWireframe();
-        cyl.draw();
-        glPopMatrix();
-    }
+    ofSetColor(255, 0, 0);
+    ofBox(x, y, 500, 100);
     
-    {
-        glPushMatrix();
-        glTranslatef(0, 0, 0);
-        ofSetSphereResolution(5);
-        ofMesh sphere = ofGetGLRenderer()->ofGetSphereMesh();
-        ofSetColor(200,200,200);
-        //sphere.drawWireframe();
-        sphere.draw();
-        glPopMatrix();
-    }
+    
+    ofSetColor(0, 250, 0);
+    ofBox(x, y, 0, 100);
+    
+    
+    ofSetColor(0, 0, 250);
+    ofBox(x, y, -500, 100);
 
-    {
-        glPushMatrix();
-        glTranslatef(10, 0, 0);
-        ofMesh sphere = createQuadSphere(1, 12, 12);
-        ofSetColor(200,200,200);
-        //sphere.drawWireframe();
-        sphere.draw();
-        glPopMatrix();
-    }
     
-    mMatMainMaterial.end();
-    mLigDirectional.disable();
+//    ofEnableLighting();
+//	mLigDirectional.setGlobalPosition(1000, 1000, 1000);
+//	mLigDirectional.lookAt(ofVec3f(0,0,0));
+//	ofEnableSeparateSpecularLight();
+//	glEnable(GL_DEPTH_TEST);
+//	glEnable(GL_CULL_FACE);
+//	glCullFace(GL_BACK);
+//    glShadeModel(GL_FLAT);
+//    
+//    mLigDirectional.enable();
+//    mMatMainMaterial.begin();
+//    
+//    {
+//        glPushMatrix();
+//        glTranslatef(-10, 0, 0);
+//        ofMesh cyl = createCylinderZ(4, 7, 12, 1);
+//        ofSetColor(200,200,200);
+//        //cyl.drawWireframe();
+//        cyl.draw();
+//        glPopMatrix();
+//    }
+//    
+//    {
+//        glPushMatrix();
+//        glTranslatef(0, 0, 0);
+//        ofSetSphereResolution(5);
+//        ofMesh sphere = ofGetGLRenderer()->ofGetSphereMesh();
+//        ofSetColor(200,200,200);
+//        //sphere.drawWireframe();
+//        sphere.draw();
+//        glPopMatrix();
+//    }
+//
+//    {
+//        glPushMatrix();
+//        glTranslatef(10, 0, 0);
+//        ofMesh sphere = createQuadSphere(1, 12, 12);
+//        ofSetColor(200,200,200);
+//        //sphere.drawWireframe();
+//        sphere.draw();
+//        glPopMatrix();
+//    }
+//    
+//    mMatMainMaterial.end();
+//    mLigDirectional.disable();
     camMain.end();
 }
 

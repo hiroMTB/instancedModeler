@@ -14,9 +14,17 @@
 
 
 
+class testApp{  // : public ofBaseApp{
 
-class testApp : public ofBaseApp{
-
+    static testApp * singleton;
+    
+public:
+    
+    static testApp * get(){ return singleton; }
+    static void init(){
+        if(!singleton){ singleton = new testApp(); }
+    }
+    
     bool    bWireframe;
     bool    bCollisionDebugDraw;
     bool    bNowProcessing;
@@ -87,7 +95,7 @@ class testApp : public ofBaseApp{
     static const string RENDER_NORMALS;
     static const string FLAT_SHADING;
 
-
+    static ofColor bg;
 	
 public:
     void setup();
@@ -104,6 +112,9 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
 
+    static const ofColor& getBackgroundColor(){ return bg; }
+    static void setBackgroundColor(int r, int g, int b);
+    
 private:
     void setupGui();
     void setupCameraLightMaterial();
