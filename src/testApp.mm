@@ -198,74 +198,55 @@ void testApp::draw(){
 
 void testApp::testDraw(){
 
-
-    
     ofBackground(200, 200, 200);
     
     camMain.begin();
     
-    int w = ofGetWidth();
-    int h = ofGetHeight();
-    int x = 0;  //w/2;
-    int y = 0;//h/2;
+    ofEnableLighting();
+	mLigDirectional.setGlobalPosition(1000, 1000, 1000);
+	mLigDirectional.lookAt(ofVec3f(0,0,0));
+	ofEnableSeparateSpecularLight();
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+    glShadeModel(GL_FLAT);
     
-    ofSetColor(255, 0, 0);
-    ofBox(x, y, 500, 100);
+    mLigDirectional.enable();
+    mMatMainMaterial.begin();
     
+    {
+        glPushMatrix();
+        glTranslatef(-10, 0, 0);
+        ofMesh cyl = createCylinderZ(4, 7, 12, 1);
+        ofSetColor(200,200,200);
+        //cyl.drawWireframe();
+        cyl.draw();
+        glPopMatrix();
+    }
     
-    ofSetColor(0, 250, 0);
-    ofBox(x, y, 0, 100);
-    
-    
-    ofSetColor(0, 0, 250);
-    ofBox(x, y, -500, 100);
+    {
+        glPushMatrix();
+        glTranslatef(0, 0, 0);
+        ofSetSphereResolution(5);
+        ofMesh sphere = ofGetGLRenderer()->ofGetSphereMesh();
+        ofSetColor(200,200,200);
+        //sphere.drawWireframe();
+        sphere.draw();
+        glPopMatrix();
+    }
 
+    {
+        glPushMatrix();
+        glTranslatef(10, 0, 0);
+        ofMesh sphere = createQuadSphere(1, 12, 12);
+        ofSetColor(200,200,200);
+        //sphere.drawWireframe();
+        sphere.draw();
+        glPopMatrix();
+    }
     
-//    ofEnableLighting();
-//	mLigDirectional.setGlobalPosition(1000, 1000, 1000);
-//	mLigDirectional.lookAt(ofVec3f(0,0,0));
-//	ofEnableSeparateSpecularLight();
-//	glEnable(GL_DEPTH_TEST);
-//	glEnable(GL_CULL_FACE);
-//	glCullFace(GL_BACK);
-//    glShadeModel(GL_FLAT);
-//    
-//    mLigDirectional.enable();
-//    mMatMainMaterial.begin();
-//    
-//    {
-//        glPushMatrix();
-//        glTranslatef(-10, 0, 0);
-//        ofMesh cyl = createCylinderZ(4, 7, 12, 1);
-//        ofSetColor(200,200,200);
-//        //cyl.drawWireframe();
-//        cyl.draw();
-//        glPopMatrix();
-//    }
-//    
-//    {
-//        glPushMatrix();
-//        glTranslatef(0, 0, 0);
-//        ofSetSphereResolution(5);
-//        ofMesh sphere = ofGetGLRenderer()->ofGetSphereMesh();
-//        ofSetColor(200,200,200);
-//        //sphere.drawWireframe();
-//        sphere.draw();
-//        glPopMatrix();
-//    }
-//
-//    {
-//        glPushMatrix();
-//        glTranslatef(10, 0, 0);
-//        ofMesh sphere = createQuadSphere(1, 12, 12);
-//        ofSetColor(200,200,200);
-//        //sphere.drawWireframe();
-//        sphere.draw();
-//        glPopMatrix();
-//    }
-//    
-//    mMatMainMaterial.end();
-//    mLigDirectional.disable();
+    mMatMainMaterial.end();
+    mLigDirectional.disable();
     camMain.end();
 }
 
@@ -382,9 +363,9 @@ void testApp::keyPressed(int key){}
 void testApp::keyReleased(int key){
 
 	switch (key) {
-			case 'f':
-			ofToggleFullscreen();
-			break;
+//			case 'f':
+//			ofToggleFullscreen();
+//			break;
 	
 //        case 'w':
 //			bWireframe = !bWireframe;
@@ -459,8 +440,6 @@ void testApp::windowResized(int w, int h){
 void testApp::gotMessage(ofMessage msg){}
 void testApp::dragEvent(ofDragInfo dragInfo){}
 
-
-
 void testApp::processGui(){
     int size = sizeof(PROCESS_NAME)/sizeof(string);
     for (int i=0; i<size; i++) {
@@ -471,8 +450,6 @@ void testApp::processGui(){
         }
     }
 }
-
-
 
 void testApp::processRequest(){
 
