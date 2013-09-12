@@ -25,8 +25,6 @@ public:
         if(!singleton){ singleton = new testApp(); }
     }
     
-    bool    bWireframe;
-    bool    bCollisionDebugDraw;
     bool    bNowProcessing;
 
     float   compScale;
@@ -45,58 +43,6 @@ public:
     instancedComponent spheres;
     instancedComponent cylinders;
     
-    // GUI
-    ofxPanel    pnlMain;
-    ofxPanel    pnlRemove;
-    ofxPanel    pnlCollision;
-    ofxPanel    pnlConnectR, pnlConnectG;
-    ofxPanel    pnlShape;
-    
-    
-	map<string, ofxParameter<int> > prmInt;
-	map<string, ofxParameter<float> > prmFloat;
-	map<string, ofxParameter<bool> > prmBool;
-    
-    static string       CURRENT_PROCESS;
-    static string       PROCESS_NAME[];
-
-    static const string CONNECT_GROUP;
-    static const string CONNECT_GROUP_MIN_DIST;
-    static const string CONNECT_GROUP_MAX_DIST;
-    static const string CONNECT_GROUP_CYLINDER_NUM;
-
-    static const string CONNECT_RANDOM;
-    static const string CONNECT_RANDOM_MIN_DIST;
-    static const string CONNECT_RANDOM_MAX_DIST;
-    static const string CONNECT_RANDOM_CYLINDER_NUM;
-
-    static const string CONNECT_NEAR;
-    
-    static const string COLLISION_MARGIN;
-    static const string COLLISION_TEST;
-
-    static const string REMOVE_GROUPS;
-    static const string REMOVE_GROUPS_MIN_NUM;
-    static const string REMOVE_DUPLICATE;
-    static const string REMOVE_ALL_CYLINDERS;
-    
-    static const string SPHERE_RADIUS;
-    static const string SPHERE_RESOLUTION;
-    static const string CYLINDER_RADIUS;
-    static const string CYLINDER_RESOLUTION;
-    static const string RESET_INSTSANCE_SHAPE;
-
-    static const string DRAW_WIREFRAME;
-    static const string DRAW_COLLISION_SHAPE;
-    static const string DRAW_COLLISION_DISTANCE;
-    static const string SAVE_DATA;
-
-    // shader uniform name
-    static const string RENDER_NORMALS;
-    static const string FLAT_SHADING;
-
-    
-public:
     void setup();
     void update();
     void draw();
@@ -112,7 +58,8 @@ public:
     void gotMessage(ofMessage msg);
 
     // element color
-    static ofColor colorSphere, colorCylinder;
+    static ofColor colorSphere;
+    static ofColor colorCylinder;
     
     
     // bg
@@ -122,9 +69,47 @@ public:
     static ofColor bgCircular0, bgCircular1;
     static ofColor bgBar0,      bgBar1;
     
+    static float CONNECT_GROUP_MIN_DIST;
+    static float CONNECT_GROUP_MAX_DIST;
+    static int CONNECT_GROUP_CYLINDER_NUM;
+    
+    static float CONNECT_RANDOM_MIN_DIST;
+    static float CONNECT_RANDOM_MAX_DIST;
+    static int CONNECT_RANDOM_CYLINDER_NUM;
+    
+    static float COLLISION_MARGIN;
+    
+    static int REMOVE_GROUPS_MIN_NUM;
+    
+    static float SPHERE_RADIUS;
+    static int SPHERE_RESOLUTION;
+    static float CYLINDER_RADIUS;
+    static int CYLINDER_RESOLUTION;
+    
+    static bool DRAW_WIREFRAME;
+    static bool DRAW_COLLISION_SHAPE;
+    static bool DRAW_COLLISION_DISTANCE;
+    
+    // shader uniform name
+    static bool RENDER_NORMALS;
+    static bool FLAT_SHADING;
+    
+    enum PROCESS_NAME{
+        NO_PROCESS          = 0,
+        RESET_INSTSANCE_SHAPE,
+        CONNECT_RANDOM,
+        CONNECT_GROUP,
+        CONNECT_NEAR,
+        COLLISION_TEST,
+        REMOVE_GROUPS,
+        REMOVE_DUPLICATE,
+        REMOVE_ALL_CYLINDERS,
+        SAVE_DATA
+    };
+    
+    static PROCESS_NAME CURRENT_PROCESS;
     
 private:
-    void setupGui();
     void setupCameraLightMaterial();
     void setupCylinderShape(float radius, int resolution);
     void setupSphereShape(float radius, int resolution);
@@ -134,10 +119,9 @@ private:
     void testDraw();
     void waitDraw();
     
-    bool guiMouseCheck(int x, int y);
     void processGui();
-    void processRequest();
-
+    void doProcess();
+    void requestProcess();
     
     
         //

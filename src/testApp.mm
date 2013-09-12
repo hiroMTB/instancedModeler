@@ -7,61 +7,44 @@
 collisionTester * testApp::tester = NULL;
 testApp * testApp::singleton = NULL;
 
-ofColor testApp::colorSphere;   ofColor testApp::colorCylinder;
+ofColor testApp::colorSphere    = ofColor(100);
+ofColor testApp::colorCylinder  = ofColor(100, 100, 50);
 
 int testApp::bgType = 0;
-ofColor testApp::bgNormal;
-ofColor testApp::bgLinear0;     ofColor testApp::bgLinear1;
-ofColor testApp::bgCircular0;   ofColor testApp::bgCircular1;
-ofColor testApp::bgBar0;        ofColor testApp::bgBar1;
+ofColor testApp::bgNormal    = ofColor(100);
+ofColor testApp::bgLinear0   = ofColor(255);
+ofColor testApp::bgLinear1   = ofColor(0);
+ofColor testApp::bgCircular0 = ofColor(255);
+ofColor testApp::bgCircular1 = ofColor(0);
+ofColor testApp::bgBar0      = ofColor(255);
+ofColor testApp::bgBar1      = ofColor(0);
 
-// GUI parts
-string testApp::CURRENT_PROCESS = "NONE";
+float testApp::SPHERE_RADIUS            = 1.5;
+int   testApp::SPHERE_RESOLUTION        = 8;
+float testApp::CYLINDER_RADIUS          = 1;
+int   testApp::CYLINDER_RESOLUTION      = 14;
 
-const string testApp::CONNECT_RANDOM = "CONNECT_RANDOM";
-const string testApp::CONNECT_GROUP = "CONNECT_GROUP";
-const string testApp::CONNECT_NEAR = "CONNECT_NEAR";
+int   testApp::CONNECT_RANDOM_CYLINDER_NUM  = 1;
+float testApp::CONNECT_RANDOM_MIN_DIST      = 0;
+float testApp::CONNECT_RANDOM_MAX_DIST      = 9999;
 
-const string testApp::COLLISION_MARGIN = "COLLISION_MARGIN";
-const string testApp::COLLISION_TEST = "COLLISION_TEST";
+int   testApp::CONNECT_GROUP_CYLINDER_NUM   = 1;
+float testApp::CONNECT_GROUP_MIN_DIST       = 0;
+float testApp::CONNECT_GROUP_MAX_DIST       = 9999;
 
-const string testApp::REMOVE_GROUPS = "REMOVE_GROUPS";
-const string testApp::REMOVE_GROUPS_MIN_NUM = "REMOVE_GROUPS_MIN_NUM";
-const string testApp::REMOVE_ALL_CYLINDERS = "REMOVE_ALL_CYLINDERS";
+float testApp::COLLISION_MARGIN         = 0;
 
-const string testApp::RESET_INSTSANCE_SHAPE = "RESET_INSTSANCE_SHAPE";
-const string testApp::SAVE_DATA = "SAVE_DATA";
-const string testApp::REMOVE_DUPLICATE = "REMOVE_DUPLICATE";
+int   testApp::REMOVE_GROUPS_MIN_NUM    = 1;
 
-string testApp::PROCESS_NAME[] = {
-    CONNECT_RANDOM,
-    CONNECT_NEAR,
-    CONNECT_GROUP,
-    COLLISION_TEST,
-    REMOVE_GROUPS,
-    REMOVE_DUPLICATE,
-    REMOVE_ALL_CYLINDERS,
-    RESET_INSTSANCE_SHAPE,
-    SAVE_DATA
-};
+bool  testApp::DRAW_WIREFRAME           = false;
+bool  testApp::DRAW_COLLISION_SHAPE     = false;
+bool  testApp::DRAW_COLLISION_DISTANCE  = false;
 
-// param
-const string testApp::SPHERE_RADIUS                 = "SPHERE_RADIUS";
-const string testApp::SPHERE_RESOLUTION             = "SPHERE_RESOLUTION";
-const string testApp::CYLINDER_RADIUS               = "CYLINDER_RADIUS";
-const string testApp::CYLINDER_RESOLUTION           = "CYLINDER_RESOLUTION";
+// shader uniform name
+static bool RENDER_NORMALS;
+static bool FLAT_SHADING;
 
-const string testApp::CONNECT_GROUP_CYLINDER_NUM    = "CONNECT_GROUP_CYLINDER_NUM";
-const string testApp::CONNECT_GROUP_MIN_DIST        = "CONNECT_GROUP_MIN_DIST";
-const string testApp::CONNECT_GROUP_MAX_DIST        = "CONNECT_GROUP_MAX_DIST";
-
-const string testApp::CONNECT_RANDOM_CYLINDER_NUM   = "CONNECT_RANDOM_CYLINDER_NUM";
-const string testApp::CONNECT_RANDOM_MIN_DIST       = "CONNECT_RANDOM_MIN_DIST";
-const string testApp::CONNECT_RANDOM_MAX_DIST       = "CONNECT_RANDOM_MAX_DIST";
-
-const string testApp::DRAW_WIREFRAME                = "DRAW_WIREFRAME";
-const string testApp::DRAW_COLLISION_SHAPE          = "DRAW_COLLISION_SHAPE";
-const string testApp::DRAW_COLLISION_DISTANCE       = "DRAW_COLLISION_DISTANCE";
+testApp::PROCESS_NAME testApp::CURRENT_PROCESS = testApp::NO_PROCESS;
 
 #include "assimp.h"
 #include "aiScene.h"
@@ -79,25 +62,22 @@ void testApp::setup(){
 #endif
 
     char mes[255];
-    sprintf(mes, "renature modeller start (compiled on %s at time %s JST)\n",__DATE__,__TIME__);
+    sprintf(mes, "renature modeller start (compiled on %s at time %s JST)",__DATE__,__TIME__);
     myLogRelease(mes);
     sprintf(mes, "using openFrameworks %d.%d", OF_VERSION, OF_VERSION_MINOR);
     myLogRelease(mes);
     
     glEnable(GL_DEPTH_TEST);
     
-    
-    bWireframe = false;
-    bCollisionDebugDraw = false;
     bNowProcessing = false;
     
-    posModelPath_P = "models/bee_20k_MASTER_mesh_wN.ply";
+    posModelPath_P = "models/bee_40k_MASTER_mesh_wN.ply";
+    
     mShdInstanced = NULL;
     
     //ofSetFrameRate(60);
 	ofSetVerticalSync(false);
 	setupCameraLightMaterial();
-    setupGui();
     setupShaders();
 
     
@@ -110,10 +90,10 @@ void testApp::setup(){
     int sphNum = 10;
     int cylNum = 4;
     {
-        float   sRad = prmFloat[SPHERE_RADIUS];
-        int     sRes = prmInt[SPHERE_RESOLUTION];
-        float   cRad = prmFloat[CYLINDER_RADIUS];
-        int     cRes = prmInt[CYLINDER_RESOLUTION];
+        float   sRad = SPHERE_RADIUS;
+        int     sRes = SPHERE_RESOLUTION;
+        float   cRad = CYLINDER_RADIUS;
+        int     cRes = CYLINDER_RESOLUTION;
         setupSphereShape(sRad, sRes);
         setupCylinderShape(cRad, cRes);
         
@@ -121,6 +101,8 @@ void testApp::setup(){
 #ifdef SETUP_SPHERE
         myLogDebug("setup Spheres");
 #if 1
+        sprintf(mes, "starting renature model %s", posModelPath_P.c_str());
+        myLogRelease(mes);
         spheres.loadInstancePositionFromModel(posModelPath_P, posScale);
 #else
        
@@ -190,7 +172,7 @@ void testApp::setupCylinderShape(float radius, int resolution){
 
 void testApp::update(){
     
-    processRequest();
+    doProcess();
 
     processGui();
     spheres.update();
@@ -292,7 +274,7 @@ void testApp::mainDraw(){
             mLigDirectional.enable();
             mMatMainMaterial.begin();
         
-            if (prmBool[DRAW_WIREFRAME]) {
+            if (DRAW_WIREFRAME) {
                 ofSetColor(colorSphere); spheres.drawWireframe(mShdInstanced);
                 ofSetColor(colorCylinder); cylinders.drawWireframe(mShdInstanced);
             }else{
@@ -313,26 +295,18 @@ void testApp::mainDraw(){
         ofSetColor(255,255,255);
         ofDisableLighting();
 
-        if(prmBool[DRAW_COLLISION_SHAPE]){
+        if(DRAW_COLLISION_SHAPE){
             instancedComponent::debugDraw();
         }
         
-        if(prmBool[DRAW_COLLISION_DISTANCE]){
+        if(DRAW_COLLISION_DISTANCE){
             tester->drawAllContanctPts();
         }
 
 
     
     }camMain.end();
-	
-    //  GUI draw
-	pnlMain.draw();
-    pnlShape.draw();
-	pnlRemove.draw();
-	pnlCollision.draw();
-    pnlConnectR.draw();
-    pnlConnectG.draw();
-    
+	   
     int y = 20;
     int x = 15;
     int h = 20;
@@ -371,114 +345,46 @@ void testApp::mainDraw(){
     }
     
     waitDraw();
-    
 }
 
 void testApp::keyPressed(int key){}
-void testApp::keyReleased(int key){
-
-	switch (key) {
-//			case 'f':
-//			ofToggleFullscreen();
-//			break;
-	
-//        case 'w':
-//			bWireframe = !bWireframe;
-//			break;
-//            
-//        case 'd':
-//            bCollisionDebugDraw = !bCollisionDebugDraw;
-//            break;
-            
-		default:
-			break;
-	}
-	
-}
-
-bool testApp::guiMouseCheck(int x, int y){
-    if(pnlMain.getShape().inside(x, y))
-        return true;
-    if(pnlRemove.getShape().inside(x, y))
-        return true;
-    if(pnlConnectR.getShape().inside(x, y))
-        return true;
-    if(pnlConnectG.getShape().inside(x, y))
-        return true;
-    if(pnlCollision.getShape().inside(x, y))
-        return true;
-    if(pnlShape.getShape().inside(x, y))
-        return true;
-
-    return false;
-}
+void testApp::keyReleased(int key){}
 
 void testApp::mouseMoved(int x, int y ){
-    if(!guiMouseCheck(x, y))
-        camMain.mouseMoved(x, y);
+    camMain.mouseMoved(x, y);
 }
 void testApp::mouseDragged(int x, int y, int button){
-    if(!guiMouseCheck(x, y))
-        camMain.mouseDragged(x, y, button);
+    camMain.mouseDragged(x, y, button);
 }
 void testApp::mousePressed(int x, int y, int button){
-    if(!guiMouseCheck(x, y))
-        camMain.mousePressed(x, y, button);
+    camMain.mousePressed(x, y, button);
 }
 void testApp::mouseReleased(int x, int y, int button){
-//    if(!guiMouseCheck(x, y))
-        camMain.mouseReleased(x, y, button);
+    camMain.mouseReleased(x, y, button);
 }
 void testApp::windowResized(int w, int h){
-    int space = 10;
-    int x = w - pnlMain.getShape().width - space;
-    int y = 10;
-    pnlMain.setPosition(x, y);
-    y += pnlMain.getShape().height + space;
-    
-    pnlShape.setPosition(x, y);
-    y += pnlShape.getShape().height + space;
-
-    pnlConnectR.setPosition(x, y);
-    y += pnlConnectR.getShape().height + space;
-
-    pnlConnectG.setPosition(x, y);
-    y += pnlConnectG.getShape().height + space;
-
-    pnlCollision.setPosition(x, y);
-    y += pnlCollision.getShape().height + space;
-
-    pnlRemove.setPosition(x, y);
-    y += pnlRemove.getShape().height + space;
-
 }
 void testApp::gotMessage(ofMessage msg){}
 void testApp::dragEvent(ofDragInfo dragInfo){}
 
 void testApp::processGui(){
-    int size = sizeof(PROCESS_NAME)/sizeof(string);
-    for (int i=0; i<size; i++) {
-        if(prmBool[PROCESS_NAME[i]] == true){
-            CURRENT_PROCESS = PROCESS_NAME[i];
-            bNowProcessing = true;
-            break;
-        }
+    if(CURRENT_PROCESS!=0){
+        bNowProcessing = true;
     }
 }
 
-void testApp::processRequest(){
-
+void testApp::doProcess(){
     if(bNowProcessing){
         if(CURRENT_PROCESS == CONNECT_RANDOM){
-            int num = prmInt[CONNECT_RANDOM_CYLINDER_NUM];
-            float min = prmFloat[CONNECT_RANDOM_MIN_DIST];
-            float max = prmFloat[CONNECT_RANDOM_MAX_DIST];
+            int num = CONNECT_RANDOM_CYLINDER_NUM;
+            float min = CONNECT_RANDOM_MIN_DIST;
+            float max = CONNECT_RANDOM_MAX_DIST;
             connectRandom(&spheres, &cylinders, num, min, max);
         
         }else if(CURRENT_PROCESS == CONNECT_GROUP){
-            int num = prmInt[CONNECT_GROUP_CYLINDER_NUM];
-            float min = prmFloat[CONNECT_GROUP_MIN_DIST];
-            float max = prmFloat[CONNECT_GROUP_MAX_DIST];
+            int num = CONNECT_GROUP_CYLINDER_NUM;
+            float min = CONNECT_GROUP_MIN_DIST;
+            float max = CONNECT_GROUP_MAX_DIST;
             connectGroup(&spheres, &cylinders, num, min, max);
             playFinishSound();
         }else if (CURRENT_PROCESS == CONNECT_NEAR){
@@ -488,7 +394,7 @@ void testApp::processRequest(){
             processCollision();
             playFinishSound();
         }else if(CURRENT_PROCESS == REMOVE_GROUPS){
-            int min = prmInt[REMOVE_GROUPS_MIN_NUM];
+            int min = REMOVE_GROUPS_MIN_NUM;
             spheres.removeSmallGroup(min);          // should be static
             cylinders.removeSmallGroup(min);
         
@@ -501,8 +407,8 @@ void testApp::processRequest(){
             cylinders.reset();
             
         }else if(CURRENT_PROCESS == RESET_INSTSANCE_SHAPE){
-            setupSphereShape(prmFloat[SPHERE_RADIUS], prmInt[SPHERE_RESOLUTION]);
-            setupCylinderShape(prmFloat[CYLINDER_RADIUS], prmInt[CYLINDER_RESOLUTION]);
+            setupSphereShape(SPHERE_RADIUS, SPHERE_RESOLUTION);
+            setupCylinderShape(CYLINDER_RADIUS, CYLINDER_RESOLUTION);
     
         }else if(CURRENT_PROCESS == SAVE_DATA){
             
@@ -524,8 +430,7 @@ void testApp::processRequest(){
         }
         
         bNowProcessing = false;
-        prmBool[CURRENT_PROCESS] = false;
-        CURRENT_PROCESS = "DONE";
+        CURRENT_PROCESS = NO_PROCESS;
     }
 }
 
@@ -543,69 +448,12 @@ void testApp::waitDraw(){
         ofRect(0, 0, w, h);
         
         ofSetColor(255,255,255);
-        ofDrawBitmapString("PROCESS " + CURRENT_PROCESS + " ...", -w/3,0);
+        ofDrawBitmapString("NOW PROCESSING " + ofToString(CURRENT_PROCESS) + " ...", -w/3,0);
         ofSetRectMode(OF_RECTMODE_CORNER);
         glPopMatrix();
     }
 }
 
-void testApp::setupGui(){
-    
-    int x = ofGetWidth() - 350;
-    int y = 50;
-    int h = 50;
-    int w = 250;
-	pnlMain.setup("MAIN", "gui/mainSettings.xml", x, y);
-    pnlMain.add(prmBool[DRAW_WIREFRAME].set(DRAW_WIREFRAME, false));
-    pnlMain.add(prmBool[DRAW_COLLISION_SHAPE].set(DRAW_COLLISION_SHAPE, false));
-    pnlMain.add(prmBool[DRAW_COLLISION_DISTANCE].set(DRAW_COLLISION_DISTANCE, false));    
-    pnlMain.add(prmBool[SAVE_DATA].set(SAVE_DATA, false));
-	y += (pnlMain.getHeight() + h);
-    
-   	pnlShape.setup("SHAPE", "gui/shapeSettings.xml", x, y);
-    pnlShape.add(prmFloat [SPHERE_RADIUS].set(SPHERE_RADIUS,0,0,4.0));
-    pnlShape.add(prmInt   [SPHERE_RESOLUTION].set(SPHERE_RESOLUTION,0,3,20));
-    pnlShape.add(prmFloat [CYLINDER_RADIUS].set(CYLINDER_RADIUS,0,0,4.0));
-    pnlShape.add(prmInt   [CYLINDER_RESOLUTION].set(CYLINDER_RESOLUTION,0,3,20));
-    pnlShape.add(prmBool  [RESET_INSTSANCE_SHAPE].set(RESET_INSTSANCE_SHAPE, false));
-    y += (pnlShape.getHeight() + h);
-    
-    pnlConnectR.setup("CONNECT RANDOM", "gui/connectRandomSettings.xml", x, y);
-    pnlConnectR.add(prmInt[CONNECT_RANDOM_CYLINDER_NUM].set(CONNECT_RANDOM_CYLINDER_NUM, 1, 1, 300));
-    pnlConnectR.add(prmFloat[CONNECT_RANDOM_MIN_DIST].set(CONNECT_RANDOM_MIN_DIST, 0.0, 0.0, 1000));
-    pnlConnectR.add(prmFloat[CONNECT_RANDOM_MAX_DIST].set(CONNECT_RANDOM_MAX_DIST, 9999, 0.0, 1000));
-    pnlConnectR.add(prmBool[CONNECT_RANDOM].set(CONNECT_RANDOM, false));
-    y += pnlConnectR.getHeight() + h;
-
-
-    pnlConnectG.setup("CONNECT GROUP", "gui/connectGroupSettings.xml", x, y);
-    pnlConnectG.add(prmInt[CONNECT_GROUP_CYLINDER_NUM].set(CONNECT_GROUP_CYLINDER_NUM, 1, 1, 10));
-    pnlConnectG.add(prmFloat[CONNECT_GROUP_MIN_DIST].set(CONNECT_GROUP_MIN_DIST, 0.0, 0.0, 1000));
-    pnlConnectG.add(prmFloat[CONNECT_GROUP_MAX_DIST].set(CONNECT_GROUP_MAX_DIST, 9999, 0.0, 1000));
-    pnlConnectG.add(prmBool[CONNECT_GROUP].set(CONNECT_GROUP, false));
-    y += pnlConnectG.getHeight() + h;
-    
-    pnlCollision.setup("COLLISION", "gui/collisionSettings.xml", x, y);
-    pnlCollision.add(prmFloat[COLLISION_MARGIN].set(COLLISION_MARGIN, 0, -3.0, 3.0));
-    pnlCollision.add(prmBool[COLLISION_TEST].set(COLLISION_TEST, false));
-    y+= (pnlCollision.getHeight() + h);
-    
-    pnlRemove.setup("REMOVE", "gui/removeSettings.xml", x, y);
-    pnlRemove.add(prmInt [REMOVE_GROUPS_MIN_NUM].set(REMOVE_GROUPS_MIN_NUM, 1, 0, 30));
-    pnlRemove.add(prmBool[REMOVE_GROUPS].set(REMOVE_GROUPS, false));
-    
-    pnlRemove.add(prmBool[REMOVE_DUPLICATE].set(REMOVE_DUPLICATE, false));
-    pnlRemove.add(prmBool[REMOVE_ALL_CYLINDERS].set(REMOVE_ALL_CYLINDERS, false));
-    
-
-    pnlMain.loadFromFile("gui/mainSettings.xml");
-    pnlShape.loadFromFile("gui/shapeSettings.xml");
-    pnlConnectR.loadFromFile("gui/connectRandomSettings.xml");
-    pnlConnectG.loadFromFile("gui/connectGroupSettings.xml");
-    pnlCollision.loadFromFile("gui/collisionSettings.xml");
-    pnlRemove.loadFromFile("gu/removeSettings.xml");
-    
-}
 
 void testApp::setupCameraLightMaterial(){
     camMain.setupPerspective(false);

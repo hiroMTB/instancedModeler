@@ -86,19 +86,114 @@ NSString *const removeAllCylinder       = @"removeAllCylinder";
         bg =(NSColor *)[NSUnarchiver unarchiveObjectWithData:theData];
         [bgPickerNormal setColor:bg];
         testApp::bgNormal.set(bg.redComponent*255.0, bg.greenComponent*255.0, bg.blueComponent*255.0);
-
     }
         
     return self;
 }
 
 
+- (IBAction)changeSphereRadiusSlider:(NSSlider *)sender{
+    testApp::SPHERE_RADIUS = sender.floatValue;
+}
 
-//- (IBAction)changeBackgroundColor:(NSColorWell *)sender {
-//}
+- (IBAction)changeSphereResolutionSlider:(NSSlider *)sender{
+    testApp::SPHERE_RESOLUTION = sender.intValue;
+}
 
-- (IBAction)changeSphereRadius:(NSSlider *)sender {
-    
+- (IBAction)changeCylinderRadiusSlider:(NSSlider *)sender{
+    testApp::CYLINDER_RADIUS = sender.floatValue;
+}
+- (IBAction)changeCylinderResolutionSlider:(NSSlider *)sender{
+    testApp::CYLINDER_RESOLUTION = sender.intValue;
+}
+- (IBAction)changeConnectRandomCylinderNumSlider:(NSSlider *)sender{
+    testApp::CONNECT_RANDOM_CYLINDER_NUM = sender.intValue;
+}
+
+- (IBAction)changeConnectRandomMinDistanceSlider:(NSSlider *)sender{
+    testApp::CONNECT_RANDOM_MIN_DIST = sender.floatValue;
+}
+- (IBAction)changeConnectRandomMaxDistanceSlider:(NSSlider *)sender{
+    testApp::CONNECT_RANDOM_MAX_DIST = sender.floatValue;
+}
+- (IBAction)changeConnectGroupCylinderNumSlider:(NSSlider *)sender{
+    testApp::CONNECT_GROUP_CYLINDER_NUM = sender.intValue;
+}
+- (IBAction)changeConnectGroupMinDistanceSlider:(NSSlider *)sender{
+    testApp::CONNECT_GROUP_MIN_DIST = sender.floatValue;
+}
+- (IBAction)changeConnectGroupMaxDistanceSlider:(NSSlider *)sender{
+    testApp::CONNECT_GROUP_MAX_DIST = sender.floatValue;
+}
+- (IBAction)changeCollisionMarginSlider:(NSSlider *)sender{
+    testApp::COLLISION_MARGIN = sender.floatValue;
+}
+
+- (IBAction)changeSphereRadiusNBox:(NSTextField *)sender{
+    testApp::SPHERE_RADIUS = sender.floatValue;
+}
+- (IBAction)changeSphereResolutionNBox:(NSTextField *)sender{
+    testApp::SPHERE_RESOLUTION = sender.intValue;
+}
+- (IBAction)changeCylinderRadiusNBox:(NSTextField *)sender{
+    testApp::CYLINDER_RADIUS = sender.floatValue;
+}
+- (IBAction)changeCylinderResolutionNBox:(NSTextField *)sender{
+    testApp::CYLINDER_RESOLUTION = sender.intValue;
+}
+- (IBAction)changeConnectRandomCylinderNumNBox:(NSTextField *)sender{
+    testApp::CONNECT_RANDOM_CYLINDER_NUM = sender.intValue;
+}
+- (IBAction)changeConnectRandomMinDistanceNBox:(NSTextField *)sender{
+    testApp::CONNECT_RANDOM_MIN_DIST = sender.floatValue;
+}
+- (IBAction)changeConnectRandomMaxDistanceNBox:(NSTextField *)sender{
+    testApp::CONNECT_RANDOM_MAX_DIST = sender.floatValue;
+}
+- (IBAction)changeConnectGroupCylinderNumNBox:(NSTextField *)sender{
+    testApp::CONNECT_GROUP_CYLINDER_NUM  = sender.intValue;
+}
+- (IBAction)changeConnectGroupMinDistanceNBox:(NSTextField *)sender{
+    testApp::CONNECT_GROUP_MIN_DIST = sender.floatValue;
+}
+- (IBAction)changeConnectGroupMaxDistanceNBox:(NSTextField *)sender{
+    testApp::CONNECT_GROUP_MAX_DIST = sender.floatValue;
+}
+- (IBAction)changeCollisionMarginNBox:(NSTextField *)sender{
+    testApp::COLLISION_MARGIN = sender.floatValue;
+}
+
+
+- (IBAction)pushResetInstanceShapeButton:(NSButton *)sender {
+    testApp::CURRENT_PROCESS = testApp::RESET_INSTSANCE_SHAPE;
+}
+
+- (IBAction)pushConnectRandomButton:(NSButton *)sender {
+    testApp::CURRENT_PROCESS = testApp::CONNECT_RANDOM;
+}
+
+- (IBAction)pushConnectGroupButton:(NSButton *)sender {
+    testApp::CURRENT_PROCESS = testApp::CONNECT_GROUP;
+}
+
+- (IBAction)pushCollisionTestButton:(NSButton *)sender {
+    testApp::CURRENT_PROCESS = testApp::COLLISION_TEST;
+}
+
+- (IBAction)pushRemoveGroupsButton:(NSButton *)sender {
+    testApp::CURRENT_PROCESS = testApp::REMOVE_GROUPS;
+}
+
+- (IBAction)pushRemoveDuplicateButton:(NSButton *)sender {
+    testApp::CURRENT_PROCESS = testApp::REMOVE_DUPLICATE;
+}
+
+- (IBAction)pushRemoveAllCylinderButton:(NSButton *)sender {
+    testApp::CURRENT_PROCESS = testApp::REMOVE_ALL_CYLINDERS;
+}
+
+- (IBAction)pushExportToCsvButton:(NSButton *)sender {
+    testApp::CURRENT_PROCESS = testApp::SAVE_DATA;
 }
 
 
