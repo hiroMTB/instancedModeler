@@ -28,10 +28,6 @@
 
 
 - (void)didResize:(NSNotification *)notif{
-//    int w = _window.frame.size.width;
-//    int h = _window.frame.size.height;
-//    cout << "didResizeFull, " << w << ", " << h << endl;
-//    bWindowing = false;
 }
 
 

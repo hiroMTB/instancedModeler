@@ -259,85 +259,71 @@ void testApp::testDraw(){
 
 void testApp::mainDraw(){
 	
+    // bg
     switch (bgType) {
-        case 0:
-            ofBackground(bgNormal);
-            break;
-        case 1:
-            ofBackgroundGradient(bgLinear0, bgLinear1, OF_GRADIENT_LINEAR);
-            break;
-        case 2:
-            ofBackgroundGradient(bgCircular0, bgCircular1, OF_GRADIENT_CIRCULAR);
-            break;
-        case 3:
-            ofBackgroundGradient(bgBar0, bgBar1, OF_GRADIENT_BAR);
-            break;
-        default:
-            ofBackground(0);
-            break;
+        case 0: ofBackground(bgNormal); break;
+        case 1: ofBackgroundGradient(bgLinear0, bgLinear1, OF_GRADIENT_LINEAR); break;
+        case 2: ofBackgroundGradient(bgCircular0, bgCircular1, OF_GRADIENT_CIRCULAR); break;
+        case 3: ofBackgroundGradient(bgBar0, bgBar1, OF_GRADIENT_BAR); break;
+        default: ofBackground(0); break;
     }
     
-	camMain.begin();
-
-    ofSetColor(255);
-
-    ofNoFill();
-    ofBox(0, 0, 0, posScale*10);
-    
-    ofEnableLighting();
-	mLigDirectional.setGlobalPosition(1000, 1000, 1000);
-	mLigDirectional.lookAt(ofVec3f(0,0,0));
-	ofEnableSeparateSpecularLight();
-
-    glShadeModel(GL_FLAT);
-    glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);		// OpenGL default is GL_LAST_VERTEX_CONVENTION
-
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-    
-	mShdInstanced->begin();
-
-        mLigDirectional.enable();
-        mMatMainMaterial.begin();
-    
-        if (prmBool[DRAW_WIREFRAME]) {
-            ofSetColor(colorSphere);
-            spheres.drawWireframe(mShdInstanced);
-            ofSetColor(colorCylinder);
-            cylinders.drawWireframe(mShdInstanced);
-        }else{
-            ofSetColor(colorSphere);
-            spheres.draw(mShdInstanced);
-            ofSetColor(colorCylinder);
-            cylinders.draw(mShdInstanced);
+	camMain.begin();{
+        {
+            // reference box
+            ofSetColor(255);
+            ofNoFill();
+            ofBox(0, 0, 0, posScale*10);
         }
-    
-    
-        mMatMainMaterial.end();
-        mLigDirectional.disable();
-	mShdInstanced->end();
-    
-    
-	glProvokingVertex(GL_LAST_VERTEX_CONVENTION);
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
-	glShadeModel(GL_SMOOTH);
+        
+        ofEnableLighting();
+        mLigDirectional.setGlobalPosition(1000, 1000, 1000);
+        mLigDirectional.lookAt(ofVec3f(0,0,0));
+        ofEnableSeparateSpecularLight();
 
-    ofSetColor(255,255,255);
-	ofDisableLighting();
+        glShadeModel(GL_FLAT);
+        glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);		// OpenGL default is GL_LAST_VERTEX_CONVENTION
 
-    if(prmBool[DRAW_COLLISION_SHAPE]){
-        instancedComponent::debugDraw();
-    }
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        
+        mShdInstanced->begin();{
+            mLigDirectional.enable();
+            mMatMainMaterial.begin();
+        
+            if (prmBool[DRAW_WIREFRAME]) {
+                ofSetColor(colorSphere); spheres.drawWireframe(mShdInstanced);
+                ofSetColor(colorCylinder); cylinders.drawWireframe(mShdInstanced);
+            }else{
+                ofSetColor(colorSphere); spheres.draw(mShdInstanced);
+                ofSetColor(colorCylinder); cylinders.draw(mShdInstanced);
+            }
+
+            mMatMainMaterial.end();
+            mLigDirectional.disable();
+        }mShdInstanced->end();
+        
+        
+        glProvokingVertex(GL_LAST_VERTEX_CONVENTION);
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        glShadeModel(GL_SMOOTH);
+
+        ofSetColor(255,255,255);
+        ofDisableLighting();
+
+        if(prmBool[DRAW_COLLISION_SHAPE]){
+            instancedComponent::debugDraw();
+        }
+        
+        if(prmBool[DRAW_COLLISION_DISTANCE]){
+            tester->drawAllContanctPts();
+        }
+
+
     
-    if(prmBool[DRAW_COLLISION_DISTANCE]){
-        tester->drawAllContanctPts();
-    }
-
-
-    
-    camMain.end();
+    }camMain.end();
 	
     //  GUI draw
 	pnlMain.draw();

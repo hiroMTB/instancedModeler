@@ -10,6 +10,41 @@
 #include "ofMain.h"
 #include "testApp.h"
 
+NSString *const sphereColor         = @"SphereColor";
+NSString *const cylinderColor		= @"cylinderColor";
+NSString *const bgNormal            = @"bgNormal";
+NSString *const bgLinear0           = @"bgLinear0";
+NSString *const bgLinear1           = @"bgLinear1";
+NSString *const bgCircular0         = @"bgCircular0";
+NSString *const bgCircular1         = @"bgCircular1";
+NSString *const bgBar0              = @"bgBar0";
+NSString *const bgBar1              = @"bgBar1";
+NSString *const showWireframe       = @"showWireframe";
+NSString *const showCollisionShape  = @"showCollisionShape";
+NSString *const showCollisionDistance = @"showCollisionDistance";
+
+NSString *const sphereRadius        = @"sphereRadius";
+NSString *const sphereResolution    = @"sphereResolution";
+NSString *const cylinderRadius      = @"cylinderRadius";
+NSString *const cylinderResolution  = @"cylinderResolution";
+
+NSString *const connectRandomCylinderNum = @"connectRandomCylinderNum";
+NSString *const connectRandomMinDistance = @"connectRandomMinDistance";
+NSString *const connectRandomMaxDistance = @"connectRandomMaxDistance";
+NSString *const connectGroupCylinderNum  = @"connectGroupCylinderNum";
+NSString *const connectGroupMinDistance  = @"connectGroupMinDistance";
+NSString *const connectGroupMaxDistance  = @"connectGroupMaxDistance";
+
+NSString *const collisionMargin          = @"collisionMargin";
+
+// button
+NSString *const resetInstanceShape      = @"resetInstanceShape";
+NSString *const connectRandom           = @"connectRandom";
+NSString *const connectGroup            = @"connectGroup";
+NSString *const removeGroups            = @"removeGroups";
+NSString *const removeDuplicate         = @"removeDuplicate";
+NSString *const removeAllCylinder       = @"removeAllCylinder";
+
 
 @implementation MainWindowController
 
