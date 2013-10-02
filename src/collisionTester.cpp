@@ -132,10 +132,17 @@ void collisionTester::resetCylinderShape(ofVec3f halfExtent){
 
 
 void collisionTester::destroy(){
+
+//    ???
+//    if(algoSS){ delete algoSS; algoSS=0; }
+//    if(algoCC){ delete algoCC; algoCC=0; }
+//    if(algoSC){ delete algoSC; algoSC=0; }
+    
     delete sphereA.getCollisionShape();
     delete sphereB.getCollisionShape();
     delete cylinderA.getCollisionShape();
     delete cylinderB.getCollisionShape();
+    if(collisionWorld){ delete collisionWorld; collisionWorld=0; }
 }
 
 

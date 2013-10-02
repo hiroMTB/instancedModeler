@@ -7,7 +7,7 @@
 
 - (void)setup{
 
-    [MainWindowController setupDefault];
+    //[MainWindowController setupDefault];
 
     string newPath = [[NSString stringWithFormat:@"%@/../data/", [[NSBundle mainBundle] bundlePath]] cString];
     ofSetDataPathRoot(newPath);
@@ -41,7 +41,7 @@
 
 - (void)exit
 {
-//    testApp::getInstance()->exit();
+    testApp::get()->exit();
 }
 
 - (void)keyPressed:(int)key

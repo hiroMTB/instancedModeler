@@ -167,7 +167,6 @@ void testApp::collisionEnd(int startTime){
     instancedComponent::updateGroupTotalNum();
     
     // coloring
-    ofColor c;
     spheres.setGroupColorGradient();
     spheres.setGroupColor(-1, ofColor(0,0,0));
     

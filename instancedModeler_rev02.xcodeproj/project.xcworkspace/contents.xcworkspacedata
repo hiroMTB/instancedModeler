@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:instancedModeler_rev20.xcodeproj">
+      location = "self:instancedModeler_rev02.xcodeproj">
    </FileRef>
 </Workspace>

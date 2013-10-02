@@ -15,7 +15,6 @@
     
     IBOutlet rnMainGLView *mainGLView;
     
-    
     IBOutlet NSSlider *sphereRadiusSlider;
     IBOutlet NSSlider *sphereResolutionSlider;
     IBOutlet NSSlider *cylinderRadiusSlider;
@@ -27,6 +26,7 @@
     IBOutlet NSSlider *connectGroupMinDistanceSlider;
     IBOutlet NSSlider *connectGroupMaxDistanceSlider;
     IBOutlet NSSlider *collisionMarginSlider;
+    IBOutlet NSSlider *removeGroupsMinNumSlider;
 
     IBOutlet NSTextField *sphereRadiusNBox;
     IBOutlet NSTextField *sphereResolutionNBox;
@@ -39,6 +39,7 @@
     IBOutlet NSTextField *connectGroupMinDistanceNBox;
     IBOutlet NSTextField *connectGroupMaxDistanceNBox;
     IBOutlet NSTextField *collisionMarginNBox;
+    IBOutlet NSTextField *removeGroupsMinNumNBox;
     
     IBOutlet NSButton *resetInstanceShapeButton;
     
@@ -48,7 +49,13 @@
     IBOutlet NSButton *removeGroupButton;
     IBOutlet NSButton *removeDuplicateButton;
     IBOutlet NSButton *removeAllCylinderButton;
+    IBOutlet NSButton *removeAllSpheresButton;
     IBOutlet NSButton *exportToCsvButton;
+    IBOutlet NSButton *loadCsvButton;
+    
+    IBOutlet NSButton *LoadModelDataButton;
+    IBOutlet NSButton *loadSphereCsvButton;
+    IBOutlet NSButton *loadCylinderCsvButton;
     
     //
     IBOutlet NSColorWell *colorSphere;
@@ -62,11 +69,11 @@
     IBOutlet NSColorWell *bgPickerCircular1;
     IBOutlet NSColorWell *bgPickerBar0;
     IBOutlet NSColorWell *bgPickerBar1;
+    IBOutlet NSButton *showWireframeCheck;
+    IBOutlet NSButton *showCollisionShapeCheck;
+    IBOutlet NSButton *showCollisionDistanceCheck;
+    IBOutlet NSButton *showReferenceBoxCheck;
 }
-
-+ (void) setupDefault;
-+ (void) initializeParameters;
-
 
 - (IBAction)changeSphereRadiusSlider:(NSSlider *)sender;
 - (IBAction)changeSphereResolutionSlider:(NSSlider *)sender;
@@ -79,6 +86,7 @@
 - (IBAction)changeConnectGroupMinDistanceSlider:(NSSlider *)sender;
 - (IBAction)changeConnectGroupMaxDistanceSlider:(NSSlider *)sender;
 - (IBAction)changeCollisionMarginSlider:(NSSlider *)sender;
+- (IBAction)changeRemoveGroupsMinNumSlider:(NSSlider *)sender;
 
 - (IBAction)changeSphereRadiusNBox:(NSTextField *)sender;
 - (IBAction)changeSphereResolutionNBox:(NSTextField *)sender;
@@ -91,7 +99,7 @@
 - (IBAction)changeConnectGroupMinDistanceNBox:(NSTextField *)sender;
 - (IBAction)changeConnectGroupMaxDistanceNBox:(NSTextField *)sender;
 - (IBAction)changeCollisionMarginNBox:(NSTextField *)sender;
-
+- (IBAction)changeRemoveGroupsMinNumNBox:(NSTextField *)sender;
 
 - (IBAction)pushResetInstanceShapeButton:(NSButton *)sender;
 - (IBAction)pushConnectRandomButton:(NSButton *)sender;
@@ -99,8 +107,16 @@
 - (IBAction)pushCollisionTestButton:(NSButton *)sender;
 - (IBAction)pushRemoveGroupsButton:(NSButton *)sender;
 - (IBAction)pushRemoveDuplicateButton:(NSButton *)sender;
+- (IBAction)pushRemoveAllSpheres:(NSButton *)sender;
 - (IBAction)pushRemoveAllCylinderButton:(NSButton *)sender;
+
 - (IBAction)pushExportToCsvButton:(NSButton *)sender;
+- (IBAction)pushLoadCsvbutton:(NSButton *)sender;
+
+- (IBAction)puchLoadModelDataButton:(NSButton *)sender;
+
+- (IBAction)pushLoadSphereCsvButton:(NSButton *)sender;
+- (IBAction)pushLoadCylinderCsvButton:(NSButton *)sender;
 
 
 - (IBAction)changeColorSphere:(NSColorWell *)sender;
@@ -113,60 +129,14 @@
 - (IBAction)changeBgCircular1:(NSColorWell *)sender;
 - (IBAction)changeBgBar0:(NSColorWell *)sender;
 - (IBAction)changeBgBar1:(NSColorWell *)sender;
+- (IBAction)changeShowWireframeCheck:(NSButton *)sender;
+- (IBAction)changeShowCollisionShapeCheck:(NSButton *)sender;
+- (IBAction)changeShowCollisionDistanceCheck:(NSButton *)sender;
+- (IBAction)changeShowReferenceBoxCheck:(NSButton *)sender;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+- (void) setupDefault;
+- (void) initializeParameters;
 
 
 @end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

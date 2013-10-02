@@ -9,6 +9,7 @@ testApp * testApp::singleton = NULL;
 
 ofColor testApp::colorSphere    = ofColor(100);
 ofColor testApp::colorCylinder  = ofColor(100, 100, 50);
+string  testApp::posModelPath_P = "none";
 
 int testApp::bgType = 0;
 ofColor testApp::bgNormal    = ofColor(100);
@@ -26,11 +27,11 @@ int   testApp::CYLINDER_RESOLUTION      = 14;
 
 int   testApp::CONNECT_RANDOM_CYLINDER_NUM  = 1;
 float testApp::CONNECT_RANDOM_MIN_DIST      = 0;
-float testApp::CONNECT_RANDOM_MAX_DIST      = 9999;
+float testApp::CONNECT_RANDOM_MAX_DIST      = 888;
 
 int   testApp::CONNECT_GROUP_CYLINDER_NUM   = 1;
 float testApp::CONNECT_GROUP_MIN_DIST       = 0;
-float testApp::CONNECT_GROUP_MAX_DIST       = 9999;
+float testApp::CONNECT_GROUP_MAX_DIST       = 888;
 
 float testApp::COLLISION_MARGIN         = 0;
 
@@ -39,6 +40,7 @@ int   testApp::REMOVE_GROUPS_MIN_NUM    = 1;
 bool  testApp::DRAW_WIREFRAME           = false;
 bool  testApp::DRAW_COLLISION_SHAPE     = false;
 bool  testApp::DRAW_COLLISION_DISTANCE  = false;
+bool  testApp::DRAW_REFERENCE_BOX       = true;
 
 // shader uniform name
 static bool RENDER_NORMALS;
@@ -51,10 +53,6 @@ testApp::PROCESS_NAME testApp::CURRENT_PROCESS = testApp::NO_PROCESS;
 
 void testApp::setup(){
 
-//    int m = aiGetVersionMajor();
-//    
-//    
-    
 #ifndef NDEBUG
     ofSetLogLevel(OF_LOG_VERBOSE);
 #else
@@ -70,43 +68,44 @@ void testApp::setup(){
     glEnable(GL_DEPTH_TEST);
     
     bNowProcessing = false;
-    
-    posModelPath_P = "models/bee_40k_MASTER_mesh_wN.ply";
-    
     mShdInstanced = NULL;
     
-    //ofSetFrameRate(60);
 	ofSetVerticalSync(false);
 	setupCameraLightMaterial();
     setupShaders();
 
-    
     tester = new collisionTester();
+    finishSound.loadSound("sound/finishSound.wav");
+
     
     // ---------------------------------------------------
+    posModelPath_P = "none";
+
+    setupSphereShape(   SPHERE_RADIUS,   SPHERE_RESOLUTION);
+    setupCylinderShape( CYLINDER_RADIUS, CYLINDER_RESOLUTION);
+
+    //loadModelData();
+
     compScale = 1;
     posScale = 33; // 33cm box sizes
+}
 
+void testApp::loadModelData(){
+    cylinders.reset();
+    spheres.reset();
+    
+    {
+        char mes[255];
+        sprintf(mes, "start loading renature model %s", posModelPath_P.c_str());
+        myLogRelease(mes);
+        spheres.loadInstancePositionFromModel(posModelPath_P, posScale);
+    }
+}
+
+void testApp::loadRandomData(){
     int sphNum = 10;
     int cylNum = 4;
     {
-        float   sRad = SPHERE_RADIUS;
-        int     sRes = SPHERE_RESOLUTION;
-        float   cRad = CYLINDER_RADIUS;
-        int     cRes = CYLINDER_RESOLUTION;
-        setupSphereShape(sRad, sRes);
-        setupCylinderShape(cRad, cRes);
-        
-#define SETUP_SPHERE
-#ifdef SETUP_SPHERE
-        myLogDebug("setup Spheres");
-#if 1
-        sprintf(mes, "starting renature model %s", posModelPath_P.c_str());
-        myLogRelease(mes);
-        spheres.loadInstancePositionFromModel(posModelPath_P, posScale);
-#else
-       
-
         ofMatrix4x4 * ms = new ofMatrix4x4[sphNum];
         ofVec3f * scales = new ofVec3f[sphNum];
         
@@ -117,24 +116,17 @@ void testApp::setup(){
         }
         
         spheres.loadInstancePositionFromMatrices(ms, scales, sphNum);
-#endif
-#endif
+        delete ms;
+        delete scales;
+        ms = 0;
+        scales = 0;
+
     }
-    
+
     {
-
-#define SETUP_CYLINDER 1
-#ifdef SETUP_CYLINDER
-        myLogDebug("setup Cylinders");
-
-        
-#if 1
-        connectRandom(&spheres, &cylinders, cylNum, 1, 10000);
-#else
-
         ofMatrix4x4 * ms = new ofMatrix4x4[cylNum];
         ofVec3f * scales = new ofVec3f[cylNum];
-
+        
         float pos = 5;
         for(int i=0; i<cylNum; i++){
             ms[i].makeIdentityMatrix();
@@ -142,16 +134,15 @@ void testApp::setup(){
             ms[i].translate(ofRandom(-pos, pos), ofRandom(-pos, pos), ofRandom(-pos, pos));
             scales[i].set(1,1,1);
         }
-        
-        
-        cylinders.loadInstancePositionFromMatrices(ms, INSTANCE_CYLINDER, cylNum);
-
-#endif
-#endif
-    }
-
+        cylinders.loadInstancePositionFromMatrices(ms, scales, cylNum);
     
-    finishSound.loadSound("sound/finishSound.wav");
+        delete ms;
+        delete scales;
+        ms = 0;
+        scales = 0;
+    }
+    
+    
 }
 
 void testApp::setupSphereShape(float radius, int resolution){
@@ -181,6 +172,7 @@ void testApp::update(){
 }
 
 void testApp::draw(){
+    ofDisableAlphaBlending();
     mainDraw();
     //testDraw();
 }
@@ -251,7 +243,7 @@ void testApp::mainDraw(){
     }
     
 	camMain.begin();{
-        {
+        if(DRAW_REFERENCE_BOX){
             // reference box
             ofSetColor(255);
             ofNoFill();
@@ -311,9 +303,12 @@ void testApp::mainDraw(){
     int x = 15;
     int h = 20;
     
+    ofFill();
+    ofEnableAlphaBlending();
     ofSetColor(0,1,2,100);
-    ofRect(0, 0, 280, ofGetHeight()-50);
-
+    ofRect(0, 0, 280, ofGetHeight());
+    ofDisableAlphaBlending();
+    
     ofSetColor(255,255,255,255);
 	ofDrawBitmapString("fps : "+ofToString(ofGetFrameRate()), x, y);
     
@@ -345,6 +340,13 @@ void testApp::mainDraw(){
     }
     
     waitDraw();
+}
+
+void testApp::exit(){
+    spheres.destroy();
+    cylinders.destroy();
+    delete tester;
+    tester = 0;
 }
 
 void testApp::keyPressed(int key){}
@@ -403,32 +405,49 @@ void testApp::doProcess(){
             spheres.updateRequest();
             cylinders.updateRequest();
             playFinishSound();
+        }else if(CURRENT_PROCESS == REMOVE_ALL_SPHERES){
+            spheres.reset();
         }else if(CURRENT_PROCESS == REMOVE_ALL_CYLINDERS){
             cylinders.reset();
-            
         }else if(CURRENT_PROCESS == RESET_INSTSANCE_SHAPE){
             setupSphereShape(SPHERE_RADIUS, SPHERE_RESOLUTION);
             setupCylinderShape(CYLINDER_RADIUS, CYLINDER_RESOLUTION);
     
-        }else if(CURRENT_PROCESS == SAVE_DATA){
+        }else{
+            cout << "unknown process for process#" << (int)CURRENT_PROCESS << endl;
             
-            // TOP dir
-            string topDirName = "instanceData";
-            ofDirectory topDir(topDirName);
-            if(!topDir.exists()){
-                topDir.createDirectory(topDirName);
-            }
-            // SUB timestamped dir
-            string subDirName = topDirName + "/" + ofGetTimestampString("%m%d_%H%M_%S");
-            ofDirectory subDir(subDirName);
-            subDir.createDirectory(subDirName);
-
-            string timestamp = ofGetTimestampString();
-            spheres.saveInstanceDataToCsv(subDirName);
-            cylinders.saveInstanceDataToCsv(subDirName);
-            playFinishSound();
+            bNowProcessing = false;
+            CURRENT_PROCESS = NO_PROCESS;
         }
-        
+//        else if(CURRENT_PROCESS == SAVE_CSV){
+//            
+//            // TOP dir
+//            string topDirName = "savedPositionData";
+//            ofDirectory topDir(topDirName);
+//            if(!topDir.exists()){
+//                topDir.createDirectory(topDirName);
+//            }
+//            // SUB timestamped dir
+//            string subDirName = topDirName + "/" + ofGetTimestampString("%m%d_%H%M_%S");
+//            ofDirectory subDir(subDirName);
+//            subDir.createDirectory(subDirName);
+//
+//            string timestamp = ofGetTimestampString();
+//            spheres.saveInstanceDataToCsv(subDirName);
+//            cylinders.saveInstanceDataToCsv(subDirName);
+//            playFinishSound();
+//        }else if(CURRENT_PROCESS == LOAD_CSV){
+//            string dirName = "savedPositionData";
+//            ofDirectory dir(dirName);
+//            if(!dir.exists()){
+//                myLogRelease("no directory exist named \"savedPositionData\"");
+//            }
+//            
+//            spheres.loadInstanceDataFromCsv(dirName);
+//            cylinders.loadInstanceDataFromCsv(dirName);
+//            playFinishSound();
+//        }
+
         bNowProcessing = false;
         CURRENT_PROCESS = NO_PROCESS;
     }
@@ -443,12 +462,15 @@ void testApp::waitDraw(){
 
         glPushMatrix();
         glTranslatef(x, y, 0);
+        ofFill();
         ofSetRectMode(OF_RECTMODE_CENTER);
+        ofEnableAlphaBlending();
         ofSetColor(0, 10, 20, 200);
         ofRect(0, 0, w, h);
+        ofDisableAlphaBlending();
         
         ofSetColor(255,255,255);
-        ofDrawBitmapString("NOW PROCESSING " + ofToString(CURRENT_PROCESS) + " ...", -w/3,0);
+        ofDrawBitmapString("PROCESS #" + ofToString(CURRENT_PROCESS) + " ...", -w/3,0);
         ofSetRectMode(OF_RECTMODE_CORNER);
         glPopMatrix();
     }
@@ -489,6 +511,18 @@ void testApp::setupShaders(bool doLink){
         err = glGetError();
         ofLogNotice() << "Loaded instanced Shader: " << err;
     }
+}
+
+void testApp::saveCsvData(string path){
+    spheres.saveInstanceDataToCsv(path);
+    cylinders.saveInstanceDataToCsv(path);
+    playFinishSound();
+}
+
+void testApp::loadCsvData(string path){
+    spheres.loadInstanceDataFromCsv(path);
+    cylinders.loadInstanceDataFromCsv(path);
+    playFinishSound();
 }
 
 

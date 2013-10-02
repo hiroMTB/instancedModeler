@@ -13,9 +13,12 @@
 #include "collisionTester.h"
 
 
+#include "ofxOsc.h"
 
 class testApp{  // : public ofBaseApp{
 
+    ofxOscReceiver	oscR;
+    
     static testApp * singleton;
     
 public:
@@ -30,7 +33,7 @@ public:
     float   compScale;
     float   posScale;
     
-    string  posModelPath_P;
+    static string  posModelPath_P;
     
     ofShader*       mShdInstanced;
 	ofEasyCam       camMain;
@@ -43,10 +46,14 @@ public:
     instancedComponent spheres;
     instancedComponent cylinders;
     
+    void loadModelData();
+    void loadRandomData();
+    
     void setup();
     void update();
     void draw();
-
+    void exit();
+    
     void keyPressed(int key);
     void keyReleased(int key);
     void mouseMoved(int x, int y );
@@ -57,6 +64,11 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
 
+    
+    void saveCsvData(string path);
+    void loadCsvData(string path);
+    
+    
     // element color
     static ofColor colorSphere;
     static ofColor colorCylinder;
@@ -87,6 +99,7 @@ public:
     static int CYLINDER_RESOLUTION;
     
     static bool DRAW_WIREFRAME;
+    static bool DRAW_REFERENCE_BOX;
     static bool DRAW_COLLISION_SHAPE;
     static bool DRAW_COLLISION_DISTANCE;
     
@@ -103,11 +116,17 @@ public:
         COLLISION_TEST,
         REMOVE_GROUPS,
         REMOVE_DUPLICATE,
+        REMOVE_ALL_SPHERES,
         REMOVE_ALL_CYLINDERS,
-        SAVE_DATA
+        SAVE_CSV,
+        LOAD_CSV,
+        LOAD_MODEL_DATA
     };
     
     static PROCESS_NAME CURRENT_PROCESS;
+
+
+
     
 private:
     void setupCameraLightMaterial();
@@ -115,6 +134,7 @@ private:
     void setupSphereShape(float radius, int resolution);
     void setupShaders(bool doLink=true);
 
+    
     void mainDraw();
     void testDraw();
     void waitDraw();
@@ -122,7 +142,6 @@ private:
     void processGui();
     void doProcess();
     void requestProcess();
-    
     
         //
         // testApp_collision.cpp

@@ -1,5 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict/>
+<dict>
+	<key>bgType</key>
+	<integer>1</integer>
+	<key>bgNormal</key>
+	<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmAQEBAYY=</data>
+	<key>bgLinear0</key>
+	<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmAYPJ5G4/g3DSXj8Bhg==</data>
+	<key>bgLinear1</key>
+	<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmg1SjFz6DVKMXPoNUoxc+AYY=</data>
+	<key>bgCircular0</key>
+	<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmAYPJ5G4/g3DSXj8Bhg==</data>
+	<key>bgCircular1</key>
+	<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmg1SjFz6DVKMXPoNUoxc+AYY=</data>
+	<key>bgBar0</key>
+	<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmAYPJ5G4/g3DSXj8Bhg==</data>
+	<key>bgBar1</key>
+	<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmg1SjFz6DVKMXPoNUoxc+AYY=</data>
+	<key>showWireframe</key>
+	<false/>
+	<key>showCollisionShape</key>
+	<false/>
+	<key>showCollisionDistance</key>
+	<false/>
+	<key>sphereColor</key>
+	<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmg1IC2D6DUgLYPoNSAtg+AYY=</data>
+	<key>cylinderColor</key>
+	<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmgyj9DT6Dj/2/PoOIEtg+AYY=</data>
+	<key>sphereRadius</key>
+	<real>1.5</real>
+	<key>sphereResolution</key>
+	<integer>8</integer>
+	<key>cylinderRadius</key>
+	<integer>1</integer>
+	<key>cylinderResolution</key>
+	<integer>14</integer>
+	<key>connectRandomCylinderNum</key>
+	<integer>10</integer>
+	<key>connectRandomMinDistance</key>
+	<integer>100</integer>
+	<key>connectRandomMaxDistance</key>
+	<integer>800</integer>
+	<key>connectGroupCylinderNum</key>
+	<integer>1</integer>
+	<key>connectGroupMinDistance</key>
+	<integer>100</integer>
+	<key>connectGroupMaxDistance</key>
+	<integer>800</integer>
+	<key>collisionMargin</key>
+	<integer>0</integer>
+	<key>removeGroupsMinNum</key>
+	<integer>1</integer>
+</dict>
 </plist>

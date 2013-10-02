@@ -18,10 +18,18 @@ instanceNum(0),
 vtxtexId(GL_NONE),
 cltexId(GL_NONE)
 {
-    //allocate();
-    shaderVtxTextureName = "vtxtex";
-    shaderColorTextureName = "cltex";
-    
+}
+
+
+instancedComponent::instancedComponent(INSTANCE_TYPE t, INSTANCE_MAP& m):
+insType(t),
+bVtxtexNeedUpdate(true),
+bCltexNeedUpdate(true),
+instanceNum(0),
+vtxtexId(GL_NONE),
+cltexId(GL_NONE)
+{
+//    instanceMap.insert(m);
 }
 
 instancedComponent::~instancedComponent(){
@@ -34,7 +42,8 @@ void instancedComponent::destroy(){
     //delete matrices;
     
     vmi->clear();
-    
+    delete vmi;
+    vmi = 0;
     myLogDebug("instancedComponent destroyed");
 }
 
@@ -96,6 +105,7 @@ void instancedComponent::updateVertexTexture(){
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         bVtxtexNeedUpdate = false;
         delete matrices;
+        matrices = 0;
     }
 }
 
@@ -133,6 +143,7 @@ void instancedComponent::updateColorTexture(){
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         bCltexNeedUpdate = false;
         delete colors;
+        colors = 0;
     }
 }
 
@@ -141,10 +152,10 @@ void instancedComponent::draw(ofShader * shader){
     glPushMatrix();
     
     if(vtxtexId!=GL_NONE)
-        shader->setUniformTexture(shaderVtxTextureName.c_str(), GL_TEXTURE_2D, vtxtexId, 0);
+        shader->setUniformTexture("vtxtex", GL_TEXTURE_2D, vtxtexId, 0);
     
     if(cltexId!=GL_NONE)
-        shader->setUniformTexture(shaderColorTextureName.c_str(), GL_TEXTURE_2D, cltexId, 1);
+        shader->setUniformTexture("cltex", GL_TEXTURE_2D, cltexId, 1);
     
     vmi->setPrimCount(instanceNum);
     vmi->draw();
@@ -157,10 +168,10 @@ void instancedComponent::drawWireframe(ofShader * shader){
     glPushMatrix();
 
     if(vtxtexId!=GL_NONE)
-        shader->setUniformTexture(shaderVtxTextureName.c_str(), GL_TEXTURE_2D, vtxtexId, 0);
+        shader->setUniformTexture("vtxtex", GL_TEXTURE_2D, vtxtexId, 0);
     
     if(cltexId!=GL_NONE)
-        shader->setUniformTexture(shaderColorTextureName.c_str(), GL_TEXTURE_2D, cltexId, 1);
+        shader->setUniformTexture("cltex", GL_TEXTURE_2D, cltexId, 1);
 
     vmi->setPrimCount(instanceNum);
     vmi->drawWireframe();
@@ -277,9 +288,11 @@ void instancedComponent::loadInstancePositionFromMatrices(ofMatrix4x4 *ms, ofVec
 void instancedComponent::clearInstanceMatrices(){
 
     INSTANCE_MAP_ITR itr = instanceMap.begin();
-    for(; itr!=instanceMap.end(); itr++){
+    for(; itr!=instanceMap.end(); ){
         if(itr->second.type==insType){
-            instanceMap.erase(itr);
+            instanceMap.erase(itr++);
+        }else{
+            ++itr;
         }
     }
     
@@ -546,12 +559,12 @@ void instancedComponent::resetGroup(){
 //
 //  NOTICE: first 3 lines are version and format info
 //
-void instancedComponent::saveInstanceDataToCsv(string dirName){
+void instancedComponent::saveInstanceDataToCsv(string dirpath){
 
     
     float meshScale = 0.00000001;    // TODO:
     
-    string version = "v0.2";
+    string version = "v0.3";
     string meshName;
     
     
@@ -562,9 +575,10 @@ void instancedComponent::saveInstanceDataToCsv(string dirName){
     }
 
     string fileName =  meshName + ".csv";
-    string name     = dirName +  "/" + fileName;
-    string path     = ofToDataPath(name, true);
-    ofstream myfile(path.c_str());
+    ofDirectory dir;
+    dir.createDirectory(dirpath);
+    string filePath = dirpath + "/" + fileName;
+    ofstream myfile(filePath.c_str());
 
     if(myfile.is_open()){
         char d[255];
@@ -574,13 +588,13 @@ void instancedComponent::saveInstanceDataToCsv(string dirName){
         sprintf(d, "mesh=%s, posScale=%f, instanceNum=%d", meshName.c_str(), meshScale, instanceNum);    // line 2
         myfile << d << "\n";
 
-        sprintf(d, "position.x,position.y,position.z,rotation.x,rotation.y,rotation.z,scale.x,scale.y,scale.z");    // line 3
+        sprintf(d, "name, position.x,position.y,position.z,angle, axis.x,axis.y,axis.z,scale.x,scale.y,scale.z, instanceType, groupId");    // line 3
         myfile << d << "\n";
         
 
         INSTANCE_MAP_ITR itr = instanceMap.begin();
         for(int i=0; itr!=instanceMap.end(); itr++, i++){
-            
+            int groupId         = itr->first;
             instance& ins       = itr->second;
             INSTANCE_TYPE t     = ins.type;
             string typeName;
@@ -604,12 +618,13 @@ void instancedComponent::saveInstanceDataToCsv(string dirName){
                 axis.normalize();
                 ofVec3f& sc         = ins.scale;
                 
-                sprintf(d, "%s,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%i",
+                sprintf(d, "%s,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%i,%i",
                         name,
                         pos.x, pos.y, pos.z,
                         angle, axis.x, axis.y, axis.z,
                         sc.x, sc.y, sc.z,
-                        t);
+                        t,
+                        groupId);
                 myfile << d << "\n";
             }
         }
@@ -619,7 +634,58 @@ void instancedComponent::saveInstanceDataToCsv(string dirName){
 }
 
 
+void instancedComponent::loadInstanceDataFromCsv(string filePath){
+    
+    ofFile file(filePath);
+    string fileName = file.getFileName();
+    if(fileName=="Spheres.csv" && insType == INSTANCE_SPHERE){
+    }else if(fileName=="Cylinders.csv" && insType == INSTANCE_CYLINDER){
+    }else{
+        return;
+    }
 
+    string line;
+    ifstream data(filePath.c_str());
+    int skip=0;
+    while(std::getline(data, line)){
+        if(skip++<3) continue;
+        std::stringstream lineStream(line);
+        string name, posx, posy, posz, angle, axisx, axisy, axisz, scalex, scaley, scalez, type, groupId;
+        std::getline(lineStream, name, ',');
+        std::getline(lineStream, posx, ',');
+        std::getline(lineStream, posy, ',');
+        std::getline(lineStream, posz, ',');
+        std::getline(lineStream, angle, ',');
+        std::getline(lineStream, axisx, ',');
+        std::getline(lineStream, axisy, ',');
+        std::getline(lineStream, axisz, ',');
+        std::getline(lineStream, scalex, ',');
+        std::getline(lineStream, scaley, ',');
+        std::getline(lineStream, scalez, ',');
+        std::getline(lineStream, type, ',');
+        std::getline(lineStream, groupId, ',');
+        
+        instance ins;
+        ins.matrix.setTranslation(ofToFloat(posx), ofToFloat(posy), ofToFloat(posz));
+        ins.matrix.setRotate(ofQuaternion(ofToFloat(angle), ofVec3f(ofToFloat(axisx), ofToFloat(axisy), ofToFloat(axisz))));
+        
+        ins.scale.set(ofToFloat(scalex), ofToFloat(scaley),ofToFloat(scalez));
+        ins.groupId = ofToInt(groupId);
+        ins.type    = (INSTANCE_TYPE)ofToInt(type);
+        addInstance(ins, ins.groupId);
+        
+        if(insType != ins.type){
+            cout << "error: strange instance type !!" << endl;
+        }
+    }
+    
+    setGroupColorGradient();
+    setGroupColor(-1, ofColor(0,0,0));
+    
+    bVtxtexNeedUpdate = true;
+    bCltexNeedUpdate = true;
+    updateInstanceNum();
+}
 
 
 

@@ -35,16 +35,14 @@ enum INSTANCE_TYPE{
 
 struct instance{
 public:
-    instance(const instance& i){
-        color   = i.color;
-        type    = i.type;
-        matrix  = i.matrix;
-        scale   = i.scale;
-    }
+    instance(const instance& i)
+    :color(i.color), type(i.type), matrix(i.matrix),scale(i.scale){}
+    
     ofMatrix4x4     matrix;     // NOTICE dont set scaling value
     ofVec3f         scale;
     ofFloatColor    color;
     INSTANCE_TYPE   type;
+    int             groupId;
     instance(){};
     
     bool operator==(const instance& o){
@@ -55,6 +53,28 @@ public:
                         return true;
         return false;
     }
+    
+    
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version){
+        ofVec3f pos         = matrix.getTranslation();
+        ofQuaternion quat   = matrix.getRotate();
+        ofVec3f axis;
+        float angle;
+        quat.getRotate(angle, axis);
+        axis.normalize();
+
+        ar  & pos.x & pos.y & pos.z
+            & angle & axis.x & axis.y & axis.z
+            & scale.x & scale.y & scale.z
+            & type;
+        
+        if(version==3){
+            ar & groupId;
+        }
+    }
+
+    
 };
 
 
@@ -71,10 +91,7 @@ private:
     bool    bVtxtexNeedUpdate;
     bool    bCltexNeedUpdate;
     int     instanceNum;
-    
-    string  shaderVtxTextureName;
-    string  shaderColorTextureName;
-    
+        
     GLuint  vtxtexId;
     GLuint  cltexId;
 
@@ -85,6 +102,7 @@ private:
     
 public:
     instancedComponent();
+    instancedComponent(INSTANCE_TYPE t, INSTANCE_MAP& m);
     ~instancedComponent();
     
     static INSTANCE_MAP &getInstanceMap(){ return instanceMap; }
@@ -129,9 +147,6 @@ public:
     void setGroupColor(int groupId, ofFloatColor color);
     void setGroupColorGradient();
     
-    
-    // util
-    void saveInstanceDataToCsv(string dirName);
     static vector<string> printData(bool outputConsole=true);
     static vector<string> printGroupData(bool outputConsole=true);
 
@@ -148,4 +163,15 @@ public:
     inline void setVtxtexNeedUpdate(bool b){ bVtxtexNeedUpdate = b; }
     inline ofxVboMeshInstanced * getVboMeshInstanced(){ return vmi; }
   
+    
+    // util
+    void saveInstanceDataToCsv(string dirName);
+    void loadInstanceDataFromCsv(string dirName);
+    
+    template<class Archive>
+
+    void serialize(Archive & ar, const unsigned int version){
+        ar  & instanceMap & insType;
+    }
+    
 };
