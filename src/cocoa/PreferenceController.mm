@@ -6,9 +6,9 @@
 //
 //
 
-#import "PreferenceController.h"
-
 #include "ofMain.h"
+
+#import "PreferenceController.h"
 #include "testApp.h"
 
 @interface PreferenceController ()

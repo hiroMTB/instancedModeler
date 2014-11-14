@@ -6,8 +6,8 @@
 //
 //
 
-#import "MainWindowController.h"
 #include "ofMain.h"
+#import "MainWindowController.h"
 #include "testApp.h"
 
 NSString *const sphereColor         = @"sphereColor";

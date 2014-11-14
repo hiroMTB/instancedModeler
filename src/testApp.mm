@@ -91,8 +91,8 @@ void testApp::setup(){
 }
 
 void testApp::loadModelData(){
-    cylinders.reset();
-    spheres.reset();
+    //cylinders.reset();
+    //spheres.reset();
     
     {
         char mes[255];

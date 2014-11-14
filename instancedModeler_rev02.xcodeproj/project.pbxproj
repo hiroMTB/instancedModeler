@@ -27,6 +27,9 @@
 		4D3A451A16A5001700328314 /* stb_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A450B16A5001700328314 /* stb_image.cpp */; };
 		4D3A451B16A5001700328314 /* Win32AppMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A450D16A5001700328314 /* Win32AppMain.cpp */; };
 		4D3A451C16A5001700328314 /* Win32DemoApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A450E16A5001700328314 /* Win32DemoApplication.cpp */; };
+		4D419A461A1565F8009A3E58 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D419A431A1565F8009A3E58 /* Quartz.framework */; };
+		4D419A471A1565F8009A3E58 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D419A441A1565F8009A3E58 /* QuartzCore.framework */; };
+		4D419A4A1A156696009A3E58 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D419A491A156696009A3E58 /* AVFoundation.framework */; };
 		4D4F588817E015C300E72686 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F587E17E015C300E72686 /* AppDelegate.mm */; };
 		4D4F588917E015C300E72686 /* PreferenceController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F588217E015C300E72686 /* PreferenceController.mm */; };
 		4D4F588A17E015C300E72686 /* rnMainGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F588417E015C300E72686 /* rnMainGLView.mm */; };
@@ -286,6 +289,10 @@
 		4D3A450D16A5001700328314 /* Win32AppMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Win32AppMain.cpp; sourceTree = "<group>"; };
 		4D3A450E16A5001700328314 /* Win32DemoApplication.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Win32DemoApplication.cpp; sourceTree = "<group>"; };
 		4D3A450F16A5001700328314 /* Win32DemoApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Win32DemoApplication.h; sourceTree = "<group>"; };
+		4D419A431A1565F8009A3E58 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
+		4D419A441A1565F8009A3E58 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		4D419A451A1565F8009A3E58 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
+		4D419A491A156696009A3E58 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		4D4F587D17E015C300E72686 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		4D4F587E17E015C300E72686 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		4D4F587F17E015C300E72686 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
@@ -885,7 +892,7 @@
 		E45BE9770E8CC7DD009D7055 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		E45BE9790E8CC7DD009D7055 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		E45BE97A0E8CC7DD009D7055 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
-		E4B69B5B0A3A1756003C02F2 /* renatureModeller_rev02_Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = renatureModeller_rev02_Debug.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4B69B5B0A3A1756003C02F2 /* renatureModeller_rev022_Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = renatureModeller_rev022_Debug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4B69E1D0A3A1BDC003C02F2 /* main.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = main.mm; path = src/main.mm; sourceTree = SOURCE_ROOT; };
 		E4B69E1E0A3A1BDC003C02F2 /* testApp.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = testApp.mm; path = src/testApp.mm; sourceTree = SOURCE_ROOT; };
 		E4B69E1F0A3A1BDC003C02F2 /* testApp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = testApp.h; path = src/testApp.h; sourceTree = SOURCE_ROOT; };
@@ -904,6 +911,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4D419A4A1A156696009A3E58 /* AVFoundation.framework in Frameworks */,
+				4D419A461A1565F8009A3E58 /* Quartz.framework in Frameworks */,
+				4D419A471A1565F8009A3E58 /* QuartzCore.framework in Frameworks */,
+				4D4F588E17E0171500E72686 /* QTKit.framework in Frameworks */,
 				E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */,
 				E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */,
 				E4C2424710CC5A17004149E2 /* AppKit.framework in Frameworks */,
@@ -917,7 +928,6 @@
 				E4EB6799138ADC1D00A09F29 /* GLUT.framework in Frameworks */,
 				E45BE9830E8CC7DD009D7055 /* OpenGL.framework in Frameworks */,
 				4DB98FB716ADD66600F0864B /* OpenCL.framework in Frameworks */,
-				4D4F588E17E0171500E72686 /* QTKit.framework in Frameworks */,
 				E45BE9840E8CC7DD009D7055 /* QuickTime.framework in Frameworks */,
 				E4C2424810CC5A17004149E2 /* Cocoa.framework in Frameworks */,
 				E4C2424910CC5A17004149E2 /* IOKit.framework in Frameworks */,
@@ -2156,6 +2166,10 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
+				4D419A491A156696009A3E58 /* AVFoundation.framework */,
+				4D419A431A1565F8009A3E58 /* Quartz.framework */,
+				4D419A441A1565F8009A3E58 /* QuartzCore.framework */,
+				4D419A451A1565F8009A3E58 /* QuickTime.framework */,
 				4D4F588F17E0171C00E72686 /* CoreVideo.framework */,
 				4D4F588D17E0171500E72686 /* QTKit.framework */,
 				4DB98FB616ADD66600F0864B /* OpenCL.framework */,
@@ -2167,7 +2181,7 @@
 				E4EEC9E9138DF44700A80321 /* openFrameworks */,
 				BB4B014C10F69532006C3DED /* addons */,
 				E45BE5980E8CC70C009D7055 /* frameworks */,
-				E4B69B5B0A3A1756003C02F2 /* renatureModeller_rev02_Debug.app */,
+				E4B69B5B0A3A1756003C02F2 /* renatureModeller_rev022_Debug.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -2221,7 +2235,7 @@
 			);
 			name = instancedModeler_rev02;
 			productName = myOFApp;
-			productReference = E4B69B5B0A3A1756003C02F2 /* renatureModeller_rev02_Debug.app */;
+			productReference = E4B69B5B0A3A1756003C02F2 /* renatureModeller_rev022_Debug.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -2500,7 +2514,7 @@
 			baseConfigurationReference = E4EB6923138AFD0F00A09F29 /* Project.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(NATIVE_ARCH)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/bin/";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
@@ -2517,7 +2531,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-D__MACOSX_CORE__",
 					"-lpthread",
@@ -2529,7 +2543,7 @@
 					"-headerpad_max_install_names",
 				);
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx10.9;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Debug;
@@ -2539,7 +2553,7 @@
 			baseConfigurationReference = E4EB6923138AFD0F00A09F29 /* Project.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(NATIVE_ARCH)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/bin/";
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
@@ -2557,7 +2571,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-D__MACOSX_CORE__",
 					"-lpthread",
@@ -2569,7 +2583,7 @@
 					"-headerpad_max_install_names",
 				);
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx10.9;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;
@@ -2577,6 +2591,7 @@
 		E4B69B600A3A1757003C02F2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2659,7 +2674,9 @@
 					"\"$(SRCROOT)/../../../addons/tbb41_20121003oss/lib\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../addons/ofxAssimpModelLoader/libs/assimp/lib/osx\"";
-				PRODUCT_NAME = renatureModeller_rev02_Debug;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = renatureModeller_rev022_Debug;
+				SDKROOT = macosx10.9;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2667,6 +2684,7 @@
 		E4B69B610A3A1757003C02F2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2748,7 +2766,9 @@
 					"\"$(SRCROOT)/../../../addons/tbb41_20121003oss/lib\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../addons/ofxAssimpModelLoader/libs/assimp/lib/osx\"";
-				PRODUCT_NAME = renatureModeller_rev02;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = renatureModeller_rev022;
+				SDKROOT = macosx10.9;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

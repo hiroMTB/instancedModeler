@@ -252,7 +252,7 @@ void instancedComponent::loadInstancePositionFromModel(string path, float posSca
             myLogRelease("numNormals = "  + ofToString(numNormals) );
             myLogRelease("numIndices = " + ofToString(numIndices));
 
-            
+            // vertices
             for(int j=0; j<numVertices; j++){
                 ofVec3f position = (mesh.getVertex(j)* posScale);     // SCALE POSITION!!
                 m.makeIdentityMatrix();
@@ -261,6 +261,10 @@ void instancedComponent::loadInstancePositionFromModel(string path, float posSca
                 
                 addInstanceMatrix(m, s, insType);
             }
+            
+            // edge
+            
+            
         }
     }
     
@@ -679,8 +683,9 @@ void instancedComponent::loadInstanceDataFromCsv(string filePath){
         }
     }
     
-    setGroupColorGradient();
+//    setGroupColorGradient();
     setGroupColor(-1, ofColor(0,0,0));
+    
     
     bVtxtexNeedUpdate = true;
     bCltexNeedUpdate = true;
@@ -710,4 +715,5 @@ void instancedComponent::removeDuplication(){
         }
     }
 }
+
 

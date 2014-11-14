@@ -55,6 +55,12 @@ bool testApp::connectInstanace(INSTANCE_MAP_ITR& itrA, INSTANCE_MAP_ITR& itrB, f
         ofVec3f vA = instA.matrix.getTranslation();
         ofVec3f vB = instB.matrix.getTranslation();
     
+        if(vA.x==0 && vA.y==0 && vA.z==0){
+            cout << "vA = origin ???" << endl;
+        }else if(vB.x==0 && vB.y==0 && vB.z==0){
+            cout << "vA = origin ???" << endl;
+        }
+        
         ofVec3f vAB = vB - vA;
         float dist = vAB.length();
     
@@ -90,8 +96,11 @@ void testApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int 
     
     int numFind = 0;
 
-    map<idPair, instance>  connectionList;   // store connection
-
+    map<idPair, instance>  connectionList;      // store connection
+    
+    typedef idPair groupPair;
+    vector<groupPair> groupConnectionList;       // group connection list
+    
     INSTANCE_MAP_ITR itr  = instanceMap.begin();
     
     // loop all group
@@ -126,7 +135,7 @@ void testApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int 
                     continue;
                 }
                 
-                cout << "   groupId " << ofToString(groupIdA) + " + " + ofToString(groupIdB) << endl;
+                //cout << "   groupId " << ofToString(groupIdA) + " + " + ofToString(groupIdB) << endl;
                 
                 INSTANCE_MAP_ITR itrB = instanceMap.begin();
 
@@ -146,17 +155,33 @@ void testApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int 
                 int indexInGroupA = ofRandom(groupSizeA);
                 int indexInGroupB = ofRandom(groupSizeB);
                 
-                int indexA = groupIndexA + indexInGroupA;
-                int indexB = groupIndexB + indexInGroupB;
+                int indexA = groupIndexA - indexInGroupA - 1;
+                int indexB = groupIndexB - indexInGroupB - 1;
                 
                 // 3. check if pair is already connected
                 idPair idp(indexA, indexB);
                 bool unique = (connectionList.find(idp) == connectionList.end());
+
+                if(unique){
+                    for(int g=0; g<groupConnectionList.size(); g++){
+                        int aaa = groupConnectionList[g].a;
+                        int bbb = groupConnectionList[g].b;
+                        
+                        if(aaa==groupIdA && bbb==groupIdB){
+                            unique = false;
+                            break;
+                        }else if(aaa==groupIdB && bbb==groupIdA){
+                            unique = false;
+                            break;
+                        }
+                    }
+                }
                 
                 if(unique){
                     INSTANCE_MAP_ITR itrA = instanceMap.begin();
+                    INSTANCE_MAP_ITR itrB = instanceMap.begin();
                     std::advance(itrA, indexA);
-                    std::advance(itrB, indexInGroupB);
+                    std::advance(itrB, indexB);
                     instance newCylinder;
                     find = connectInstanace(itrA, itrB, minDist, maxDist, newCylinder);
                     if(find){
@@ -168,6 +193,9 @@ void testApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int 
                         //ic2->addInstance(newCylinder);
                         numFind++;
                         connectionList.insert(pair<idPair, instance>(idp, newCylinder));
+                        
+                        groupPair gp(groupIdA, groupIdB);
+                        groupConnectionList.push_back(gp);
                     }
                 }
                 
@@ -213,7 +241,7 @@ void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int
     
     for(int i=0; i<numAllCylinders; i++){
         int numTry = 0;
-        int maxTry = 10000;
+        int maxTry = 100;
         bool find = false;
         
         do{
