@@ -87,7 +87,8 @@ void testApp::setup(){
     //loadModelData();
 
     compScale = 1;
-    posScale = 33; // 33cm box sizes
+    posScale = 10;
+    boxSize = 200;
 }
 
 void testApp::loadModelData(){
@@ -98,7 +99,7 @@ void testApp::loadModelData(){
         char mes[255];
         sprintf(mes, "start loading renature model %s", posModelPath_P.c_str());
         myLogRelease(mes);
-        spheres.loadInstancePositionFromModel(posModelPath_P, posScale);
+        spheres.loadInstancePositionFromModel(posModelPath_P, 40, posScale);
     }
 }
 
@@ -116,8 +117,8 @@ void testApp::loadRandomData(){
         }
         
         spheres.loadInstancePositionFromMatrices(ms, scales, sphNum);
-        delete ms;
-        delete scales;
+        delete[] ms;
+        delete[] scales;
         ms = 0;
         scales = 0;
 
@@ -136,8 +137,8 @@ void testApp::loadRandomData(){
         }
         cylinders.loadInstancePositionFromMatrices(ms, scales, cylNum);
     
-        delete ms;
-        delete scales;
+        delete[] ms;
+        delete[] scales;
         ms = 0;
         scales = 0;
     }
@@ -247,7 +248,7 @@ void testApp::mainDraw(){
             // reference box
             ofSetColor(255);
             ofNoFill();
-            ofBox(0, 0, 0, posScale*10);
+            ofBox(0, 0, 0, boxSize);
         }
         
         ofEnableLighting();
@@ -479,7 +480,8 @@ void testApp::waitDraw(){
 
 void testApp::setupCameraLightMaterial(){
     camMain.setupPerspective(false);
-    camMain.setDistance(800);
+    camMain.setDistance(600);
+    camMain.setFov(50);
     camMain.disableMouseInput();
     camMain.setNearClip(1);
 	camMain.setFarClip(10000);

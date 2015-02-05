@@ -32,7 +32,7 @@ public:
 
     float   compScale;
     float   posScale;
-    
+    float   boxSize;
     static string  posModelPath_P;
     
     ofShader*       mShdInstanced;

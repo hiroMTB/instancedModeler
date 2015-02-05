@@ -122,7 +122,7 @@ public:
     static void debugDraw();
     
     void loadInstanceMesh(ofMesh mesh, ofVec3f scale=ofVec3f(1,1,1));
-    void loadInstancePositionFromModel(string path, float posScale);
+    void loadInstancePositionFromModel(string path, int res, float posScale);
     void loadInstancePositionFromMatrices(ofMatrix4x4 * ms, ofVec3f * ss, int size);
 
     // instance param

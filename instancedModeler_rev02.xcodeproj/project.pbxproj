@@ -27,15 +27,10 @@
 		4D3A451A16A5001700328314 /* stb_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A450B16A5001700328314 /* stb_image.cpp */; };
 		4D3A451B16A5001700328314 /* Win32AppMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A450D16A5001700328314 /* Win32AppMain.cpp */; };
 		4D3A451C16A5001700328314 /* Win32DemoApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A450E16A5001700328314 /* Win32DemoApplication.cpp */; };
-		4D419A461A1565F8009A3E58 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D419A431A1565F8009A3E58 /* Quartz.framework */; };
-		4D419A471A1565F8009A3E58 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D419A441A1565F8009A3E58 /* QuartzCore.framework */; };
-		4D419A4A1A156696009A3E58 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D419A491A156696009A3E58 /* AVFoundation.framework */; };
 		4D4F588817E015C300E72686 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F587E17E015C300E72686 /* AppDelegate.mm */; };
 		4D4F588917E015C300E72686 /* PreferenceController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F588217E015C300E72686 /* PreferenceController.mm */; };
 		4D4F588A17E015C300E72686 /* rnMainGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F588417E015C300E72686 /* rnMainGLView.mm */; };
 		4D4F588B17E015C300E72686 /* MainWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F588617E015C300E72686 /* MainWindowController.mm */; };
-		4D4F588E17E0171500E72686 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D4F588D17E0171500E72686 /* QTKit.framework */; };
-		4D4F589017E0171C00E72686 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D4F588F17E0171C00E72686 /* CoreVideo.framework */; };
 		4D4F58C717E0175E00E72686 /* ofxCocoaGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F58BE17E0175E00E72686 /* ofxCocoaGLView.mm */; };
 		4D4F58CF17E01C9800E72686 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D4F587F17E015C300E72686 /* MainMenu.xib */; };
 		4D598A4D16947EA500EECD95 /* ofxBaseGui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D598A4016947EA500EECD95 /* ofxBaseGui.cpp */; };
@@ -164,8 +159,6 @@
 		4DA082A51693D7C300DF20AD /* instancedComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA082A41693D7C300DF20AD /* instancedComponent.cpp */; };
 		4DA082B31693F01900DF20AD /* ofxMtb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA082B21693F01900DF20AD /* ofxMtb.cpp */; };
 		4DB98E6A16AD9FC100F0864B /* libtbb.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DB98DB816AD9FC000F0864B /* libtbb.dylib */; };
-		4DB98E6C16AD9FC100F0864B /* libtbb_preview.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DB98DBA16AD9FC000F0864B /* libtbb_preview.dylib */; };
-		4DB98E6E16AD9FC100F0864B /* libtbbmalloc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DB98DBC16AD9FC000F0864B /* libtbbmalloc.dylib */; };
 		4DB98F8D16ADD5CC00F0864B /* btGpu3DGridBroadphase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB98F0116ADD5CC00F0864B /* btGpu3DGridBroadphase.cpp */; };
 		4DB98F8E16ADD5CC00F0864B /* btParallelConstraintSolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB98F0916ADD5CC00F0864B /* btParallelConstraintSolver.cpp */; };
 		4DB98F8F16ADD5CC00F0864B /* btThreadSupportInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB98F0B16ADD5CC00F0864B /* btThreadSupportInterface.cpp */; };
@@ -188,12 +181,14 @@
 		4DB98FB216ADD5CC00F0864B /* SpuMinkowskiPenetrationDepthSolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB98F7E16ADD5CC00F0864B /* SpuMinkowskiPenetrationDepthSolver.cpp */; };
 		4DB98FB316ADD5CC00F0864B /* SpuSampleTask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB98F8316ADD5CC00F0864B /* SpuSampleTask.cpp */; };
 		4DB98FB416ADD5CC00F0864B /* SpuSampleTaskProcess.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB98F8516ADD5CC00F0864B /* SpuSampleTaskProcess.cpp */; };
-		4DB98FB716ADD66600F0864B /* OpenCL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DB98FB616ADD66600F0864B /* OpenCL.framework */; };
 		4DB98FC416ADD89200F0864B /* MiniCL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB98FBE16ADD89200F0864B /* MiniCL.cpp */; };
 		4DB98FC516ADD89200F0864B /* MiniCLTask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB98FC016ADD89200F0864B /* MiniCLTask.cpp */; };
 		4DB98FC616ADD89200F0864B /* MiniCLTaskScheduler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB98FC216ADD89200F0864B /* MiniCLTaskScheduler.cpp */; };
 		5a4349e9754d6fa14c0f2a3a1abc30b6 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = fc5da1c87211d4f6377da7199d8c5a1e /* tinyxmlparser.cpp */; };
 		63b57ac5bf4ef088491e0317dbb2ecaa /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50df87d612c5aae17aafa6c02c6bc570 /* ofxXmlSettings.cpp */; };
+		6A9883821A834DF9004322D7 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A9883811A834DF9004322D7 /* Quartz.framework */; };
+		6A9883841A834E08004322D7 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A9883831A834E08004322D7 /* QuartzCore.framework */; };
+		6A9883861A834F6A004322D7 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A9883851A834F6A004322D7 /* AVFoundation.framework */; };
 		933a2227713c720ceff80fd967d0a8ee /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2b40eda85beb63e46785bc299a638898 /* tinyxml.cpp */; };
 		9d44dc88ef9e7991b4a09951e2e4769f /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 832bdc407620cdba568b713d2252c43c /* tinyxmlerror.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
@@ -289,10 +284,6 @@
 		4D3A450D16A5001700328314 /* Win32AppMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Win32AppMain.cpp; sourceTree = "<group>"; };
 		4D3A450E16A5001700328314 /* Win32DemoApplication.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Win32DemoApplication.cpp; sourceTree = "<group>"; };
 		4D3A450F16A5001700328314 /* Win32DemoApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Win32DemoApplication.h; sourceTree = "<group>"; };
-		4D419A431A1565F8009A3E58 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
-		4D419A441A1565F8009A3E58 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		4D419A451A1565F8009A3E58 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
-		4D419A491A156696009A3E58 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		4D4F587D17E015C300E72686 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		4D4F587E17E015C300E72686 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		4D4F587F17E015C300E72686 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
@@ -304,8 +295,6 @@
 		4D4F588517E015C300E72686 /* MainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainWindowController.h; sourceTree = "<group>"; };
 		4D4F588617E015C300E72686 /* MainWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainWindowController.mm; sourceTree = "<group>"; };
 		4D4F588717E015C300E72686 /* UserDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = UserDefaults.plist; sourceTree = "<group>"; };
-		4D4F588D17E0171500E72686 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
-		4D4F588F17E0171C00E72686 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		4D4F58BD17E0175E00E72686 /* ofxCocoaGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxCocoaGLView.h; sourceTree = "<group>"; };
 		4D4F58BE17E0175E00E72686 /* ofxCocoaGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxCocoaGLView.mm; sourceTree = "<group>"; };
 		4D598A3E16947EA500EECD95 /* ofOscParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofOscParameter.h; sourceTree = "<group>"; };
@@ -868,7 +857,6 @@
 		4DB98F8816ADD5CC00F0864B /* TrbDynBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrbDynBody.h; sourceTree = "<group>"; };
 		4DB98F8916ADD5CC00F0864B /* TrbStateVec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrbStateVec.h; sourceTree = "<group>"; };
 		4DB98F8A16ADD5CC00F0864B /* vectormath2bullet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vectormath2bullet.h; sourceTree = "<group>"; };
-		4DB98FB616ADD66600F0864B /* OpenCL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenCL.framework; path = System/Library/Frameworks/OpenCL.framework; sourceTree = SDKROOT; };
 		4DB98FB916ADD89200F0864B /* cl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cl.h; sourceTree = "<group>"; };
 		4DB98FBA16ADD89200F0864B /* cl_gl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cl_gl.h; sourceTree = "<group>"; };
 		4DB98FBB16ADD89200F0864B /* cl_MiniCL_Defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cl_MiniCL_Defs.h; sourceTree = "<group>"; };
@@ -880,6 +868,9 @@
 		4DB98FC216ADD89200F0864B /* MiniCLTaskScheduler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MiniCLTaskScheduler.cpp; sourceTree = "<group>"; };
 		4DB98FC316ADD89200F0864B /* MiniCLTaskScheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MiniCLTaskScheduler.h; sourceTree = "<group>"; };
 		50df87d612c5aae17aafa6c02c6bc570 /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxXmlSettings.cpp; path = ../../../addons/ofxXmlSettings/src/ofxXmlSettings.cpp; sourceTree = SOURCE_ROOT; };
+		6A9883811A834DF9004322D7 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
+		6A9883831A834E08004322D7 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		6A9883851A834F6A004322D7 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		832bdc407620cdba568b713d2252c43c /* tinyxmlerror.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = tinyxmlerror.cpp; path = ../../../addons/ofxXmlSettings/libs/tinyxmlerror.cpp; sourceTree = SOURCE_ROOT; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -911,10 +902,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4D419A4A1A156696009A3E58 /* AVFoundation.framework in Frameworks */,
-				4D419A461A1565F8009A3E58 /* Quartz.framework in Frameworks */,
-				4D419A471A1565F8009A3E58 /* QuartzCore.framework in Frameworks */,
-				4D4F588E17E0171500E72686 /* QTKit.framework in Frameworks */,
+				6A9883861A834F6A004322D7 /* AVFoundation.framework in Frameworks */,
+				6A9883841A834E08004322D7 /* QuartzCore.framework in Frameworks */,
+				6A9883821A834DF9004322D7 /* Quartz.framework in Frameworks */,
 				E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */,
 				E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */,
 				E4C2424710CC5A17004149E2 /* AppKit.framework in Frameworks */,
@@ -924,17 +914,13 @@
 				E45BE97F0E8CC7DD009D7055 /* CoreAudio.framework in Frameworks */,
 				E45BE9800E8CC7DD009D7055 /* CoreFoundation.framework in Frameworks */,
 				E45BE9810E8CC7DD009D7055 /* CoreServices.framework in Frameworks */,
-				4D4F589017E0171C00E72686 /* CoreVideo.framework in Frameworks */,
 				E4EB6799138ADC1D00A09F29 /* GLUT.framework in Frameworks */,
 				E45BE9830E8CC7DD009D7055 /* OpenGL.framework in Frameworks */,
-				4DB98FB716ADD66600F0864B /* OpenCL.framework in Frameworks */,
 				E45BE9840E8CC7DD009D7055 /* QuickTime.framework in Frameworks */,
 				E4C2424810CC5A17004149E2 /* Cocoa.framework in Frameworks */,
 				E4C2424910CC5A17004149E2 /* IOKit.framework in Frameworks */,
 				4D65FC001689DCB700D7B2F5 /* assimp.a in Frameworks */,
 				4DB98E6A16AD9FC100F0864B /* libtbb.dylib in Frameworks */,
-				4DB98E6C16AD9FC100F0864B /* libtbb_preview.dylib in Frameworks */,
-				4DB98E6E16AD9FC100F0864B /* libtbbmalloc.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2166,13 +2152,9 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
-				4D419A491A156696009A3E58 /* AVFoundation.framework */,
-				4D419A431A1565F8009A3E58 /* Quartz.framework */,
-				4D419A441A1565F8009A3E58 /* QuartzCore.framework */,
-				4D419A451A1565F8009A3E58 /* QuickTime.framework */,
-				4D4F588F17E0171C00E72686 /* CoreVideo.framework */,
-				4D4F588D17E0171500E72686 /* QTKit.framework */,
-				4DB98FB616ADD66600F0864B /* OpenCL.framework */,
+				6A9883851A834F6A004322D7 /* AVFoundation.framework */,
+				6A9883831A834E08004322D7 /* QuartzCore.framework */,
+				6A9883811A834DF9004322D7 /* Quartz.framework */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				4D9D72471688FE6500CE7F68 /* Project_extra.xcconfig */,
 				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,
@@ -2515,6 +2497,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/bin/";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
@@ -2531,7 +2515,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-D__MACOSX_CORE__",
 					"-lpthread",
@@ -2554,6 +2538,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/bin/";
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
@@ -2571,7 +2557,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-D__MACOSX_CORE__",
 					"-lpthread",
@@ -2592,6 +2578,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2674,7 +2661,7 @@
 					"\"$(SRCROOT)/../../../addons/tbb41_20121003oss/lib\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../addons/ofxAssimpModelLoader/libs/assimp/lib/osx\"";
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = renatureModeller_rev022_Debug;
 				SDKROOT = macosx10.9;
 				WRAPPER_EXTENSION = app;
@@ -2685,6 +2672,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2766,7 +2754,7 @@
 					"\"$(SRCROOT)/../../../addons/tbb41_20121003oss/lib\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../addons/ofxAssimpModelLoader/libs/assimp/lib/osx\"";
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = renatureModeller_rev022;
 				SDKROOT = macosx10.9;
 				WRAPPER_EXTENSION = app;

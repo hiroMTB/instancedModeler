@@ -220,7 +220,7 @@ void instancedComponent::addInstanceMatrix(ofMatrix4x4 m, ofVec3f s, int groupId
     addInstance(ins);
 }
 
-void instancedComponent::loadInstancePositionFromModel(string path, float posScale=1){
+void instancedComponent::loadInstancePositionFromModel(string path, int res, float posScale=1){
 
     vector<string> strs = ofSplitString(path, ".");
     string ext = strs.back();
@@ -254,12 +254,14 @@ void instancedComponent::loadInstancePositionFromModel(string path, float posSca
 
             // vertices
             for(int j=0; j<numVertices; j++){
-                ofVec3f position = (mesh.getVertex(j)* posScale);     // SCALE POSITION!!
-                m.makeIdentityMatrix();
-                m.translate(position);
-                ofVec3f s(1,1,1);
-                
-                addInstanceMatrix(m, s, insType);
+                if( j%res == 0){
+                    ofVec3f position = (mesh.getVertex(j)* posScale);     // SCALE POSITION!!
+                    m.makeIdentityMatrix();
+                    m.translate(position);
+                    ofVec3f s(1,1,1);
+                    
+                    addInstanceMatrix(m, s, insType);
+                }
             }
             
             // edge
