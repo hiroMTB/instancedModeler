@@ -89,6 +89,8 @@ void testApp::setup(){
     compScale = 1;
     posScale = 10;
     boxSize = 200;
+    
+    loadRandomData();
 }
 
 void testApp::loadModelData(){
@@ -104,15 +106,15 @@ void testApp::loadModelData(){
 }
 
 void testApp::loadRandomData(){
-    int sphNum = 10;
+    int sphNum = 400;
     int cylNum = 4;
     {
         ofMatrix4x4 * ms = new ofMatrix4x4[sphNum];
         ofVec3f * scales = new ofVec3f[sphNum];
-        
+        float posRand = 100;
         for(int i=0; i<sphNum; i++){
             ms[i].makeIdentityMatrix();
-            ms[i].translate(ofRandom(-posScale, posScale), ofRandom(-posScale, posScale), ofRandom(-posScale, posScale));
+            ms[i].translate(ofRandomf()*posRand, ofRandomf()*posRand, ofRandomf()*posRand);
             scales[i].set(1, 1, 1);
         }
         
@@ -124,16 +126,16 @@ void testApp::loadRandomData(){
 
     }
 
-    {
+    if( 0 ){
         ofMatrix4x4 * ms = new ofMatrix4x4[cylNum];
         ofVec3f * scales = new ofVec3f[cylNum];
         
-        float pos = 5;
+        float pos = 10;
         for(int i=0; i<cylNum; i++){
             ms[i].makeIdentityMatrix();
             ms[i].rotate(12, ofRandom(-180, 180), ofRandom(-180, 180), ofRandom(-180, 180));
             ms[i].translate(ofRandom(-pos, pos), ofRandom(-pos, pos), ofRandom(-pos, pos));
-            scales[i].set(1,1,1);
+            scales[i].set(1,1,100);
         }
         cylinders.loadInstancePositionFromMatrices(ms, scales, cylNum);
     
@@ -480,7 +482,7 @@ void testApp::waitDraw(){
 
 void testApp::setupCameraLightMaterial(){
     camMain.setupPerspective(false);
-    camMain.setDistance(600);
+    camMain.setDistance(400);
     camMain.setFov(50);
     camMain.disableMouseInput();
     camMain.setNearClip(1);

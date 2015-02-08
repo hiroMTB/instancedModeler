@@ -44,13 +44,7 @@ void testApp::processCollision(){
     int startTime = collisionStart();
     
     INSTANCE_MAP& instanceMap = instancedComponent::getInstanceMap();
-
-    vector<instance> looper;
-    for(INSTANCE_MAP_ITR copyItr=instanceMap.begin(); copyItr!=instanceMap.end(); copyItr++){
-        looper.push_back((*copyItr).second);
-    }
-    
-    vector<instance>::iterator itrA = looper.begin();
+    INSTANCE_MAP_ITR itrA = instanceMap.begin();
     
     typedef map<instance*, int> TMAP;
     typedef pair<instance*, int> TPAIR;
@@ -58,33 +52,31 @@ void testApp::processCollision(){
     TMAP tmap;
     
     char m[255];
-    int instanceSize = instanceMap.size();
-    
-    for(int i=0; itrA!=looper.end(); itrA++, i++){
-        sprintf(m, "processCollisionTest i:%d/%d", i, instanceSize);
-        myLogDebug(ofToString(m));
+    for(int i=0; itrA!=instanceMap.end(); itrA++, i++){
+        //sprintf(m, "processCollisionTest i:%d", i);
+        //myLogDebug(ofToString(m));
         
-        vector<instance>::iterator itrB = looper.begin();
-        std:advance(itrB, i+1);
-        for(; itrB!=looper.end(); itrB++){
-            instance& insA = (*itrA);
-            instance& insB = (*itrA);
+        INSTANCE_MAP_ITR itrB = instanceMap.begin();
+    std:advance(itrB, i+1);
+        for(; itrB!=instanceMap.end(); itrB++){
+            instance& insA = itrA->second;
+            instance& insB = itrB->second;
             
             float dist=getCollisionDistance(insA, insB);
             
             if(dist<0.0) {
-                int groupIdA = insA.groupId;
-                int groupIdB = insB.groupId;
+                int groupIdA = itrA->first;
+                int groupIdB = itrB->first;
                 
                 //
                 //  check instance is in tempolaly container.
-                //  if exist, it sohuld have non -1 groupId.
+                //  if existm, it sohuld have non -1 groupId.
                 //
-                TITR titrA = tmap.find(&insA);
+                TITR titrA = tmap.find(&itrA->second);
                 if(titrA!=tmap.end())
                     groupIdA = titrA->second;
                 
-                TITR titrB = tmap.find(&insB);
+                TITR titrB = tmap.find(&itrB->second);
                 if(titrB!=tmap.end())
                     groupIdB = titrB->second;
                 
@@ -104,19 +96,19 @@ void testApp::processCollision(){
                     if(groupIdB==-1){
                         // move instance A, B to new group
                         int newId = instancedComponent::incGroupIdMaster();
-                        tmap.insert(TPAIR(&insA, newId));
-                        tmap.insert(TPAIR(&insB, newId));
+                        tmap.insert(TPAIR(&itrA->second, newId));
+                        tmap.insert(TPAIR(&itrB->second, newId));
                     }else{
                         // move A instance to B group
-                        tmap.insert(TPAIR(&insA, groupIdB));
+                        tmap.insert(TPAIR(&itrA->second, groupIdB));
                     }
                 }else{
                     if(groupIdB==-1){
                         // move B instance to A group
-                        tmap.insert(TPAIR(&insB, groupIdA));
+                        tmap.insert(TPAIR(&itrB->second, groupIdA));
                     }else{
                         // at first move B instance to A group
-                        TITR titrB = tmap.find(&insB);
+                        TITR titrB = tmap.find(&itrB->second);
                         titrB->second = groupIdA;
                         
                         // search from tmap

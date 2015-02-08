@@ -676,9 +676,8 @@ void instancedComponent::loadInstanceDataFromCsv(string filePath){
         ins.matrix.setRotate(ofQuaternion(ofToFloat(angle), ofVec3f(ofToFloat(axisx), ofToFloat(axisy), ofToFloat(axisz))));
         
         ins.scale.set(ofToFloat(scalex), ofToFloat(scaley),ofToFloat(scalez));
-        ins.groupId = ofToInt(groupId);
         ins.type    = (INSTANCE_TYPE)ofToInt(type);
-        addInstance(ins, ins.groupId);
+        addInstance(ins, ofToInt(groupId) );
         
         if(insType != ins.type){
             cout << "error: strange instance type !!" << endl;

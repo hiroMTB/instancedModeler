@@ -42,7 +42,6 @@ public:
     ofVec3f         scale;
     ofFloatColor    color;
     INSTANCE_TYPE   type;
-    int             groupId;
     instance(){};
     
     bool operator==(const instance& o){
@@ -52,29 +51,7 @@ public:
                 if(matrix.getTranslation() == o.matrix.getTranslation())
                         return true;
         return false;
-    }
-    
-    
-    template<class Archive>
-    void serialize(Archive & ar, const unsigned int version){
-        ofVec3f pos         = matrix.getTranslation();
-        ofQuaternion quat   = matrix.getRotate();
-        ofVec3f axis;
-        float angle;
-        quat.getRotate(angle, axis);
-        axis.normalize();
-
-        ar  & pos.x & pos.y & pos.z
-            & angle & axis.x & axis.y & axis.z
-            & scale.x & scale.y & scale.z
-            & type;
-        
-        if(version==3){
-            ar & groupId;
-        }
-    }
-
-    
+    }    
 };
 
 
