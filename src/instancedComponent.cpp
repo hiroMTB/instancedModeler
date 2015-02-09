@@ -41,9 +41,7 @@ void instancedComponent::destroy(){
     glDeleteTextures(1, &cltexId);
     //delete matrices;
     
-    vmi->clear();
-    delete vmi;
-    vmi = 0;
+    vmi.clear();
     myLogDebug("instancedComponent destroyed");
 }
 
@@ -157,8 +155,8 @@ void instancedComponent::draw(ofShader * shader){
     if(cltexId!=GL_NONE)
         shader->setUniformTexture("cltex", GL_TEXTURE_2D, cltexId, 1);
     
-    vmi->setPrimCount(instanceNum);
-    vmi->draw();
+    vmi.setPrimCount(instanceNum);
+    vmi.draw();
 
     glPopMatrix();
     
@@ -173,8 +171,8 @@ void instancedComponent::drawWireframe(ofShader * shader){
     if(cltexId!=GL_NONE)
         shader->setUniformTexture("cltex", GL_TEXTURE_2D, cltexId, 1);
 
-    vmi->setPrimCount(instanceNum);
-    vmi->drawWireframe();
+    vmi.setPrimCount(instanceNum);
+    vmi.drawWireframe();
     
     glPopMatrix();
     
@@ -317,10 +315,11 @@ void instancedComponent::loadInstanceMesh(ofMesh mesh, ofVec3f scale){
         mesh.setVertex(i, pos);
     }
     
-    vmi = new ofxVboMeshInstanced(mesh);
-    int numVertices = vmi->getNumVertices();
-    int numNormals = vmi->getNumNormals();
-    int numIndices = vmi->getNumIndices();
+    vmi.clear();
+    vmi = mesh;
+    int numVertices = vmi.getNumVertices();
+    int numNormals = vmi.getNumNormals();
+    int numIndices = vmi.getNumIndices();
     
     myLogDebug("load model for particle component");
     myLogDebug("numVerttices = " + ofToString(numVertices));
@@ -483,7 +482,11 @@ vector<string> instancedComponent::printGroupData(bool console){
     for(; itr!=instanceMap.end(); itr=instanceMap.upper_bound(itr->first) ){
         int key = itr->first;
         int n = STL_UTIL::getElementSize(instanceMap, key);
-        sprintf(m, "GRP%03d n=%04d", key, n);
+        if( key == -1){
+            sprintf(m, "Single Spheres n=%04d", n);
+        }else{
+            sprintf(m, "GRP %03d n=%04d", key, n);
+        }
         
         if(console)
             myLogRelease(m);

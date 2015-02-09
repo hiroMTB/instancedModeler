@@ -6,9 +6,9 @@
 //
 //
 
-#include "testApp.h"
+#include "rnApp.h"
 
-//bool testApp::connectInstanace(instance &instA, instance &instB, float minDist, float maxDist, instance& newIns){
+//bool rnApp::connectInstanace(instance &instA, instance &instB, float minDist, float maxDist, instance& newIns){
 //    
 //    // 3. check A - B distance
 //    ofVec3f vA = instA.matrix.getTranslation();
@@ -38,7 +38,7 @@
 //}
 
 
-bool testApp::connectInstanace(INSTANCE_MAP_ITR& itrA, INSTANCE_MAP_ITR& itrB, float minDist, float maxDist, instance& newIns){
+bool rnApp::connectInstanace(INSTANCE_MAP_ITR& itrA, INSTANCE_MAP_ITR& itrB, float minDist, float maxDist, instance& newIns){
     
     minDist = MIN(minDist, maxDist);
     maxDist = MAX(minDist, maxDist);
@@ -79,7 +79,7 @@ bool testApp::connectInstanace(INSTANCE_MAP_ITR& itrA, INSTANCE_MAP_ITR& itrB, f
     return false;    
 }
 
-void testApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int numAllCylinders, float minDist, float maxDist){
+void rnApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int numAllCylinders, float minDist, float maxDist){
     
     char m[255];
     
@@ -227,7 +227,7 @@ void testApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int 
 
 
 // should be used parallel_for
-void testApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int numAllCylinders, float minDist, float maxDist){
+void rnApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int numAllCylinders, float minDist, float maxDist){
     
     int startTime = ofGetElapsedTimeMillis();
     myLogRelease("Start ConnectRandom Process : time : " + ofToString(startTime));

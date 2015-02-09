@@ -6,10 +6,10 @@
 //
 //
 
-#include "testApp.h"
+#include "rnApp.h"
 
 
-float testApp::getCollisionDistance(instance &insA, instance &insB){
+float rnApp::getCollisionDistance(instance &insA, instance &insB){
     float dist=99999;
     
     ofMatrix4x4& matA = insA.matrix;
@@ -36,7 +36,7 @@ float testApp::getCollisionDistance(instance &insA, instance &insB){
     
 }
 
-void testApp::processCollision(){
+void rnApp::processCollision(){
 #if defined (USE_TBB) && defined(USE_TBB_COLLISIION)
     processCollisionParallel();
 #else
@@ -149,7 +149,7 @@ void testApp::processCollision(){
 #endif
 }
 
-int testApp::collisionStart(){
+int rnApp::collisionStart(){
     instancedComponent::resetGroup();
     
     int startTime = ofGetElapsedTimeMillis();
@@ -162,7 +162,7 @@ int testApp::collisionStart(){
     
 }
 
-void testApp::collisionEnd(int startTime){
+void rnApp::collisionEnd(int startTime){
     // update group totalNum
     instancedComponent::updateGroupTotalNum();
     
@@ -185,7 +185,7 @@ void testApp::collisionEnd(int startTime){
 
 
 #if defined (USE_TBB) && defined(USE_TBB_COLLISIION)
-void testApp::processCollisionParallel(){
+void rnApp::processCollisionParallel(){
     
     int startTime = collisionStart();
     

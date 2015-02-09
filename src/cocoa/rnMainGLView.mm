@@ -1,5 +1,5 @@
 #import "rnMainGLView.h"
-#include "testApp.h"
+#include "rnApp.h"
 #include "MainWindowController.h"
 
 @implementation rnMainGLView
@@ -13,8 +13,8 @@
     ofSetDataPathRoot(newPath);
     
     
-    testApp::init();
-    testApp::get()->setup();
+    rnApp::init();
+    rnApp::get()->setup();
 
     // resize
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -32,51 +32,51 @@
 
 
 - (void)update{
-    testApp::get()->update();
+    rnApp::get()->update();
 }
 
 - (void)draw{
-    testApp::get()->draw();
+    rnApp::get()->draw();
 }
 
 - (void)exit
 {
-    testApp::get()->exit();
+    rnApp::get()->exit();
 }
 
 - (void)keyPressed:(int)key
 {
-    testApp::get()->keyPressed(key);
+    rnApp::get()->keyPressed(key);
 }
 
 - (void)keyReleased:(int)key
 {
-    testApp::get()->keyReleased(key);
+    rnApp::get()->keyReleased(key);
 }
 
 - (void)mouseMoved:(NSPoint)p
 {
-    testApp::get()->mouseMoved(p.x, p.y);
+    rnApp::get()->mouseMoved(p.x, p.y);
 }
 
 - (void)mouseDragged:(NSPoint)p button:(int)button
 {
-    testApp::get()->mouseDragged(p.x, p.y, button);
+    rnApp::get()->mouseDragged(p.x, p.y, button);
 }
 
 - (void)mousePressed:(NSPoint)p button:(int)button
 {
-    testApp::get()->mousePressed(p.x, p.y, button);
+    rnApp::get()->mousePressed(p.x, p.y, button);
 }
 
 - (void)mouseReleased:(NSPoint)p button:(int)button
 {
-    testApp::get()->mouseReleased(p.x, p.y, button);
+    rnApp::get()->mouseReleased(p.x, p.y, button);
 }
 
 - (void)windowResized:(NSSize)size
 {
-    testApp::get()->windowResized(size.width, size.height);
+    rnApp::get()->windowResized(size.width, size.height);
 }
 
 static bool bWindowing;

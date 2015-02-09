@@ -92,7 +92,7 @@ void collisionTester::initAlgo(){
 }
 
 
-void collisionTester::resetSphereShape(float radius){
+void collisionTester::resetSphereShape(float radius, float collisionMargin){
     
     btCollisionShape * sA = sphereA.getCollisionShape();
     btCollisionShape * sB = sphereB.getCollisionShape();
@@ -100,18 +100,18 @@ void collisionTester::resetSphereShape(float radius){
     if(sA) delete sA;
     if(sB) delete sB;
     
-    sA = new btSphereShape(radius);
-    sB = new btSphereShape(radius);
+    sA = new btSphereShape(radius + collisionMargin);
+    sB = new btSphereShape(radius + collisionMargin);
 
-    sA->setMargin(0.0);
-    sB->setMargin(0.0);
+    sA->setMargin(0);
+    sB->setMargin(0);
 
     sphereA.setCollisionShape(sA);
     sphereB.setCollisionShape(sB);
 }
 
-void collisionTester::resetCylinderShape(ofVec3f halfExtent){
-    btVector3 half(halfExtent.x, halfExtent.y, halfExtent.z);
+void collisionTester::resetCylinderShape(ofVec3f halfExtent, float collisionMargin){
+    btVector3 half(halfExtent.x+collisionMargin , halfExtent.y, halfExtent.z);
     
     btCollisionShape * cA = cylinderA.getCollisionShape();
     btCollisionShape * cB = cylinderB.getCollisionShape();
@@ -122,8 +122,8 @@ void collisionTester::resetCylinderShape(ofVec3f halfExtent){
     cA = new btCylinderShapeZ(half);
     cB = new btCylinderShapeZ(half);
 
-    cA->setMargin(0.0);
-    cB->setMargin(0.0);
+    cA->setMargin(0);
+    cB->setMargin(0);
 
     cylinderA.setCollisionShape(cA);
     cylinderB.setCollisionShape(cB);

@@ -1,31 +1,28 @@
 #pragma once
 
 #include "myDef.h"
-
 #include "btBulletCollisionCommon.h"
-
 #include "ofMain.h"
 #include "ofxGui.h"
 #include "ofxVboMeshInstanced.h"
 #include "ofxAssimpModelLoader.h"
-
 #include "instancedComponent.h"
 #include "collisionTester.h"
+#include "rnTestCase.h"
 
 
-#include "ofxOsc.h"
-
-class testApp{  // : public ofBaseApp{
-
-    ofxOscReceiver	oscR;
+class rnApp{  // : public ofBaseApp{
     
-    static testApp * singleton;
+    static rnApp * singleton;
+    
+    friend class rnTestCase;
+    rnTestCase testCase;
     
 public:
     
-    static testApp * get(){ return singleton; }
+    static rnApp * get(){ return singleton; }
     static void init(){
-        if(!singleton){ singleton = new testApp(); }
+        if(!singleton){ singleton = new rnApp(); }
     }
     
     bool    bNowProcessing;
@@ -47,7 +44,6 @@ public:
     instancedComponent cylinders;
     
     void loadModelData();
-    void loadRandomData();
     
     void setup();
     void update();
@@ -95,8 +91,10 @@ public:
     
     static float SPHERE_RADIUS;
     static int SPHERE_RESOLUTION;
+    static float SPHERE_COLLISION_MARGIN;
     static float CYLINDER_RADIUS;
     static int CYLINDER_RESOLUTION;
+    static float CYLINDER_COLLISION_MARGIN;
     
     static bool DRAW_WIREFRAME;
     static bool DRAW_REFERENCE_BOX;
@@ -126,12 +124,11 @@ public:
     static PROCESS_NAME CURRENT_PROCESS;
 
 
-
     
 private:
     void setupCameraLightMaterial();
-    void setupCylinderShape(float radius, int resolution);
-    void setupSphereShape(float radius, int resolution);
+    void setupCylinderShape(float radius, int resolution, float collisionMargin);
+    void setupSphereShape(float radius, int resolution, float collisionMargin);
     void setupShaders(bool doLink=true);
 
     
@@ -144,7 +141,7 @@ private:
     void requestProcess();
     
         //
-        // testApp_collision.cpp
+        // rnApp_collision.cpp
         //
         void processCollision();
         static float getCollisionDistance(instance& insA, instance& insB);
@@ -158,7 +155,7 @@ private:
     
     
         //
-        // testApp_connect.cpp
+        // rnApp_connect.cpp
         //
         bool connectInstanace   (INSTANCE_MAP_ITR& itrA, INSTANCE_MAP_ITR& itrB, float minDist, float maxDist, instance& newIns);
         bool connectInstanace   (instance& insA, instance& insB, float minDist, float maxDist, instance& newIns);
@@ -216,7 +213,7 @@ struct Tally{
                 instance& insA = itrA->second;
                 instance& insB = itrB->second;
                 
-                float dist = testApp::getCollisionDistance(insA, insB);
+                float dist = rnApp::getCollisionDistance(insA, insB);
                 
                 
                 if(dist<0.0) {

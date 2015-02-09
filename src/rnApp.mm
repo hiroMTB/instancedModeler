@@ -1,57 +1,55 @@
-#include "testApp.h"
+#include "rnApp.h"
 #include "ofxMtb.h"
-
 #include<set>
 
+collisionTester * rnApp::tester = NULL;
+rnApp * rnApp::singleton = NULL;
 
-collisionTester * testApp::tester = NULL;
-testApp * testApp::singleton = NULL;
+ofColor rnApp::colorSphere    = ofColor(100);
+ofColor rnApp::colorCylinder  = ofColor(100, 100, 50);
+string  rnApp::posModelPath_P = "none";
 
-ofColor testApp::colorSphere    = ofColor(100);
-ofColor testApp::colorCylinder  = ofColor(100, 100, 50);
-string  testApp::posModelPath_P = "none";
+int rnApp::bgType = 0;
+ofColor rnApp::bgNormal    = ofColor(100);
+ofColor rnApp::bgLinear0   = ofColor(255);
+ofColor rnApp::bgLinear1   = ofColor(0);
+ofColor rnApp::bgCircular0 = ofColor(255);
+ofColor rnApp::bgCircular1 = ofColor(0);
+ofColor rnApp::bgBar0      = ofColor(255);
+ofColor rnApp::bgBar1      = ofColor(0);
 
-int testApp::bgType = 0;
-ofColor testApp::bgNormal    = ofColor(100);
-ofColor testApp::bgLinear0   = ofColor(255);
-ofColor testApp::bgLinear1   = ofColor(0);
-ofColor testApp::bgCircular0 = ofColor(255);
-ofColor testApp::bgCircular1 = ofColor(0);
-ofColor testApp::bgBar0      = ofColor(255);
-ofColor testApp::bgBar1      = ofColor(0);
+float rnApp::SPHERE_RADIUS            = 1.5;
+int   rnApp::SPHERE_RESOLUTION        = 8;
+float rnApp::SPHERE_COLLISION_MARGIN  = 0;
 
-float testApp::SPHERE_RADIUS            = 1.5;
-int   testApp::SPHERE_RESOLUTION        = 8;
-float testApp::CYLINDER_RADIUS          = 1;
-int   testApp::CYLINDER_RESOLUTION      = 14;
+float rnApp::CYLINDER_RADIUS          = 1;
+int   rnApp::CYLINDER_RESOLUTION      = 14;
+float rnApp::CYLINDER_COLLISION_MARGIN = 0;
 
-int   testApp::CONNECT_RANDOM_CYLINDER_NUM  = 1;
-float testApp::CONNECT_RANDOM_MIN_DIST      = 0;
-float testApp::CONNECT_RANDOM_MAX_DIST      = 888;
+int   rnApp::CONNECT_RANDOM_CYLINDER_NUM  = 1;
+float rnApp::CONNECT_RANDOM_MIN_DIST      = 0;
+float rnApp::CONNECT_RANDOM_MAX_DIST      = 888;
 
-int   testApp::CONNECT_GROUP_CYLINDER_NUM   = 1;
-float testApp::CONNECT_GROUP_MIN_DIST       = 0;
-float testApp::CONNECT_GROUP_MAX_DIST       = 888;
+int   rnApp::CONNECT_GROUP_CYLINDER_NUM   = 1;
+float rnApp::CONNECT_GROUP_MIN_DIST       = 0;
+float rnApp::CONNECT_GROUP_MAX_DIST       = 888;
 
-float testApp::COLLISION_MARGIN         = 0;
 
-int   testApp::REMOVE_GROUPS_MIN_NUM    = 1;
+int   rnApp::REMOVE_GROUPS_MIN_NUM    = 1;
 
-bool  testApp::DRAW_WIREFRAME           = false;
-bool  testApp::DRAW_COLLISION_SHAPE     = false;
-bool  testApp::DRAW_COLLISION_DISTANCE  = false;
-bool  testApp::DRAW_REFERENCE_BOX       = true;
+bool  rnApp::DRAW_WIREFRAME           = false;
+bool  rnApp::DRAW_COLLISION_SHAPE     = false;
+bool  rnApp::DRAW_COLLISION_DISTANCE  = false;
+bool  rnApp::DRAW_REFERENCE_BOX       = true;
 
 // shader uniform name
 static bool RENDER_NORMALS;
 static bool FLAT_SHADING;
 
-testApp::PROCESS_NAME testApp::CURRENT_PROCESS = testApp::NO_PROCESS;
+rnApp::PROCESS_NAME rnApp::CURRENT_PROCESS = rnApp::NO_PROCESS;
 
-#include "assimp.h"
-#include "aiScene.h"
 
-void testApp::setup(){
+void rnApp::setup(){
 
 #ifndef NDEBUG
     ofSetLogLevel(OF_LOG_VERBOSE);
@@ -81,8 +79,8 @@ void testApp::setup(){
     // ---------------------------------------------------
     posModelPath_P = "none";
 
-    setupSphereShape(   SPHERE_RADIUS,   SPHERE_RESOLUTION);
-    setupCylinderShape( CYLINDER_RADIUS, CYLINDER_RESOLUTION);
+    setupSphereShape(   SPHERE_RADIUS,   SPHERE_RESOLUTION, SPHERE_COLLISION_MARGIN);
+    setupCylinderShape( CYLINDER_RADIUS, CYLINDER_RESOLUTION, CYLINDER_COLLISION_MARGIN);
 
     //loadModelData();
 
@@ -90,10 +88,11 @@ void testApp::setup(){
     posScale = 10;
     boxSize = 200;
     
-    loadRandomData();
+    testCase.loadRandomSphere(100, 100);
+    //testCase.setup_mergin_test();
 }
 
-void testApp::loadModelData(){
+void rnApp::loadModelData(){
     //cylinders.reset();
     //spheres.reset();
     
@@ -105,66 +104,23 @@ void testApp::loadModelData(){
     }
 }
 
-void testApp::loadRandomData(){
-    int sphNum = 400;
-    int cylNum = 4;
-    {
-        ofMatrix4x4 * ms = new ofMatrix4x4[sphNum];
-        ofVec3f * scales = new ofVec3f[sphNum];
-        float posRand = 100;
-        for(int i=0; i<sphNum; i++){
-            ms[i].makeIdentityMatrix();
-            ms[i].translate(ofRandomf()*posRand, ofRandomf()*posRand, ofRandomf()*posRand);
-            scales[i].set(1, 1, 1);
-        }
-        
-        spheres.loadInstancePositionFromMatrices(ms, scales, sphNum);
-        delete[] ms;
-        delete[] scales;
-        ms = 0;
-        scales = 0;
-
-    }
-
-    if( 0 ){
-        ofMatrix4x4 * ms = new ofMatrix4x4[cylNum];
-        ofVec3f * scales = new ofVec3f[cylNum];
-        
-        float pos = 10;
-        for(int i=0; i<cylNum; i++){
-            ms[i].makeIdentityMatrix();
-            ms[i].rotate(12, ofRandom(-180, 180), ofRandom(-180, 180), ofRandom(-180, 180));
-            ms[i].translate(ofRandom(-pos, pos), ofRandom(-pos, pos), ofRandom(-pos, pos));
-            scales[i].set(1,1,100);
-        }
-        cylinders.loadInstancePositionFromMatrices(ms, scales, cylNum);
-    
-        delete[] ms;
-        delete[] scales;
-        ms = 0;
-        scales = 0;
-    }
-    
-    
-}
-
-void testApp::setupSphereShape(float radius, int resolution){
+void rnApp::setupSphereShape(float radius, int resolution, float collisionMargin){
     ofSetSphereResolution(resolution);
     ofMesh sphere = ofGetGLRenderer()->ofGetSphereMesh();
     spheres.setInstanceType(INSTANCE_SPHERE);
     spheres.loadInstanceMesh(sphere, ofVec3f(radius, radius, radius));
-    collisionTester::resetSphereShape(radius);
+    collisionTester::resetSphereShape(radius, collisionMargin);
 }
 
 
-void testApp::setupCylinderShape(float radius, int resolution){
+void rnApp::setupCylinderShape(float radius, int resolution, float collisionMargin){
     ofMesh cylinder = createCylinderZ(radius, 1, resolution, 1);
     cylinders.setInstanceType(INSTANCE_CYLINDER);
     cylinders.loadInstanceMesh(cylinder);
-    collisionTester::resetCylinderShape(ofVec3f(radius, 123, 0.5));  // do not use y value
+    collisionTester::resetCylinderShape(ofVec3f(radius, 123, 0.5), collisionMargin);  // do not use y value
 }
 
-void testApp::update(){
+void rnApp::update(){
     
     doProcess();
 
@@ -174,13 +130,13 @@ void testApp::update(){
 
 }
 
-void testApp::draw(){
+void rnApp::draw(){
     ofDisableAlphaBlending();
     mainDraw();
     //testDraw();
 }
 
-void testApp::testDraw(){
+void rnApp::testDraw(){
 
     ofBackground(200, 200, 200);
     
@@ -234,7 +190,7 @@ void testApp::testDraw(){
     camMain.end();
 }
 
-void testApp::mainDraw(){
+void rnApp::mainDraw(){
 	
     // bg
     switch (bgType) {
@@ -345,40 +301,40 @@ void testApp::mainDraw(){
     waitDraw();
 }
 
-void testApp::exit(){
+void rnApp::exit(){
     spheres.destroy();
     cylinders.destroy();
     delete tester;
     tester = 0;
 }
 
-void testApp::keyPressed(int key){}
-void testApp::keyReleased(int key){}
+void rnApp::keyPressed(int key){}
+void rnApp::keyReleased(int key){}
 
-void testApp::mouseMoved(int x, int y ){
+void rnApp::mouseMoved(int x, int y ){
     camMain.mouseMoved(x, y);
 }
-void testApp::mouseDragged(int x, int y, int button){
+void rnApp::mouseDragged(int x, int y, int button){
     camMain.mouseDragged(x, y, button);
 }
-void testApp::mousePressed(int x, int y, int button){
+void rnApp::mousePressed(int x, int y, int button){
     camMain.mousePressed(x, y, button);
 }
-void testApp::mouseReleased(int x, int y, int button){
+void rnApp::mouseReleased(int x, int y, int button){
     camMain.mouseReleased(x, y, button);
 }
-void testApp::windowResized(int w, int h){
+void rnApp::windowResized(int w, int h){
 }
-void testApp::gotMessage(ofMessage msg){}
-void testApp::dragEvent(ofDragInfo dragInfo){}
+void rnApp::gotMessage(ofMessage msg){}
+void rnApp::dragEvent(ofDragInfo dragInfo){}
 
-void testApp::processGui(){
+void rnApp::processGui(){
     if(CURRENT_PROCESS!=0){
         bNowProcessing = true;
     }
 }
 
-void testApp::doProcess(){
+void rnApp::doProcess(){
     if(bNowProcessing){
         if(CURRENT_PROCESS == CONNECT_RANDOM){
             int num = CONNECT_RANDOM_CYLINDER_NUM;
@@ -413,9 +369,8 @@ void testApp::doProcess(){
         }else if(CURRENT_PROCESS == REMOVE_ALL_CYLINDERS){
             cylinders.reset();
         }else if(CURRENT_PROCESS == RESET_INSTSANCE_SHAPE){
-            setupSphereShape(SPHERE_RADIUS, SPHERE_RESOLUTION);
-            setupCylinderShape(CYLINDER_RADIUS, CYLINDER_RESOLUTION);
-    
+            setupSphereShape(SPHERE_RADIUS, SPHERE_RESOLUTION, SPHERE_COLLISION_MARGIN);
+            setupCylinderShape(CYLINDER_RADIUS, CYLINDER_RESOLUTION, CYLINDER_COLLISION_MARGIN);    
         }else{
             cout << "unknown process for process#" << (int)CURRENT_PROCESS << endl;
             
@@ -456,7 +411,7 @@ void testApp::doProcess(){
     }
 }
 
-void testApp::waitDraw(){
+void rnApp::waitDraw(){
     if(bNowProcessing){
         float x = ofGetWidth()  * 0.5;
         float y = ofGetHeight() * 0.5;
@@ -480,7 +435,7 @@ void testApp::waitDraw(){
 }
 
 
-void testApp::setupCameraLightMaterial(){
+void rnApp::setupCameraLightMaterial(){
     camMain.setupPerspective(false);
     camMain.setDistance(400);
     camMain.setFov(50);
@@ -500,7 +455,7 @@ void testApp::setupCameraLightMaterial(){
 	mMatMainMaterial.setShininess(10.1f);
 }
 
-void testApp::setupShaders(bool doLink){
+void rnApp::setupShaders(bool doLink){
     GLuint err = glGetError();	// we need this to clear out the error buffer.
     
     if (mShdInstanced != NULL ) delete mShdInstanced;
@@ -517,13 +472,13 @@ void testApp::setupShaders(bool doLink){
     }
 }
 
-void testApp::saveCsvData(string path){
+void rnApp::saveCsvData(string path){
     spheres.saveInstanceDataToCsv(path);
     cylinders.saveInstanceDataToCsv(path);
     playFinishSound();
 }
 
-void testApp::loadCsvData(string path){
+void rnApp::loadCsvData(string path){
     spheres.loadInstanceDataFromCsv(path);
     cylinders.loadInstanceDataFromCsv(path);
     playFinishSound();

@@ -24,9 +24,8 @@ public:
     ~collisionTester();
 
     // should be call before usinge this class
-    static void resetSphereShape(float radius);
-    static void resetCylinderShape(ofVec3f halfExtent);
-
+    static void resetSphereShape(float radius, float collisionMargin);
+    static void resetCylinderShape(ofVec3f halfExtent, float collisionMargin);
     
     float collisionTest(btCollisionObject * objectA, btCollisionObject * objectB, btCollisionAlgorithm * algo);
     float testSphereSphere(ofMatrix4x4& matA, ofVec3f& sA, ofMatrix4x4& matB, ofVec3f& sB);

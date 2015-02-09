@@ -17,28 +17,34 @@
     
     IBOutlet NSSlider *sphereRadiusSlider;
     IBOutlet NSSlider *sphereResolutionSlider;
+    IBOutlet NSSlider *sphereCollisionMarginSlider;
+    
     IBOutlet NSSlider *cylinderRadiusSlider;
     IBOutlet NSSlider *cylinderResolutionSlider;
+    IBOutlet NSSlider *cylinderCollisionMarginSlider;
+
     IBOutlet NSSlider *connectRandomCylinderNumSlider;
     IBOutlet NSSlider *connectRandomMinDistanceSlider;
     IBOutlet NSSlider *connectRandomMaxDistanceSlider;
     IBOutlet NSSlider *connectGroupCylinderNumSlider;
     IBOutlet NSSlider *connectGroupMinDistanceSlider;
     IBOutlet NSSlider *connectGroupMaxDistanceSlider;
-    IBOutlet NSSlider *collisionMarginSlider;
     IBOutlet NSSlider *removeGroupsMinNumSlider;
 
     IBOutlet NSTextField *sphereRadiusNBox;
     IBOutlet NSTextField *sphereResolutionNBox;
+    IBOutlet NSTextField *sphereCollisionMarginNBox;
+
     IBOutlet NSTextField *cylinderRadiusNBox;
     IBOutlet NSTextField *cylinderResolutionNBox;
+    IBOutlet NSTextField *cylinderCollisionMarginNBox;
+    
     IBOutlet NSTextField *connectRandomCylinderNumNBox;
     IBOutlet NSTextField *connectRandomMinDistanceNBox;
     IBOutlet NSTextField *connectRandomMaxDistanceNBox;
     IBOutlet NSTextField *connectGroupCylinderNumNBox;
     IBOutlet NSTextField *connectGroupMinDistanceNBox;
     IBOutlet NSTextField *connectGroupMaxDistanceNBox;
-    IBOutlet NSTextField *collisionMarginNBox;
     IBOutlet NSTextField *removeGroupsMinNumNBox;
     
     IBOutlet NSButton *resetInstanceShapeButton;
@@ -77,28 +83,36 @@
 
 - (IBAction)changeSphereRadiusSlider:(NSSlider *)sender;
 - (IBAction)changeSphereResolutionSlider:(NSSlider *)sender;
+- (IBAction)changeSphereCollisionMarginSlider:(NSSlider *)sender;
+
 - (IBAction)changeCylinderRadiusSlider:(NSSlider *)sender;
 - (IBAction)changeCylinderResolutionSlider:(NSSlider *)sender;
+- (IBAction)changeCylinderCollisionMarginSlider:(NSSlider *)sender;
+
 - (IBAction)changeConnectRandomCylinderNumSlider:(NSSlider *)sender;
 - (IBAction)changeConnectRandomMinDistanceSlider:(NSSlider *)sender;
 - (IBAction)changeConnectRandomMaxDistanceSlider:(NSSlider *)sender;
 - (IBAction)changeConnectGroupCylinderNumSlider:(NSSlider *)sender;
 - (IBAction)changeConnectGroupMinDistanceSlider:(NSSlider *)sender;
 - (IBAction)changeConnectGroupMaxDistanceSlider:(NSSlider *)sender;
-- (IBAction)changeCollisionMarginSlider:(NSSlider *)sender;
+
 - (IBAction)changeRemoveGroupsMinNumSlider:(NSSlider *)sender;
 
 - (IBAction)changeSphereRadiusNBox:(NSTextField *)sender;
 - (IBAction)changeSphereResolutionNBox:(NSTextField *)sender;
+- (IBAction)changeSphereCollisionMarginNBox:(NSTextField *)sender;
+
 - (IBAction)changeCylinderRadiusNBox:(NSTextField *)sender;
 - (IBAction)changeCylinderResolutionNBox:(NSTextField *)sender;
+- (IBAction)changeCylinderCollisionMarginNBox:(NSTextField *)sender;
+
 - (IBAction)changeConnectRandomCylinderNumNBox:(NSTextField *)sender;
 - (IBAction)changeConnectRandomMinDistanceNBox:(NSTextField *)sender;
 - (IBAction)changeConnectRandomMaxDistanceNBox:(NSTextField *)sender;
 - (IBAction)changeConnectGroupCylinderNumNBox:(NSTextField *)sender;
 - (IBAction)changeConnectGroupMinDistanceNBox:(NSTextField *)sender;
 - (IBAction)changeConnectGroupMaxDistanceNBox:(NSTextField *)sender;
-- (IBAction)changeCollisionMarginNBox:(NSTextField *)sender;
+
 - (IBAction)changeRemoveGroupsMinNumNBox:(NSTextField *)sender;
 
 - (IBAction)pushResetInstanceShapeButton:(NSButton *)sender;

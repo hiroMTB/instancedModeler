@@ -32,10 +32,14 @@
 	<real>1.5</real>
 	<key>sphereResolution</key>
 	<integer>8</integer>
+	<key>sphereCollisionMargin</key>
+	<string>0</string>
 	<key>cylinderRadius</key>
 	<integer>1</integer>
 	<key>cylinderResolution</key>
 	<integer>14</integer>
+	<key>cylinderCollisionMargin</key>
+	<string>0</string>
 	<key>connectRandomCylinderNum</key>
 	<integer>10</integer>
 	<key>connectRandomMinDistance</key>

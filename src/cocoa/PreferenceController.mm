@@ -9,7 +9,7 @@
 #include "ofMain.h"
 
 #import "PreferenceController.h"
-#include "testApp.h"
+#include "rnApp.h"
 
 @interface PreferenceController ()
 

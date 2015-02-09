@@ -74,7 +74,7 @@ private:
 
     INSTANCE_TYPE insType;
     
-    ofxVboMeshInstanced * vmi;
+    ofxVboMeshInstanced vmi;
 
     
 public:
@@ -138,7 +138,7 @@ public:
     
     inline void setCltexNeedUpdate(bool b){ bCltexNeedUpdate = b; }
     inline void setVtxtexNeedUpdate(bool b){ bVtxtexNeedUpdate = b; }
-    inline ofxVboMeshInstanced * getVboMeshInstanced(){ return vmi; }
+    inline ofxVboMeshInstanced & getVboMeshInstanced(){ return vmi; }
   
     
     // util
