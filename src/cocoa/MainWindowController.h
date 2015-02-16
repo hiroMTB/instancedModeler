@@ -149,6 +149,12 @@
 - (IBAction)changeShowReferenceBoxCheck:(NSButton *)sender;
 
 
+- (IBAction)changeSelectSphereSlider:(NSSlider *)sender;
+- (IBAction)changeSelectCylinderSlider:(NSSlider *)sender;
+
+- (IBAction)changeSelectSphereNBox:(NSTextField *)sender;
+- (IBAction)changeSelectCylinderNBox:(NSTextField *)sender;
+
 - (void) setupDefault;
 - (void) initializeParameters;
 

@@ -253,7 +253,17 @@ void instancedComponent::loadInstancePositionFromModel(string path, int res, flo
             // vertices
             for(int j=0; j<numVertices; j++){
                 if( j%res == 0){
-                    ofVec3f position = (mesh.getVertex(j)* posScale);     // SCALE POSITION!!
+                    
+                    int index = j;
+                    bool bNoise = true;
+                    if( bNoise ){
+                        
+                        float n = fBm1uf(j*0.01, 4);
+                        index = n * numVertices;
+                        index = ofClamp(index, 0, numVertices-1);
+                    }
+                    
+                    ofVec3f position = (mesh.getVertex(index)* posScale);     // SCALE POSITION!!
                     m.makeIdentityMatrix();
                     m.translate(position);
                     ofVec3f s(1,1,1);
@@ -261,13 +271,8 @@ void instancedComponent::loadInstancePositionFromModel(string path, int res, flo
                     addInstanceMatrix(m, s, insType);
                 }
             }
-            
-            // edge
-            
-            
         }
     }
-    
     
 
     bVtxtexNeedUpdate = true;

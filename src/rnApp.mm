@@ -100,7 +100,7 @@ void rnApp::loadModelData(){
         char mes[255];
         sprintf(mes, "start loading renature model %s", posModelPath_P.c_str());
         myLogRelease(mes);
-        spheres.loadInstancePositionFromModel(posModelPath_P, 40, posScale);
+        spheres.loadInstancePositionFromModel(posModelPath_P, 4, posScale);
     }
 }
 

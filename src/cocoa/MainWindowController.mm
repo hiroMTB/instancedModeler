@@ -499,6 +499,27 @@ NSString *const removeAllSpheres       = @"removeAllSpheres";
     rnApp::DRAW_REFERENCE_BOX = (bool)sender.state;
 }
 
+- (IBAction)changeSelectSphereSlider:(NSSlider *)sender {
+    int n = sender.intValue;
+    rnApp::selectedSphere = n;
+}
+
+- (IBAction)changeSelectCylinderSlider:(NSSlider *)sender {
+    int n = sender.intValue;
+    rnApp::selectedCylinder = n;
+}
+
+- (IBAction)changeSelectSphereNBox:(NSTextField *)sender {
+    int n = sender.intValue;
+    rnApp::selectedSphere = n;
+    
+}
+
+- (IBAction)changeSelectCylinderNBox:(NSTextField *)sender {
+    int n = sender.intValue;
+    rnApp::selectedCylinder = n;
+}
+
 
 // ??? can not call this func.
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender{

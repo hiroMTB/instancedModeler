@@ -70,6 +70,9 @@ public:
     static ofColor colorCylinder;
     
     
+    static int selectedSphere;
+    static int selectedCylinder;
+    
     // bg
     static int bgType;
     static ofColor bgNormal;
