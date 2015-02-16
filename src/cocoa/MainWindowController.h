@@ -79,6 +79,8 @@
     IBOutlet NSButton *showCollisionShapeCheck;
     IBOutlet NSButton *showCollisionDistanceCheck;
     IBOutlet NSButton *showReferenceBoxCheck;
+    IBOutlet NSSlider *loadModelResolutionSlider;
+    IBOutlet NSTextField *loadModelResolutionNBox;
 }
 
 - (IBAction)changeSphereRadiusSlider:(NSSlider *)sender;
@@ -148,6 +150,9 @@
 - (IBAction)changeShowCollisionDistanceCheck:(NSButton *)sender;
 - (IBAction)changeShowReferenceBoxCheck:(NSButton *)sender;
 
+
+- (IBAction)changeLoadModelResolutionSlider:(NSSlider *)sender;
+- (IBAction)changeLoadModelResolutionNBox:(NSTextField *)sender;
 
 - (IBAction)changeSelectSphereSlider:(NSSlider *)sender;
 - (IBAction)changeSelectCylinderSlider:(NSSlider *)sender;

@@ -52,6 +52,9 @@ NSString *const removeDuplicate         = @"removeDuplicate";
 NSString *const removeAllCylinders       = @"removeAllCylinders";
 NSString *const removeAllSpheres       = @"removeAllSpheres";
 
+NSString *const loadModelResolution = @"loadModelResolution";
+
+
 @implementation MainWindowController
 
 - (void) setupDefault{
@@ -88,7 +91,8 @@ NSString *const removeAllSpheres       = @"removeAllSpheres";
     rnApp::CONNECT_GROUP_MAX_DIST         = [[defaults objectForKey:connectGroupMaxDistance] floatValue];
     rnApp::REMOVE_GROUPS_MIN_NUM          = [[defaults objectForKey:removeGroupsMinNum] intValue];
     rnApp::bgType                         = [[defaults objectForKey:bgType] intValue];
-    
+    rnApp::LOAD_MODEL_RESOLUTION          = [[defaults objectForKey:loadModelResolution] intValue];
+
     [sphereRadiusNBox setFloatValue:rnApp::SPHERE_RADIUS];
     [sphereResolutionNBox setIntValue:rnApp::SPHERE_RESOLUTION];
     [sphereCollisionMarginNBox setFloatValue:rnApp::SPHERE_COLLISION_MARGIN];
@@ -104,6 +108,7 @@ NSString *const removeAllSpheres       = @"removeAllSpheres";
     [connectGroupMinDistanceNBox setFloatValue:rnApp::CONNECT_GROUP_MIN_DIST];
     [connectGroupMaxDistanceNBox setFloatValue:rnApp::CONNECT_GROUP_MAX_DIST];
     [removeGroupsMinNumNBox setIntValue:rnApp::REMOVE_GROUPS_MIN_NUM];
+    [loadModelResolutionNBox setIntValue:rnApp::LOAD_MODEL_RESOLUTION];
     
     rnApp::DRAW_WIREFRAME                 = [[defaults objectForKey:showWireframe] boolValue];
     rnApp::DRAW_COLLISION_SHAPE           = [[defaults objectForKey:showCollisionShape] boolValue];
@@ -497,6 +502,17 @@ NSString *const removeAllSpheres       = @"removeAllSpheres";
 
 - (IBAction)changeShowReferenceBoxCheck:(NSButton *)sender {
     rnApp::DRAW_REFERENCE_BOX = (bool)sender.state;
+}
+
+- (IBAction)changeLoadModelResolutionSlider:(NSSlider *)sender {
+    rnApp::LOAD_MODEL_RESOLUTION = sender.intValue;
+    [loadModelResolutionNBox setIntValue:sender.intValue];
+}
+
+- (IBAction)changeLoadModelResolutionNBox:(NSTextField *)sender {
+    rnApp::LOAD_MODEL_RESOLUTION = sender.intValue;
+    [loadModelResolutionSlider setIntValue:sender.intValue];
+    [[NSUserDefaults standardUserDefaults] setInteger:sender.intValue forKey:loadModelResolution];
 }
 
 - (IBAction)changeSelectSphereSlider:(NSSlider *)sender {

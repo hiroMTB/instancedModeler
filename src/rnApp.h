@@ -104,6 +104,8 @@ public:
     static bool DRAW_COLLISION_SHAPE;
     static bool DRAW_COLLISION_DISTANCE;
     
+    static int LOAD_MODEL_RESOLUTION;
+    
     // shader uniform name
     static bool RENDER_NORMALS;
     static bool FLAT_SHADING;

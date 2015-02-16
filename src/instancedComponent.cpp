@@ -255,13 +255,13 @@ void instancedComponent::loadInstancePositionFromModel(string path, int res, flo
                 if( j%res == 0){
                     
                     int index = j;
-                    bool bNoise = true;
-                    if( bNoise ){
-                        
-                        float n = fBm1uf(j*0.01, 4);
-                        index = n * numVertices;
-                        index = ofClamp(index, 0, numVertices-1);
-                    }
+//                    bool bNoise = false;
+//                    if( bNoise ){
+//                        
+//                        float n = fBm1uf(j*0.01, 4);
+//                        index = n * numVertices;
+//                        index = ofClamp(index, 0, numVertices-1);
+//                    }
                     
                     ofVec3f position = (mesh.getVertex(index)* posScale);     // SCALE POSITION!!
                     m.makeIdentityMatrix();

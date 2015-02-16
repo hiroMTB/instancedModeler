@@ -42,6 +42,8 @@
                 <outlet property="cylinderResolutionSlider" destination="2937" id="6268"/>
                 <outlet property="exportToCsvButton" destination="4553" id="6304"/>
                 <outlet property="loadCsvButton" destination="7011" id="7368"/>
+                <outlet property="loadModelResolutionNBox" destination="uwP-2Q-y4A" id="M5z-bs-JFY"/>
+                <outlet property="loadModelResolutionSlider" destination="CCc-7U-BcC" id="G4r-i3-otL"/>
                 <outlet property="loadSphereCsvButton" destination="7011" id="7062"/>
                 <outlet property="mainGLView" destination="801" id="5290"/>
                 <outlet property="removeAllCylinderButton" destination="1815" id="6303"/>
@@ -1133,11 +1135,11 @@
                                             </tabViewItem>
                                             <tabViewItem label="IO" identifier="" id="6728">
                                                 <view key="view" id="6729">
-                                                    <rect key="frame" x="10" y="33" width="475" height="930"/>
+                                                    <rect key="frame" x="10" y="33" width="472" height="930"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4553">
-                                                            <rect key="frame" x="176" y="565" width="121" height="19"/>
+                                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4553">
+                                                            <rect key="frame" x="176" y="505" width="121" height="19"/>
                                                             <buttonCell key="cell" type="roundRect" title="Save .csv" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="4555">
                                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                 <font key="font" metaFont="smallSystem"/>
@@ -1146,7 +1148,7 @@
                                                                 <action selector="pushExportToCsvButton:" target="-2" id="6315"/>
                                                             </connections>
                                                         </button>
-                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6742">
+                                                        <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6742">
                                                             <rect key="frame" x="15" y="900" width="110" height="17"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Load Model Data" id="6744">
                                                                 <font key="font" metaFont="system"/>
@@ -1154,24 +1156,24 @@
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
                                                         </textField>
-                                                        <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6756">
-                                                            <rect key="frame" x="15" y="763" width="121" height="17"/>
+                                                        <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6756">
+                                                            <rect key="frame" x="15" y="703" width="121" height="17"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Load Position Data" id="6757">
                                                                 <font key="font" metaFont="system"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
                                                         </textField>
-                                                        <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6774">
-                                                            <rect key="frame" x="15" y="626" width="119" height="17"/>
+                                                        <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6774">
+                                                            <rect key="frame" x="15" y="566" width="119" height="17"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Save Position Data" id="6775">
                                                                 <font key="font" metaFont="system"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
                                                         </textField>
-                                                        <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7003">
-                                                            <rect key="frame" x="176" y="819" width="121" height="19"/>
+                                                        <button verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7003">
+                                                            <rect key="frame" x="176" y="759" width="121" height="19"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="121" id="7362"/>
                                                             </constraints>
@@ -1183,8 +1185,8 @@
                                                                 <action selector="puchLoadModelDataButton:" target="-2" id="7064"/>
                                                             </connections>
                                                         </button>
-                                                        <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7011">
-                                                            <rect key="frame" x="176" y="702" width="121" height="19"/>
+                                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7011">
+                                                            <rect key="frame" x="176" y="642" width="121" height="19"/>
                                                             <buttonCell key="cell" type="roundRect" title="Load .csv" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="7012">
                                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                 <font key="font" metaFont="cellTitle"/>
@@ -1193,7 +1195,7 @@
                                                                 <action selector="pushLoadCsvbutton:" target="-2" id="7364"/>
                                                             </connections>
                                                         </button>
-                                                        <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7380">
+                                                        <textField verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7380">
                                                             <rect key="frame" x="174" y="846" width="296" height="71"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="71" id="7492"/>
@@ -1209,8 +1211,8 @@ Use "data/models/bee_1k***.ply" for example.
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
                                                         </textField>
-                                                        <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7442">
-                                                            <rect key="frame" x="174" y="729" width="303" height="51"/>
+                                                        <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7442">
+                                                            <rect key="frame" x="174" y="669" width="303" height="51"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" id="7444">
                                                                 <font key="font" metaFont="system"/>
                                                                 <string key="title">Make spheres/cylinders from saved cvs file.
@@ -1220,8 +1222,8 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
                                                         </textField>
-                                                        <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7469">
-                                                            <rect key="frame" x="174" y="592" width="303" height="51"/>
+                                                        <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7469">
+                                                            <rect key="frame" x="174" y="532" width="303" height="51"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" id="7470">
                                                                 <font key="font" metaFont="system"/>
                                                                 <string key="title">Save current spheres/cylinders position and
@@ -1285,30 +1287,35 @@ file, Spheres.csv and Cylinders.csv.</string>
                                                                 <action selector="changeSelectCylinderNBox:" target="-2" id="wff-g4-u5v"/>
                                                             </connections>
                                                         </textField>
+                                                        <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CCc-7U-BcC">
+                                                            <rect key="frame" x="174" y="798" width="201" height="27"/>
+                                                            <sliderCell key="cell" state="on" alignment="left" minValue="1" maxValue="20" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="20" allowsTickMarkValuesOnly="YES" sliderType="linear" id="mJL-62-4LE"/>
+                                                            <connections>
+                                                                <action selector="changeLoadModelResolutionSlider:" target="-2" id="l9L-Tp-ZtP"/>
+                                                                <binding destination="7169" name="value" keyPath="values.loadModelResolution" id="MrD-SS-bRL"/>
+                                                            </connections>
+                                                        </slider>
+                                                        <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uwP-2Q-y4A">
+                                                            <rect key="frame" x="391" y="805" width="64" height="22"/>
+                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="8So-3r-9bu">
+                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="EWS-9s-3fi"/>
+                                                                <font key="font" metaFont="system"/>
+                                                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                            <connections>
+                                                                <action selector="changeLoadModelResolutionNBox:" target="-2" id="BUn-UN-8sN"/>
+                                                            </connections>
+                                                        </textField>
+                                                        <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lOe-Qb-5kS">
+                                                            <rect key="frame" x="60" y="808" width="65" height="17"/>
+                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="resolution" id="3Cx-fa-wEh">
+                                                                <font key="font" metaFont="system"/>
+                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                        </textField>
                                                     </subviews>
-                                                    <constraints>
-                                                        <constraint firstItem="6742" firstAttribute="leading" secondItem="6729" secondAttribute="leading" constant="17" id="6748"/>
-                                                        <constraint firstItem="6756" firstAttribute="leading" secondItem="6729" secondAttribute="leading" constant="17" id="6759"/>
-                                                        <constraint firstItem="6774" firstAttribute="leading" secondItem="6729" secondAttribute="leading" constant="17" id="6776"/>
-                                                        <constraint firstItem="6742" firstAttribute="top" secondItem="6729" secondAttribute="top" constant="13" id="6780"/>
-                                                        <constraint firstItem="6756" firstAttribute="top" secondItem="6742" secondAttribute="bottom" constant="120" id="7369"/>
-                                                        <constraint firstItem="6774" firstAttribute="top" secondItem="6756" secondAttribute="bottom" constant="120" id="7374"/>
-                                                        <constraint firstItem="7380" firstAttribute="leading" secondItem="7003" secondAttribute="leading" id="7426"/>
-                                                        <constraint firstItem="7011" firstAttribute="trailing" secondItem="7003" secondAttribute="trailing" id="7450"/>
-                                                        <constraint firstItem="7442" firstAttribute="leading" secondItem="7003" secondAttribute="leading" id="7466"/>
-                                                        <constraint firstItem="7442" firstAttribute="leading" secondItem="7011" secondAttribute="leading" id="7467"/>
-                                                        <constraint firstItem="7011" firstAttribute="top" secondItem="7442" secondAttribute="bottom" constant="8" symbolic="YES" id="7468"/>
-                                                        <constraint firstItem="7469" firstAttribute="leading" secondItem="7011" secondAttribute="leading" id="7473"/>
-                                                        <constraint firstItem="7469" firstAttribute="trailing" secondItem="7442" secondAttribute="trailing" id="7474"/>
-                                                        <constraint firstItem="7442" firstAttribute="baseline" secondItem="6756" secondAttribute="baseline" id="7476"/>
-                                                        <constraint firstItem="7469" firstAttribute="baseline" secondItem="6774" secondAttribute="baseline" id="7477"/>
-                                                        <constraint firstItem="4553" firstAttribute="leading" secondItem="7469" secondAttribute="leading" id="7478"/>
-                                                        <constraint firstItem="4553" firstAttribute="trailing" secondItem="7011" secondAttribute="trailing" id="7480"/>
-                                                        <constraint firstItem="4553" firstAttribute="top" secondItem="7469" secondAttribute="bottom" constant="8" symbolic="YES" id="7485"/>
-                                                        <constraint firstItem="7011" firstAttribute="centerX" secondItem="6729" secondAttribute="centerX" id="7491"/>
-                                                        <constraint firstItem="6742" firstAttribute="top" secondItem="7380" secondAttribute="top" id="7494"/>
-                                                        <constraint firstItem="7003" firstAttribute="top" secondItem="7380" secondAttribute="bottom" constant="8" symbolic="YES" id="7495"/>
-                                                    </constraints>
                                                 </view>
                                             </tabViewItem>
                                         </tabViewItems>

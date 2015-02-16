@@ -42,6 +42,11 @@ bool  rnApp::DRAW_COLLISION_SHAPE     = false;
 bool  rnApp::DRAW_COLLISION_DISTANCE  = false;
 bool  rnApp::DRAW_REFERENCE_BOX       = true;
 
+int rnApp::selectedCylinder = -1;
+int rnApp::selectedSphere = -1;
+
+int rnApp::LOAD_MODEL_RESOLUTION = 10;
+
 // shader uniform name
 static bool RENDER_NORMALS;
 static bool FLAT_SHADING;
@@ -75,21 +80,14 @@ void rnApp::setup(){
     tester = new collisionTester();
     finishSound.loadSound("sound/finishSound.wav");
 
-    
     // ---------------------------------------------------
     posModelPath_P = "none";
-
     setupSphereShape(   SPHERE_RADIUS,   SPHERE_RESOLUTION, SPHERE_COLLISION_MARGIN);
     setupCylinderShape( CYLINDER_RADIUS, CYLINDER_RESOLUTION, CYLINDER_COLLISION_MARGIN);
-
-    //loadModelData();
 
     compScale = 1;
     posScale = 10;
     boxSize = 200;
-    
-    testCase.loadRandomSphere(100, 100);
-    //testCase.setup_mergin_test();
 }
 
 void rnApp::loadModelData(){
@@ -100,7 +98,7 @@ void rnApp::loadModelData(){
         char mes[255];
         sprintf(mes, "start loading renature model %s", posModelPath_P.c_str());
         myLogRelease(mes);
-        spheres.loadInstancePositionFromModel(posModelPath_P, 4, posScale);
+        spheres.loadInstancePositionFromModel(posModelPath_P, LOAD_MODEL_RESOLUTION, posScale);
     }
 }
 
