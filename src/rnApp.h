@@ -70,9 +70,6 @@ public:
     static ofColor colorCylinder;
     
     
-    static int selectedSphere;
-    static int selectedCylinder;
-    
     // bg
     static int bgType;
     static ofColor bgNormal;
@@ -103,8 +100,9 @@ public:
     static bool DRAW_REFERENCE_BOX;
     static bool DRAW_COLLISION_SHAPE;
     static bool DRAW_COLLISION_DISTANCE;
-    
+        
     static int LOAD_MODEL_RESOLUTION;
+    static bool LOAD_MODEL_WITH_NOISE_FILTER;
     
     // shader uniform name
     static bool RENDER_NORMALS;
@@ -165,6 +163,7 @@ private:
         bool connectInstanace   (INSTANCE_MAP_ITR& itrA, INSTANCE_MAP_ITR& itrB, float minDist, float maxDist, instance& newIns);
         bool connectInstanace   (instance& insA, instance& insB, float minDist, float maxDist, instance& newIns);
         void connectRandom      (instancedComponent * ic, instancedComponent * ic2, int numAllCylinders, float minDist, float maxDist);
+        void connectFloating    (instancedComponent * ic, instancedComponent * ic2, int numAllCylinders, float minDist, float maxDist);
         void connectGroup       (instancedComponent * ic, instancedComponent * ic2, int numAllCylinders, float minDist, float maxDist);
         void connectNear        (int numNearCylinders, float minDist=0, float maxDist=9999999999);
     

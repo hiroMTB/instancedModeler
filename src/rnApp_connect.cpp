@@ -225,7 +225,6 @@ void rnApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int nu
 
 }
 
-
 // should be used parallel_for
 void rnApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int numAllCylinders, float minDist, float maxDist){
     
@@ -294,3 +293,20 @@ void rnApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int n
 }
 
 
+void rnApp::connectFloating(instancedComponent *ic, instancedComponent *ic2, int numAllCylinders, float minDist, float maxDist){
+    char m[255];
+    
+    int startTime = ofGetElapsedTimeMillis();
+    myLogRelease("Start ConnectGroup Process : time : " + ofToString(startTime));
+    
+    INSTANCE_MAP& instanceMap = instancedComponent::getInstanceMap();
+    int numGroups = STL_UTIL::getAllKeySize(instanceMap);
+    
+    if(numGroups<2){
+        myLogRelease("cancel connect group process. only 1 group found.");
+        return;
+    }
+
+    
+    
+}

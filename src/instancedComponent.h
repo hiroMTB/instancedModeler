@@ -60,6 +60,9 @@ typedef INSTANCE_MAP::iterator INSTANCE_MAP_ITR;
 
 class instancedComponent{
     
+public:
+    INSTANCE_MAP_ITR selectedInstance;
+    
 private:
     static INSTANCE_MAP instanceMap;
     static int groupIdMaster;
@@ -96,10 +99,11 @@ public:
     
     void draw(ofShader * shader);
     void drawWireframe(ofShader * shader);
+    void drawSelector();
     static void debugDraw();
     
     void loadInstanceMesh(ofMesh mesh, ofVec3f scale=ofVec3f(1,1,1));
-    void loadInstancePositionFromModel(string path, int res, float posScale);
+    void loadInstancePositionFromModel(string path, int res, float posScale=1, bool noiseFilter=false);
     void loadInstancePositionFromMatrices(ofMatrix4x4 * ms, ofVec3f * ss, int size);
 
     // instance param
@@ -140,6 +144,13 @@ public:
     inline void setVtxtexNeedUpdate(bool b){ bVtxtexNeedUpdate = b; }
     inline ofxVboMeshInstanced & getVboMeshInstanced(){ return vmi; }
   
+    // selection
+    void selectInstance( int index );
+    
+    
+    // single remove
+    void removeSelectedInstance();
+    void removeInstance( INSTANCE_MAP_ITR itr );
     
     // util
     void saveInstanceDataToCsv(string dirName);

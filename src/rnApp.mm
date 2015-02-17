@@ -42,10 +42,9 @@ bool  rnApp::DRAW_COLLISION_SHAPE     = false;
 bool  rnApp::DRAW_COLLISION_DISTANCE  = false;
 bool  rnApp::DRAW_REFERENCE_BOX       = true;
 
-int rnApp::selectedCylinder = -1;
-int rnApp::selectedSphere = -1;
 
 int rnApp::LOAD_MODEL_RESOLUTION = 10;
+bool rnApp::LOAD_MODEL_WITH_NOISE_FILTER = true;
 
 // shader uniform name
 static bool RENDER_NORMALS;
@@ -87,7 +86,9 @@ void rnApp::setup(){
 
     compScale = 1;
     posScale = 10;
-    boxSize = 200;
+    boxSize = 330;
+    
+    testCase.loadRandomSphere(10, 10);
 }
 
 void rnApp::loadModelData(){
@@ -98,7 +99,7 @@ void rnApp::loadModelData(){
         char mes[255];
         sprintf(mes, "start loading renature model %s", posModelPath_P.c_str());
         myLogRelease(mes);
-        spheres.loadInstancePositionFromModel(posModelPath_P, LOAD_MODEL_RESOLUTION, posScale);
+        spheres.loadInstancePositionFromModel(posModelPath_P, LOAD_MODEL_RESOLUTION, posScale, LOAD_MODEL_WITH_NOISE_FILTER);
     }
 }
 
@@ -253,17 +254,19 @@ void rnApp::mainDraw(){
         }
 
 
-    
+        spheres.drawSelector();
+        cylinders.drawSelector();
+        
     }camMain.end();
 	   
     int y = 20;
     int x = 15;
     int h = 20;
-    
+    int w = 280;
     ofFill();
     ofEnableAlphaBlending();
     ofSetColor(0,1,2,100);
-    ofRect(0, 0, 280, ofGetHeight());
+    ofRect(0, 0, w, ofGetHeight());
     ofDisableAlphaBlending();
     
     ofSetColor(255,255,255,255);
@@ -286,15 +289,18 @@ void rnApp::mainDraw(){
     ofDrawBitmapString("Group Info ------", x, y+=(h*2));
     ofDrawBitmapString("group total : "+ofToString(instancedComponent::getGroupTotalNum()), x, y+=h);
 
-    y+=h;
-    int startY = y;
-    for(int i=0; i<strings.size(); i++){
-        
-        ofDrawBitmapString(strings[i], x, y+=h);
-        if(ofGetHeight()-2*h<y){
-            y=startY; x += 140;
-        }
-    }
+//    group detail
+//    y+=h;
+//    int startY = y;
+//    for(int i=0; i<strings.size(); i++){
+//        
+//        ofDrawBitmapString(strings[i], x, y+=h);
+//        if(ofGetHeight()-2*h<y){
+//            y=startY; x += 140;
+//        }
+//        
+//        if( w<x ) break;
+//    }
     
     waitDraw();
 }

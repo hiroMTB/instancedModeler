@@ -517,23 +517,47 @@ NSString *const loadModelResolution = @"loadModelResolution";
 
 - (IBAction)changeSelectSphereSlider:(NSSlider *)sender {
     int n = sender.intValue;
-    rnApp::selectedSphere = n;
+    [selectSphereNBox setIntValue:n];
+    rnApp::get()->spheres.selectInstance(n);
+    int max = rnApp::get()->spheres.getInstanceNum() - 1;
+    [selectSpehreSlider setMaxValue:max];
 }
 
 - (IBAction)changeSelectCylinderSlider:(NSSlider *)sender {
     int n = sender.intValue;
-    rnApp::selectedCylinder = n;
+    [selectCylinderNBox setIntValue:n];
+    rnApp::get()->cylinders.selectInstance(n);
+    int max = rnApp::get()->cylinders.getInstanceNum() - 1;
+    [selectCylinderSlider setMaxValue:max];
 }
 
 - (IBAction)changeSelectSphereNBox:(NSTextField *)sender {
     int n = sender.intValue;
-    rnApp::selectedSphere = n;
-    
+    [selectSpehreSlider setIntValue:n];
+    rnApp::get()->spheres.selectInstance(n);
+    int max = rnApp::get()->spheres.getInstanceNum() - 1;
+    [selectSpehreSlider setMaxValue:max];
 }
 
 - (IBAction)changeSelectCylinderNBox:(NSTextField *)sender {
     int n = sender.intValue;
-    rnApp::selectedCylinder = n;
+    [selectCylinderSlider setIntValue:n];
+    rnApp::get()->cylinders.selectInstance(n);
+    int max = rnApp::get()->cylinders.getInstanceNum() - 1;
+    [selectCylinderSlider setMaxValue:max];
+}
+
+- (IBAction)pushRemoveSphereButton:(NSButton *)sender {
+    rnApp::get()->spheres.removeSelectedInstance();
+}
+
+- (IBAction)pushRemoveCylinderButton:(NSButton *)sender {
+    rnApp::get()->cylinders.removeSelectedInstance();
+}
+
+- (IBAction)pushNoiseFilterSegment:(NSSegmentedControl *)sender {
+    rnApp::LOAD_MODEL_WITH_NOISE_FILTER = (bool)sender.selectedSegment;
+    cout << rnApp::LOAD_MODEL_WITH_NOISE_FILTER << endl;
 }
 
 

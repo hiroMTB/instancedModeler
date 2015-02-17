@@ -54,8 +54,7 @@
     IBOutlet NSButton *collisionTestButton;
     IBOutlet NSButton *removeGroupButton;
     IBOutlet NSButton *removeDuplicateButton;
-    IBOutlet NSButton *removeAllCylinderButton;
-    IBOutlet NSButton *removeAllSpheresButton;
+
     IBOutlet NSButton *exportToCsvButton;
     IBOutlet NSButton *loadCsvButton;
     
@@ -81,6 +80,20 @@
     IBOutlet NSButton *showReferenceBoxCheck;
     IBOutlet NSSlider *loadModelResolutionSlider;
     IBOutlet NSTextField *loadModelResolutionNBox;
+    
+    
+    // under selector
+    IBOutlet NSSlider *selectSpehreSlider;
+    IBOutlet NSSlider *selectCylinderSlider;
+    
+    IBOutlet NSTextField *selectSphereNBox;
+    IBOutlet NSTextField *selectCylinderNBox;
+    
+    IBOutlet NSButton *connetc1SpherePairButton;
+    IBOutlet NSButton *removeSingleSphereButton;
+    IBOutlet NSButton *removeSingleCylinderButton;
+    IBOutlet NSButton *removeAllSpheresButton;
+    IBOutlet NSButton *removeAllCylinderButton;
 }
 
 - (IBAction)changeSphereRadiusSlider:(NSSlider *)sender;
@@ -123,8 +136,6 @@
 - (IBAction)pushCollisionTestButton:(NSButton *)sender;
 - (IBAction)pushRemoveGroupsButton:(NSButton *)sender;
 - (IBAction)pushRemoveDuplicateButton:(NSButton *)sender;
-- (IBAction)pushRemoveAllSpheres:(NSButton *)sender;
-- (IBAction)pushRemoveAllCylinderButton:(NSButton *)sender;
 
 - (IBAction)pushExportToCsvButton:(NSButton *)sender;
 - (IBAction)pushLoadCsvbutton:(NSButton *)sender;
@@ -150,18 +161,24 @@
 - (IBAction)changeShowCollisionDistanceCheck:(NSButton *)sender;
 - (IBAction)changeShowReferenceBoxCheck:(NSButton *)sender;
 
-
 - (IBAction)changeLoadModelResolutionSlider:(NSSlider *)sender;
 - (IBAction)changeLoadModelResolutionNBox:(NSTextField *)sender;
 
-- (IBAction)changeSelectSphereSlider:(NSSlider *)sender;
-- (IBAction)changeSelectCylinderSlider:(NSSlider *)sender;
-
-- (IBAction)changeSelectSphereNBox:(NSTextField *)sender;
-- (IBAction)changeSelectCylinderNBox:(NSTextField *)sender;
-
+- (IBAction)pushNoiseFilterSegment:(NSSegmentedControl *)sender;
 - (void) setupDefault;
 - (void) initializeParameters;
+
+
+// Bottom Control
+- (IBAction)changeSelectSphereSlider:(NSSlider *)sender;
+- (IBAction)changeSelectCylinderSlider:(NSSlider *)sender;
+- (IBAction)changeSelectSphereNBox:(NSTextField *)sender;
+- (IBAction)changeSelectCylinderNBox:(NSTextField *)sender;
+- (IBAction)pushRemoveSphereButton:(NSButton *)sender;
+- (IBAction)pushRemoveCylinderButton:(NSButton *)sender;
+
+- (IBAction)pushRemoveAllSpheres:(NSButton *)sender;
+- (IBAction)pushRemoveAllCylinderButton:(NSButton *)sender;
 
 
 @end

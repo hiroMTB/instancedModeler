@@ -18,6 +18,7 @@ instanceNum(0),
 vtxtexId(GL_NONE),
 cltexId(GL_NONE)
 {
+//    selectedInstance != instanceMap.end();
 }
 
 
@@ -162,6 +163,35 @@ void instancedComponent::draw(ofShader * shader){
     
 }
 
+void instancedComponent::drawSelector(){
+    if( instanceNum !=0 && selectedInstance != instanceMap.end()){
+        instance & ins = selectedInstance->second;
+        INSTANCE_TYPE type = ins.type;
+        ofMatrix4x4 mat = ins.matrix;
+        ofVec3f pos = mat.getTranslation();
+        ofQuaternion quat = mat.getRotate();
+        ofVec3f axis;
+        float angle;
+        quat.getRotate(angle, axis);
+        axis.normalize();
+        
+        ofVec3f scale = ins.scale;
+        ofMesh & mesh = vmi;
+
+        ofPushMatrix();
+        if( type == INSTANCE_SPHERE) {
+            ofSetColor(255, 0, 0, 255);
+        }else{
+            ofSetColor(0, 255, 0, 255);
+        }
+        ofTranslate( pos );
+        ofRotate(angle, axis.x, axis.y, axis.z);
+        ofScale(scale.x, scale.y, scale.z);
+        mesh.draw();
+        ofPopMatrix();
+    }
+}
+
 void instancedComponent::drawWireframe(ofShader * shader){
     glPushMatrix();
 
@@ -198,6 +228,8 @@ void instancedComponent::addInstance(instance ins, int groupId){
     instanceMap.insert(pair<int, instance>(groupId, ins));
     bVtxtexNeedUpdate = true;
     bCltexNeedUpdate = true;
+    
+    selectedInstance = instanceMap.end()--;
 //    instanceNum++;
 }
 
@@ -218,7 +250,7 @@ void instancedComponent::addInstanceMatrix(ofMatrix4x4 m, ofVec3f s, int groupId
     addInstance(ins);
 }
 
-void instancedComponent::loadInstancePositionFromModel(string path, int res, float posScale=1){
+void instancedComponent::loadInstancePositionFromModel(string path, int res, float posScale, bool noiseFilter){
 
     vector<string> strs = ofSplitString(path, ".");
     string ext = strs.back();
@@ -226,7 +258,6 @@ void instancedComponent::loadInstancePositionFromModel(string path, int res, flo
         myLogRelease("ERROR Do not use .dae file. Use .ply instead");
         return;
     }
-    
     
     ofxAssimpModelLoader model;
     
@@ -250,27 +281,30 @@ void instancedComponent::loadInstancePositionFromModel(string path, int res, flo
             myLogRelease("numNormals = "  + ofToString(numNormals) );
             myLogRelease("numIndices = " + ofToString(numIndices));
 
+            int skipCount = 0;
             // vertices
             for(int j=0; j<numVertices; j++){
                 if( j%res == 0){
                     
-                    int index = j;
-//                    bool bNoise = false;
-//                    if( bNoise ){
-//                        
-//                        float n = fBm1uf(j*0.01, 4);
-//                        index = n * numVertices;
-//                        index = ofClamp(index, 0, numVertices-1);
-//                    }
-                    
-                    ofVec3f position = (mesh.getVertex(index)* posScale);     // SCALE POSITION!!
+                    ofVec3f position = (mesh.getVertex(j)* posScale);     // SCALE POSITION!!
+                    if( noiseFilter ){
+                        float freq = 0.08;
+                        ofVec3f sp = (position + 330) * freq;
+                        float n = fbm3f(sp.x, sp.y, sp.z, 4);
+                        if( n > 0.0 ) {
+                            skipCount++;
+                            continue;
+                        }
+                    }
+
                     m.makeIdentityMatrix();
                     m.translate(position);
                     ofVec3f s(1,1,1);
-                    
                     addInstanceMatrix(m, s, insType);
                 }
             }
+            
+            cout << "loadFinish : noise skip " << skipCount << endl;
         }
     }
     
@@ -280,6 +314,8 @@ void instancedComponent::loadInstancePositionFromModel(string path, int res, flo
     updateInstanceNum();
     
     model.clear();
+    
+    selectedInstance = instanceMap.begin();
 }
 
 void instancedComponent::loadInstancePositionFromMatrices(ofMatrix4x4 *ms, ofVec3f *ss, int size){
@@ -292,6 +328,8 @@ void instancedComponent::loadInstancePositionFromMatrices(ofMatrix4x4 *ms, ofVec
     
     bVtxtexNeedUpdate = true;
     updateInstanceNum();
+    
+    selectedInstance = instanceMap.begin();
 }
 
 void instancedComponent::clearInstanceMatrices(){
@@ -488,7 +526,7 @@ vector<string> instancedComponent::printGroupData(bool console){
         int key = itr->first;
         int n = STL_UTIL::getElementSize(instanceMap, key);
         if( key == -1){
-            sprintf(m, "Single Spheres n=%04d", n);
+            sprintf(m, "Singles n=%04d", n);
         }else{
             sprintf(m, "GRP %03d n=%04d", key, n);
         }
@@ -599,7 +637,7 @@ void instancedComponent::saveInstanceDataToCsv(string dirpath){
         sprintf(d, "renature,instance data,format=%s", version.c_str());       // line 1
         myfile << d << "\n";
         
-        sprintf(d, "mesh=%s, posScale=%f, instanceNum=%d", meshName.c_str(), meshScale, instanceNum);    // line 2
+        sprintf(d, "mesh=%s, positionScale=%f, instanceNum=%d", meshName.c_str(), meshScale, instanceNum);    // line 2
         myfile << d << "\n";
 
         sprintf(d, "name, position.x,position.y,position.z,angle, axis.x,axis.y,axis.z,scale.x,scale.y,scale.z, instanceType, groupId");    // line 3
@@ -699,6 +737,9 @@ void instancedComponent::loadInstanceDataFromCsv(string filePath){
     bVtxtexNeedUpdate = true;
     bCltexNeedUpdate = true;
     updateInstanceNum();
+    
+    selectedInstance = instanceMap.begin();
+    selectInstance(0);
 }
 
 
@@ -726,3 +767,36 @@ void instancedComponent::removeDuplication(){
 }
 
 
+void instancedComponent::selectInstance(int index){
+
+    int typed_i = 0;
+    if( 0<=index && index<instanceNum ){
+        INSTANCE_MAP_ITR itr = instanceMap.begin();
+        for(int i=0; itr!=instanceMap.end(); itr++, i++){
+            
+            if( itr->second.type == insType ){
+            
+                if(typed_i==index){
+                    selectedInstance = itr;
+                }
+                typed_i++;
+            }
+        }
+    }
+}
+
+void instancedComponent::removeSelectedInstance(){
+    removeInstance(selectedInstance);
+    selectedInstance = instanceMap.end()--;
+}
+
+void instancedComponent::removeInstance( INSTANCE_MAP_ITR itr ){
+    if( instanceNum!=0 && itr != instanceMap.end() ){
+
+        instanceMap.erase(itr);
+        bCltexNeedUpdate = true;
+        bVtxtexNeedUpdate = true;
+
+        updateInstanceNum();
+    }
+}
