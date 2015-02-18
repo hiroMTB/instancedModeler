@@ -308,6 +308,44 @@ NSString *const loadModelResolution = @"loadModelResolution";
     [[NSUserDefaults standardUserDefaults] setFloat:sender.floatValue forKey:connectGroupMaxDistance];
 }
 
+- (IBAction)changeManualConnectSphereASlider:(NSSlider *)sender {
+    int n = sender.intValue;
+    [manualConnectSphereANBox setIntegerValue:n];
+
+    // change selector as well
+    [selectSphereNBox setIntValue:n];
+    rnApp::get()->spheres.selectInstance(n);
+    [self updateUIMaxInstance];
+}
+
+- (IBAction)changeManualConnectSphereBSlider:(NSSlider *)sender {
+    int n = sender.intValue;
+    [manualConnectSphereBNBox setIntegerValue:n];
+
+    
+    // change selector as well
+    [selectSphereNBox setIntValue:n];
+    rnApp::get()->spheres.selectInstance(n);
+    [self updateUIMaxInstance];
+}
+
+- (IBAction)changeManualConnectSphereANBox:(NSTextField *)sender {
+    int n = sender.intValue;
+    [manualConnectSphereASlider setIntValue:n];
+}
+
+- (IBAction)changeManualConnectSphereBNBox:(NSTextField *)sender {
+    int n = sender.intValue;
+    [manualConnectSphereBSlider setIntValue:n];
+}
+
+- (IBAction)pushManualConnectButton:(NSButton *)sender {
+    int idA = manualConnectSphereANBox.intValue;
+    int idB = manualConnectSphereBNBox.intValue;
+    rnApp::get()->connectInstance(idA, idB);
+    [self updateUIMaxInstance];
+}
+
 - (IBAction)changeRemoveGroupsMinNumNBox:(NSTextField *)sender{
     rnApp::REMOVE_GROUPS_MIN_NUM = sender.intValue;
     [removeGroupsMinNumSlider setIntValue:sender.intValue];
@@ -376,6 +414,8 @@ NSString *const loadModelResolution = @"loadModelResolution";
             }
         }
     }];
+    
+   [self updateUIMaxInstance];
 }
 
 - (IBAction)puchLoadModelDataButton:(NSButton *)sender {
@@ -399,12 +439,6 @@ NSString *const loadModelResolution = @"loadModelResolution";
             }
         }
     }];
-}
-
-- (IBAction)pushLoadSphereCsvButton:(NSButton *)sender {
-}
-
-- (IBAction)pushLoadCylinderCsvButton:(NSButton *)sender {
 }
 
 - (IBAction)changeColorSphere:(NSColorWell *)sender {
@@ -519,32 +553,28 @@ NSString *const loadModelResolution = @"loadModelResolution";
     int n = sender.intValue;
     [selectSphereNBox setIntValue:n];
     rnApp::get()->spheres.selectInstance(n);
-    int max = rnApp::get()->spheres.getInstanceNum() - 1;
-    [selectSpehreSlider setMaxValue:max];
+    [self updateUIMaxInstance];
 }
 
 - (IBAction)changeSelectCylinderSlider:(NSSlider *)sender {
     int n = sender.intValue;
     [selectCylinderNBox setIntValue:n];
     rnApp::get()->cylinders.selectInstance(n);
-    int max = rnApp::get()->cylinders.getInstanceNum() - 1;
-    [selectCylinderSlider setMaxValue:max];
+    [self updateUIMaxInstance];
 }
 
 - (IBAction)changeSelectSphereNBox:(NSTextField *)sender {
     int n = sender.intValue;
     [selectSpehreSlider setIntValue:n];
     rnApp::get()->spheres.selectInstance(n);
-    int max = rnApp::get()->spheres.getInstanceNum() - 1;
-    [selectSpehreSlider setMaxValue:max];
+    [self updateUIMaxInstance];
 }
 
 - (IBAction)changeSelectCylinderNBox:(NSTextField *)sender {
     int n = sender.intValue;
     [selectCylinderSlider setIntValue:n];
     rnApp::get()->cylinders.selectInstance(n);
-    int max = rnApp::get()->cylinders.getInstanceNum() - 1;
-    [selectCylinderSlider setMaxValue:max];
+    [self updateUIMaxInstance];
 }
 
 - (IBAction)pushRemoveSphereButton:(NSButton *)sender {
@@ -569,6 +599,17 @@ NSString *const loadModelResolution = @"loadModelResolution";
     [prefs setFloat:sphereRadiusSlider.floatValue forKey:sphereRadius];
     [prefs synchronize];
     return true;
+}
+
+- (void) updateUIMaxInstance{
+    int maxS = rnApp::get()->spheres.getInstanceNum() - 1;
+    int maxC = rnApp::get()->cylinders.getInstanceNum() - 1;
+
+    [selectSpehreSlider setMaxValue:maxS];
+    [selectCylinderSlider setMaxValue:maxC];
+    [manualConnectSphereASlider setMaxValue:maxS];
+    [manualConnectSphereBSlider setMaxValue:maxS];
+    
 }
 
 @end

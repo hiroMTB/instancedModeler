@@ -771,17 +771,7 @@ void instancedComponent::selectInstance(int index){
 
     int typed_i = 0;
     if( 0<=index && index<instanceNum ){
-        INSTANCE_MAP_ITR itr = instanceMap.begin();
-        for(int i=0; itr!=instanceMap.end(); itr++, i++){
-            
-            if( itr->second.type == insType ){
-            
-                if(typed_i==index){
-                    selectedInstance = itr;
-                }
-                typed_i++;
-            }
-        }
+        selectedInstance = getInstanceIterator(index, insType);
     }
 }
 
@@ -799,4 +789,23 @@ void instancedComponent::removeInstance( INSTANCE_MAP_ITR itr ){
 
         updateInstanceNum();
     }
+}
+
+INSTANCE_MAP_ITR instancedComponent::getInstanceIterator(int index, INSTANCE_TYPE type){
+
+    if( instanceMap.size() != 0 ){
+        INSTANCE_MAP_ITR itr = instanceMap.begin();
+        int i = 0;
+        for(; itr!=instanceMap.end(); itr++ ){
+            
+            if( itr->second.type == type ){
+                
+                if( i == index){
+                    return itr;
+                }
+                i++;
+            }
+        }
+    }
+    return instanceMap.end();
 }

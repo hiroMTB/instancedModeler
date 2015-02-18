@@ -45,8 +45,12 @@
                 <outlet property="loadCsvButton" destination="7011" id="7368"/>
                 <outlet property="loadModelResolutionNBox" destination="uwP-2Q-y4A" id="M5z-bs-JFY"/>
                 <outlet property="loadModelResolutionSlider" destination="CCc-7U-BcC" id="G4r-i3-otL"/>
-                <outlet property="loadSphereCsvButton" destination="7011" id="7062"/>
                 <outlet property="mainGLView" destination="801" id="5290"/>
+                <outlet property="manualConnectButton" destination="KwO-AA-8sY" id="GN9-Y2-Lqq"/>
+                <outlet property="manualConnectSphereANBox" destination="1DX-IM-DbS" id="F6h-d2-aaX"/>
+                <outlet property="manualConnectSphereASlider" destination="oaM-rD-trk" id="o4m-kc-Txq"/>
+                <outlet property="manualConnectSphereBNBox" destination="ZxT-bk-jce" id="o0A-sm-OZg"/>
+                <outlet property="manualConnectSphereBSlider" destination="DN2-aL-ThX" id="zZ8-FE-jZq"/>
                 <outlet property="removeAllCylinderButton" destination="1815" id="UvP-kD-pie"/>
                 <outlet property="removeAllSpheresButton" destination="7074" id="bKq-AS-5fa"/>
                 <outlet property="removeDuplicateButton" destination="1809" id="6301"/>
@@ -383,7 +387,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                             </tabViewItem>
                                             <tabViewItem label="Shape" identifier="" id="zns-AE-biB">
                                                 <view key="view" id="ERA-GI-Mbc">
-                                                    <rect key="frame" x="10" y="33" width="478" height="795"/>
+                                                    <rect key="frame" x="10" y="33" width="499" height="795"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1778">
@@ -1067,14 +1071,23 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                 <font key="font" metaFont="cellTitle"/>
                                                             </buttonCell>
+                                                            <connections>
+                                                                <action selector="pushManualConnectButton:" target="-2" id="va2-iF-TRd"/>
+                                                            </connections>
                                                         </button>
                                                         <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oaM-rD-trk">
                                                             <rect key="frame" x="121" y="442" width="266" height="21"/>
                                                             <sliderCell key="cell" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="slM-eB-ecP"/>
+                                                            <connections>
+                                                                <action selector="changeManualConnectSphereASlider:" target="-2" id="h3Y-U9-9X3"/>
+                                                            </connections>
                                                         </slider>
                                                         <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DN2-aL-ThX">
                                                             <rect key="frame" x="121" y="417" width="266" height="21"/>
                                                             <sliderCell key="cell" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="vm9-Jg-bY8"/>
+                                                            <connections>
+                                                                <action selector="changeManualConnectSphereBSlider:" target="-2" id="5PR-2F-zmx"/>
+                                                            </connections>
                                                         </slider>
                                                         <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ONt-oo-UNk">
                                                             <rect key="frame" x="28" y="445" width="77" height="14"/>
@@ -1100,6 +1113,9 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
+                                                            <connections>
+                                                                <action selector="changeManualConnectSphereANBox:" target="-2" id="71w-nP-kKj"/>
+                                                            </connections>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZxT-bk-jce">
                                                             <rect key="frame" x="400" y="416" width="50" height="22"/>
@@ -1109,6 +1125,9 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
+                                                            <connections>
+                                                                <action selector="changeManualConnectSphereBNBox:" target="-2" id="iqS-rD-g8M"/>
+                                                            </connections>
                                                         </textField>
                                                     </subviews>
                                                 </view>
@@ -1517,7 +1536,7 @@ file, Spheres.csv and Cylinders.csv.</string>
                     <constraint firstAttribute="bottom" secondItem="lBI-Qc-m0V" secondAttribute="bottom" id="sJs-LS-mFM"/>
                 </constraints>
             </view>
-            <point key="canvasLocation" x="-2767" y="270"/>
+            <point key="canvasLocation" x="-2941" y="279"/>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="7169"/>
     </objects>

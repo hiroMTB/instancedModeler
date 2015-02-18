@@ -127,7 +127,8 @@ public:
     static PROCESS_NAME CURRENT_PROCESS;
 
 
-    
+    void connectInstance    ( int indexA, int indexB );
+
 private:
     void setupCameraLightMaterial();
     void setupCylinderShape(float radius, int resolution, float collisionMargin);

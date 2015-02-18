@@ -15,57 +15,57 @@
     
     IBOutlet rnMainGLView *mainGLView;
     
+    // LOAD pane
+    IBOutlet NSSlider *loadModelResolutionSlider;
+    IBOutlet NSTextField *loadModelResolutionNBox;
+    IBOutlet NSButton *loadCsvButton;
+    IBOutlet NSButton *LoadModelDataButton;
+    
+    // Shape pane
     IBOutlet NSSlider *sphereRadiusSlider;
     IBOutlet NSSlider *sphereResolutionSlider;
     IBOutlet NSSlider *sphereCollisionMarginSlider;
-    
-    IBOutlet NSSlider *cylinderRadiusSlider;
-    IBOutlet NSSlider *cylinderResolutionSlider;
-    IBOutlet NSSlider *cylinderCollisionMarginSlider;
-
-    IBOutlet NSSlider *connectRandomCylinderNumSlider;
-    IBOutlet NSSlider *connectRandomMinDistanceSlider;
-    IBOutlet NSSlider *connectRandomMaxDistanceSlider;
-    IBOutlet NSSlider *connectGroupCylinderNumSlider;
-    IBOutlet NSSlider *connectGroupMinDistanceSlider;
-    IBOutlet NSSlider *connectGroupMaxDistanceSlider;
-    IBOutlet NSSlider *removeGroupsMinNumSlider;
-
     IBOutlet NSTextField *sphereRadiusNBox;
     IBOutlet NSTextField *sphereResolutionNBox;
     IBOutlet NSTextField *sphereCollisionMarginNBox;
-
+    IBOutlet NSSlider *cylinderRadiusSlider;
+    IBOutlet NSSlider *cylinderResolutionSlider;
+    IBOutlet NSSlider *cylinderCollisionMarginSlider;
     IBOutlet NSTextField *cylinderRadiusNBox;
     IBOutlet NSTextField *cylinderResolutionNBox;
     IBOutlet NSTextField *cylinderCollisionMarginNBox;
+    IBOutlet NSButton *resetInstanceShapeButton;
     
+    // Sculpt pane
+    IBOutlet NSSlider *connectRandomCylinderNumSlider;
+    IBOutlet NSSlider *connectRandomMinDistanceSlider;
+    IBOutlet NSSlider *connectRandomMaxDistanceSlider;
     IBOutlet NSTextField *connectRandomCylinderNumNBox;
     IBOutlet NSTextField *connectRandomMinDistanceNBox;
     IBOutlet NSTextField *connectRandomMaxDistanceNBox;
+    IBOutlet NSButton *connectRandomButton;
+    IBOutlet NSSlider *connectGroupCylinderNumSlider;
+    IBOutlet NSSlider *connectGroupMinDistanceSlider;
+    IBOutlet NSSlider *connectGroupMaxDistanceSlider;
     IBOutlet NSTextField *connectGroupCylinderNumNBox;
     IBOutlet NSTextField *connectGroupMinDistanceNBox;
     IBOutlet NSTextField *connectGroupMaxDistanceNBox;
-    IBOutlet NSTextField *removeGroupsMinNumNBox;
     
-    IBOutlet NSButton *resetInstanceShapeButton;
+    IBOutlet NSSlider *manualConnectSphereASlider;
+    IBOutlet NSSlider *manualConnectSphereBSlider;
+    IBOutlet NSTextField *manualConnectSphereANBox;
+    IBOutlet NSTextField *manualConnectSphereBNBox;
+    IBOutlet NSButton *manualConnectButton;
     
-    IBOutlet NSButton *connectRandomButton;
     IBOutlet NSButton *connectGroupButton;
     IBOutlet NSButton *collisionTestButton;
+    IBOutlet NSSlider *removeGroupsMinNumSlider;
+    IBOutlet NSTextField *removeGroupsMinNumNBox;
     IBOutlet NSButton *removeGroupButton;
-    IBOutlet NSButton *removeDuplicateButton;
 
-    IBOutlet NSButton *exportToCsvButton;
-    IBOutlet NSButton *loadCsvButton;
-    
-    IBOutlet NSButton *LoadModelDataButton;
-    IBOutlet NSButton *loadSphereCsvButton;
-    IBOutlet NSButton *loadCylinderCsvButton;
-    
-    //
+    // Draw pane
     IBOutlet NSColorWell *colorSphere;
     IBOutlet NSColorWell *colorCylinder;
-    
     IBOutlet NSMatrix *bgTypeMatrix;
     IBOutlet NSColorWell *bgPickerNormal;
     IBOutlet NSColorWell *bgPickerLinear0;
@@ -78,17 +78,16 @@
     IBOutlet NSButton *showCollisionShapeCheck;
     IBOutlet NSButton *showCollisionDistanceCheck;
     IBOutlet NSButton *showReferenceBoxCheck;
-    IBOutlet NSSlider *loadModelResolutionSlider;
-    IBOutlet NSTextField *loadModelResolutionNBox;
     
+    // Save pane
+    IBOutlet NSButton *exportToCsvButton;
+    IBOutlet NSButton *removeDuplicateButton;
     
-    // under selector
+    // Bottom Selector pane
     IBOutlet NSSlider *selectSpehreSlider;
     IBOutlet NSSlider *selectCylinderSlider;
-    
     IBOutlet NSTextField *selectSphereNBox;
     IBOutlet NSTextField *selectCylinderNBox;
-    
     IBOutlet NSButton *connetc1SpherePairButton;
     IBOutlet NSButton *removeSingleSphereButton;
     IBOutlet NSButton *removeSingleCylinderButton;
@@ -127,6 +126,11 @@
 - (IBAction)changeConnectGroupCylinderNumNBox:(NSTextField *)sender;
 - (IBAction)changeConnectGroupMinDistanceNBox:(NSTextField *)sender;
 - (IBAction)changeConnectGroupMaxDistanceNBox:(NSTextField *)sender;
+- (IBAction)changeManualConnectSphereASlider:(NSSlider *)sender;
+- (IBAction)changeManualConnectSphereBSlider:(NSSlider *)sender;
+- (IBAction)changeManualConnectSphereANBox:(NSTextField *)sender;
+- (IBAction)changeManualConnectSphereBNBox:(NSTextField *)sender;
+- (IBAction)pushManualConnectButton:(NSButton *)sender;
 
 - (IBAction)changeRemoveGroupsMinNumNBox:(NSTextField *)sender;
 

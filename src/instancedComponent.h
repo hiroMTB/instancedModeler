@@ -144,6 +144,8 @@ public:
     inline void setVtxtexNeedUpdate(bool b){ bVtxtexNeedUpdate = b; }
     inline ofxVboMeshInstanced & getVboMeshInstanced(){ return vmi; }
   
+    static INSTANCE_MAP_ITR getInstanceIterator( int index, INSTANCE_TYPE type );
+    
     // selection
     void selectInstance( int index );
     

@@ -37,6 +37,17 @@
 //    }
 //}
 
+void rnApp::connectInstance(int indexA, int indexB){
+    
+    INSTANCE_MAP_ITR itrA = instancedComponent::getInstanceIterator(indexA, INSTANCE_SPHERE);
+    INSTANCE_MAP_ITR itrB = instancedComponent::getInstanceIterator(indexB, INSTANCE_SPHERE);
+    
+    instance newCylinder;
+    connectInstanace(itrA, itrB, 1, 999999999, newCylinder);
+    newCylinder.type = INSTANCE_CYLINDER;
+    cylinders.addInstance(newCylinder);
+    cylinders.updateInstanceNum();
+}
 
 bool rnApp::connectInstanace(INSTANCE_MAP_ITR& itrA, INSTANCE_MAP_ITR& itrB, float minDist, float maxDist, instance& newIns){
     
