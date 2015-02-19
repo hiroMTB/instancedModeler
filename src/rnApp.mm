@@ -6,14 +6,11 @@
 
 collisionTester * rnApp::tester = NULL;
 rnApp * rnApp::singleton = NULL;
-
 ofColor rnApp::colorSphere    = ofColor(100);
 ofColor rnApp::colorCylinder  = ofColor(100, 100, 50);
 string  rnApp::posModelPath_P = "none";
-
 ofMesh rnApp::sphereMesh;
 ofMesh rnApp::cylinderMesh;
-
 int rnApp::bgType = 0;
 ofColor rnApp::bgNormal    = ofColor(100);
 ofColor rnApp::bgLinear0   = ofColor(255);
@@ -22,42 +19,32 @@ ofColor rnApp::bgCircular0 = ofColor(255);
 ofColor rnApp::bgCircular1 = ofColor(0);
 ofColor rnApp::bgBar0      = ofColor(255);
 ofColor rnApp::bgBar1      = ofColor(0);
-
 float rnApp::SPHERE_RADIUS            = 1.5;
 int   rnApp::SPHERE_RESOLUTION        = 8;
 float rnApp::SPHERE_COLLISION_MARGIN  = 0;
-
 float rnApp::CYLINDER_RADIUS          = 1;
 int   rnApp::CYLINDER_RESOLUTION      = 14;
 float rnApp::CYLINDER_COLLISION_MARGIN = 0;
-
 int   rnApp::CONNECT_RANDOM_CYLINDER_NUM  = 1;
 float rnApp::CONNECT_RANDOM_MIN_DIST      = 0;
 float rnApp::CONNECT_RANDOM_MAX_DIST      = 888;
-
 int   rnApp::CONNECT_GROUP_CYLINDER_NUM   = 1;
 float rnApp::CONNECT_GROUP_MIN_DIST       = 0;
 float rnApp::CONNECT_GROUP_MAX_DIST       = 888;
-
-
 int   rnApp::REMOVE_GROUPS_MIN_NUM    = 1;
-
 bool  rnApp::DRAW_WIREFRAME           = false;
 bool  rnApp::DRAW_COLLISION_SHAPE     = false;
 bool  rnApp::DRAW_COLLISION_DISTANCE  = false;
 bool  rnApp::DRAW_REFERENCE_BOX       = true;
 bool  rnApp::DRAW_SPHERE              = true;
 bool  rnApp::DRAW_CYLINDER            = true;
-
 int rnApp::LOAD_MODEL_RESOLUTION = 10;
 bool rnApp::LOAD_MODEL_WITH_NOISE_FILTER = true;
 
-// shader uniform name
-static bool RENDER_NORMALS;
+static bool RENDER_NORMALS; // shader uniform name
 static bool FLAT_SHADING;
 
 rnApp::PROCESS_NAME rnApp::CURRENT_PROCESS = rnApp::NO_PROCESS;
-
 
 void rnApp::setup(){
 
@@ -98,7 +85,6 @@ void rnApp::setup(){
     
     //testCase.loadRandomSphere(30, 100);
 }
-
 void rnApp::loadModelData(){
     //cylinders.reset();
     //spheres.reset();
@@ -110,7 +96,6 @@ void rnApp::loadModelData(){
         spheres.loadInstancePositionFromModel(posModelPath_P, LOAD_MODEL_RESOLUTION, posScale, LOAD_MODEL_WITH_NOISE_FILTER);
     }
 }
-
 void rnApp::setupSphereShape(float radius, int resolution, float collisionMargin){
     ofSetSphereResolution(resolution);
     sphereMesh = ofGetGLRenderer()->ofGetSphereMesh();
@@ -118,8 +103,6 @@ void rnApp::setupSphereShape(float radius, int resolution, float collisionMargin
     spheres.loadInstanceMesh(sphereMesh, ofVec3f(radius, radius, radius));
     collisionTester::resetSphereShape(radius, collisionMargin);
 }
-
-
 void rnApp::setupCylinderShape(float radius, int resolution, float collisionMargin){
     cylinderMesh = createCylinderZ(radius, 1, resolution, 1);
     cylinders.setInstanceType(INSTANCE_CYLINDER);
@@ -142,7 +125,6 @@ void rnApp::draw(){
     mainDraw();
     //testDraw();
 }
-
 void rnApp::testDraw(){
 
     ofBackground(200, 200, 200);
@@ -198,7 +180,6 @@ void rnApp::testDraw(){
     mLigDirectional.disable();
     camMain.end();
 }
-
 void rnApp::mainDraw(){
 	
     glLineWidth(1);
@@ -294,7 +275,6 @@ void rnApp::exit(){
     delete tester;
     tester = 0;
 }
-
 void rnApp::keyPressed(int key){
 
     switch (key) {
@@ -316,9 +296,7 @@ void rnApp::keyPressed(int key){
     }
     
 }
-
 void rnApp::keyReleased(int key){}
-
 void rnApp::mouseMoved(int x, int y ){
     camMain.mouseMoved(x, y);
 }
@@ -348,7 +326,6 @@ void rnApp::mouseReleased(int x, int y, int button){
         bMouseDragging = false;
     }
 }
-
 void rnApp::windowResized(int w, int h){
 }
 void rnApp::gotMessage(ofMessage msg){}
@@ -359,7 +336,6 @@ void rnApp::processGui(){
         bNowProcessing = true;
     }
 }
-
 void rnApp::doProcess(){
     if(bNowProcessing){
         if(CURRENT_PROCESS == CONNECT_RANDOM){
@@ -409,7 +385,6 @@ void rnApp::doProcess(){
         CURRENT_PROCESS = NO_PROCESS;
     }
 }
-
 void rnApp::waitDraw(){
     if(bNowProcessing){
         float x = ofGetWidth()  * 0.5;
@@ -432,7 +407,6 @@ void rnApp::waitDraw(){
         glPopMatrix();
     }
 }
-
 void rnApp::setupCameraLightMaterial(){
     camMain.setupPerspective(false);
     camMain.setDistance(400);
@@ -452,7 +426,6 @@ void rnApp::setupCameraLightMaterial(){
 	mMatMainMaterial.setSpecularColor(ofFloatColor(0,0,0));
 	mMatMainMaterial.setShininess(10.1f);
 }
-
 void rnApp::setupShaders(bool doLink){
     GLuint err = glGetError();	// we need this to clear out the error buffer.
     
@@ -469,13 +442,11 @@ void rnApp::setupShaders(bool doLink){
         ofLogNotice() << "Loaded instanced Shader: " << err;
     }
 }
-
 void rnApp::saveCsvData(string path){
     spheres.saveInstanceDataToCsv(path);
     cylinders.saveInstanceDataToCsv(path);
     playFinishSound();
 }
-
 void rnApp::loadCsvData(string path){
     spheres.loadInstanceDataFromCsv(path);
     cylinders.loadInstanceDataFromCsv(path);
