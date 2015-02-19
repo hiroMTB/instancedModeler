@@ -24,4 +24,8 @@
 }
 
 
+- (void) updateUI{
+    [mainWindowController updateUIMaxInstance];
+}
+
 @end

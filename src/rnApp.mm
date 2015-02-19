@@ -1,6 +1,8 @@
 #include "rnApp.h"
 #include "ofxMtb.h"
-#include<set>
+#include <set>
+#include "AppDelegate.h"
+#include "ofxModifierKeys.h"
 
 collisionTester * rnApp::tester = NULL;
 rnApp * rnApp::singleton = NULL;
@@ -8,6 +10,9 @@ rnApp * rnApp::singleton = NULL;
 ofColor rnApp::colorSphere    = ofColor(100);
 ofColor rnApp::colorCylinder  = ofColor(100, 100, 50);
 string  rnApp::posModelPath_P = "none";
+
+ofMesh rnApp::sphereMesh;
+ofMesh rnApp::cylinderMesh;
 
 int rnApp::bgType = 0;
 ofColor rnApp::bgNormal    = ofColor(100);
@@ -41,7 +46,8 @@ bool  rnApp::DRAW_WIREFRAME           = false;
 bool  rnApp::DRAW_COLLISION_SHAPE     = false;
 bool  rnApp::DRAW_COLLISION_DISTANCE  = false;
 bool  rnApp::DRAW_REFERENCE_BOX       = true;
-
+bool  rnApp::DRAW_SPHERE              = true;
+bool  rnApp::DRAW_CYLINDER            = true;
 
 int rnApp::LOAD_MODEL_RESOLUTION = 10;
 bool rnApp::LOAD_MODEL_WITH_NOISE_FILTER = true;
@@ -56,7 +62,9 @@ rnApp::PROCESS_NAME rnApp::CURRENT_PROCESS = rnApp::NO_PROCESS;
 void rnApp::setup(){
 
 #ifndef NDEBUG
+    cout << "app running on DEBUG MODE" << endl;
     ofSetLogLevel(OF_LOG_VERBOSE);
+    
 #else
     ofSetLogLevel(OF_LOG_WARNING);
 #endif
@@ -88,7 +96,7 @@ void rnApp::setup(){
     posScale = 10;
     boxSize = 330;
     
-    testCase.loadRandomSphere(10, 10);
+    //testCase.loadRandomSphere(30, 100);
 }
 
 void rnApp::loadModelData(){
@@ -105,17 +113,17 @@ void rnApp::loadModelData(){
 
 void rnApp::setupSphereShape(float radius, int resolution, float collisionMargin){
     ofSetSphereResolution(resolution);
-    ofMesh sphere = ofGetGLRenderer()->ofGetSphereMesh();
+    sphereMesh = ofGetGLRenderer()->ofGetSphereMesh();
     spheres.setInstanceType(INSTANCE_SPHERE);
-    spheres.loadInstanceMesh(sphere, ofVec3f(radius, radius, radius));
+    spheres.loadInstanceMesh(sphereMesh, ofVec3f(radius, radius, radius));
     collisionTester::resetSphereShape(radius, collisionMargin);
 }
 
 
 void rnApp::setupCylinderShape(float radius, int resolution, float collisionMargin){
-    ofMesh cylinder = createCylinderZ(radius, 1, resolution, 1);
+    cylinderMesh = createCylinderZ(radius, 1, resolution, 1);
     cylinders.setInstanceType(INSTANCE_CYLINDER);
-    cylinders.loadInstanceMesh(cylinder);
+    cylinders.loadInstanceMesh(cylinderMesh);
     collisionTester::resetCylinderShape(ofVec3f(radius, 123, 0.5), collisionMargin);  // do not use y value
 }
 
@@ -152,6 +160,8 @@ void rnApp::testDraw(){
     
     mLigDirectional.enable();
     mMatMainMaterial.begin();
+    
+    
     
     {
         glPushMatrix();
@@ -191,6 +201,8 @@ void rnApp::testDraw(){
 
 void rnApp::mainDraw(){
 	
+    glLineWidth(1);
+    
     // bg
     switch (bgType) {
         case 0: ofBackground(bgNormal); break;
@@ -206,6 +218,10 @@ void rnApp::mainDraw(){
             ofSetColor(255);
             ofNoFill();
             ofBox(0, 0, 0, boxSize);
+            
+            ofSetColor(255, 0, 0); ofLine(0, 0, 0, 10, 0, 0);
+            ofSetColor(  0, 255, 0); ofLine(0, 0, 0, 0, 10, 0);
+            ofSetColor(  0, 0, 255); ofLine(0, 0, 0, 0, 0, 10);
         }
         
         ofEnableLighting();
@@ -225,26 +241,31 @@ void rnApp::mainDraw(){
             mMatMainMaterial.begin();
         
             if (DRAW_WIREFRAME) {
-                ofSetColor(colorSphere); spheres.drawWireframe(mShdInstanced);
-                ofSetColor(colorCylinder); cylinders.drawWireframe(mShdInstanced);
+                if( DRAW_CYLINDER ) ofSetColor(colorCylinder); cylinders.drawWireframe(mShdInstanced);
+                if( DRAW_SPHERE   ) ofSetColor(colorSphere); spheres.drawWireframe(mShdInstanced);
             }else{
-                ofSetColor(colorSphere); spheres.draw(mShdInstanced);
-                ofSetColor(colorCylinder); cylinders.draw(mShdInstanced);
+                if( DRAW_CYLINDER ) ofSetColor(colorCylinder); cylinders.draw(mShdInstanced);
+                if( DRAW_SPHERE   ) ofSetColor(colorSphere); spheres.draw(mShdInstanced);
             }
 
             mMatMainMaterial.end();
             mLigDirectional.disable();
         }mShdInstanced->end();
-        
+
         
         glProvokingVertex(GL_LAST_VERTEX_CONVENTION);
+
+        
+        ofSetColor(255,255,255);
+        ofDisableLighting();
+        
+        instancedComponent::drawSelector();
+        
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
         glShadeModel(GL_SMOOTH);
 
-        ofSetColor(255,255,255);
-        ofDisableLighting();
-
+        
         if(DRAW_COLLISION_SHAPE){
             instancedComponent::debugDraw();
         }
@@ -253,55 +274,17 @@ void rnApp::mainDraw(){
             tester->drawAllContanctPts();
         }
 
-
-        spheres.drawSelector();
-        cylinders.drawSelector();
-        
     }camMain.end();
 	   
-    int y = 20;
-    int x = 15;
-    int h = 20;
-    int w = 280;
-    ofFill();
-    ofEnableAlphaBlending();
-    ofSetColor(0,1,2,100);
-    ofRect(0, 0, w, ofGetHeight());
-    ofDisableAlphaBlending();
     
-    ofSetColor(255,255,255,255);
-	ofDrawBitmapString("fps : "+ofToString(ofGetFrameRate()), x, y);
+    ofSetColor(25,25,25);
+    stringstream ss;
+    ss << "camera position  : " << camMain.getGlobalPosition() << "\n";
+    ss << "particle total   : " << spheres.getInstanceNum() << "\n";
+    ss << "line total       : " << cylinders.getInstanceNum() << "\n";
+    ss << "instance total   : " << instancedComponent::getInstanceMap().size() << "\n";
     
-    ofVec3f cp = camMain.getPosition();
-    ofDrawBitmapString("camera position: "+ofToString(cp.x)+", "+ofToString(cp.y)+", "+ofToString(cp.z), x, y+=h);
-
-    //ofVec3f tp = camMain.getTarget().getPosition();
-    //ofDrawBitmapString("target position: "+ofToString(tp.x)+", "+ofToString(tp.y)+", "+ofToString(tp.z), x, y+=h);
-    
-    ofDrawBitmapString("Instance Info ------", x, y+=(h*2));    
-    ofDrawBitmapString("particle total : "+ofToString(spheres.getInstanceNum()), x, y+=h);
-    ofDrawBitmapString("line total : "+ofToString(cylinders.getInstanceNum()), x, y+=h);
-    ofDrawBitmapString("instance total : "+ofToString(instancedComponent::getInstanceMap().size()), x, y+=h);
-    
-    
-    vector<string> strings = instancedComponent::printGroupData(false);
-
-    ofDrawBitmapString("Group Info ------", x, y+=(h*2));
-    ofDrawBitmapString("group total : "+ofToString(instancedComponent::getGroupTotalNum()), x, y+=h);
-
-//    group detail
-//    y+=h;
-//    int startY = y;
-//    for(int i=0; i<strings.size(); i++){
-//        
-//        ofDrawBitmapString(strings[i], x, y+=h);
-//        if(ofGetHeight()-2*h<y){
-//            y=startY; x += 140;
-//        }
-//        
-//        if( w<x ) break;
-//    }
-    
+    ofDrawBitmapString(ss.str(), 20, 20);
     waitDraw();
 }
 
@@ -312,7 +295,28 @@ void rnApp::exit(){
     tester = 0;
 }
 
-void rnApp::keyPressed(int key){}
+void rnApp::keyPressed(int key){
+
+    switch (key) {
+            
+        case 'd':
+        case OF_KEY_BACKSPACE:
+            //spheres.removeSelectedInstance();
+            cylinders.removeSelectedInstance();
+            break;
+        case 'c':
+            connectSelected();
+            break;
+
+        case OF_KEY_ESC:
+            spheres.clearSelectedInstance();
+            cylinders.clearSelectedInstance();
+            break;
+            
+    }
+    
+}
+
 void rnApp::keyReleased(int key){}
 
 void rnApp::mouseMoved(int x, int y ){
@@ -320,12 +324,28 @@ void rnApp::mouseMoved(int x, int y ){
 }
 void rnApp::mouseDragged(int x, int y, int button){
     camMain.mouseDragged(x, y, button);
+    bMouseDragging = true;
 }
 void rnApp::mousePressed(int x, int y, int button){
+    
+    mousePressedStartFrame = ofGetFrameNum();
     camMain.mousePressed(x, y, button);
+
 }
 void rnApp::mouseReleased(int x, int y, int button){
     camMain.mouseReleased(x, y, button);
+
+    bool isClick =( ofGetFrameNum() - mousePressedStartFrame ) < 30;
+    if( isClick && !bMouseDragging){
+        int mode = 0;
+        bool shift = ofGetModifierPressed(OF_KEY_SHIFT);
+        bool ctrl = ofGetModifierPressed(OF_KEY_ALT);
+        if( shift ) mode = 1;
+        if( ctrl ) mode = 2;
+        instancedComponent::mousePick( ofVec3f(x, y, 0), mode);
+    }else{    
+        bMouseDragging = false;
+    }
 }
 void rnApp::windowResized(int w, int h){
 }
@@ -381,34 +401,7 @@ void rnApp::doProcess(){
             bNowProcessing = false;
             CURRENT_PROCESS = NO_PROCESS;
         }
-//        else if(CURRENT_PROCESS == SAVE_CSV){
-//            
-//            // TOP dir
-//            string topDirName = "savedPositionData";
-//            ofDirectory topDir(topDirName);
-//            if(!topDir.exists()){
-//                topDir.createDirectory(topDirName);
-//            }
-//            // SUB timestamped dir
-//            string subDirName = topDirName + "/" + ofGetTimestampString("%m%d_%H%M_%S");
-//            ofDirectory subDir(subDirName);
-//            subDir.createDirectory(subDirName);
-//
-//            string timestamp = ofGetTimestampString();
-//            spheres.saveInstanceDataToCsv(subDirName);
-//            cylinders.saveInstanceDataToCsv(subDirName);
-//            playFinishSound();
-//        }else if(CURRENT_PROCESS == LOAD_CSV){
-//            string dirName = "savedPositionData";
-//            ofDirectory dir(dirName);
-//            if(!dir.exists()){
-//                myLogRelease("no directory exist named \"savedPositionData\"");
-//            }
-//            
-//            spheres.loadInstanceDataFromCsv(dirName);
-//            cylinders.loadInstanceDataFromCsv(dirName);
-//            playFinishSound();
-//        }
+
 
         bNowProcessing = false;
         CURRENT_PROCESS = NO_PROCESS;
@@ -437,7 +430,6 @@ void rnApp::waitDraw(){
         glPopMatrix();
     }
 }
-
 
 void rnApp::setupCameraLightMaterial(){
     camMain.setupPerspective(false);
@@ -487,5 +479,3 @@ void rnApp::loadCsvData(string path){
     cylinders.loadInstanceDataFromCsv(path);
     playFinishSound();
 }
-
-
