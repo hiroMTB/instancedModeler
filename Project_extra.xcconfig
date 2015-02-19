@@ -5,19 +5,20 @@ ADDON_HEADER_3 = "$(OF_PATH)/addons/ofxVectorMath/src"
 ADDON_HEADER_4 = "$(OF_PATH)/addons/ofxDirList/src"
 ADDON_HEADER_5 = "$(OF_PATH)/addons/ofxAssimpModelLoader/src" "$(OF_PATH)/addons/ofxAssimpModelLoader/libs/assimp/include" "$(OF_PATH)/addons/ofxAssimpModelLoader/libs/assimp/include/Compiler"
 ADDON_HEADER_6 = "$(OF_PATH)/addons/bullet281/src"
-ADDON_HEADER_7 = "$(OF_PATH)/addons/tbb41_20121003oss/include"
 ADDON_HEADER_8 = "$(OF_PATH)/addons/osxOsc/src" "$(OF_PATH)/addons/ofxOsc/libs/**"
 
 ADDON_HEADERS = $(ADDON_HEADER_1) $(ADDON_HEADER_2) $(ADDON_HEADER_3) $(ADDON_HEADER_4) $(ADDON_HEADER_5) $(ADDON_HEADER_6) $(ADDON_HEADER_7) $(ADDON_HEADER_8)
 
 ADDON_LIB_1 = "$(OF_PATH)/addons/ofxAssimpModelLoader/libs/assimp/lib/osx/assimp.a"
-ADDON_LIB_2 = "$(OF_PATH)/addons/tbb41_20121003oss/lib/libtbb.dylib"
-ADDON_LIB_3 = "$(OF_PATH)/addons/tbb41_20121003oss/lib/libtbb_preview.dylib"
-ADDON_LIB_4 = "$(OF_PATH)/addons/tbb41_20121003oss/lib/libtbbmalloc.dylib"
 
-ADDON_LIBS = $(ADDON_LIB_1) $(ADDON_LIB_2) $(ADDON_LIB_3) $(ADDON_LIB_4)
+ADDON_LIBS = $(ADDON_LIB_1)
+
+BULLET_LIBS_1 = "$(OF_PATH)/addons/bullet281/libs/libBulletCollision.a"
+BULLET_LIBS_2 = "$(OF_PATH)/addons/bullet281/libs/libBulletDynamics.a"
+BULLET_LIBS_3 = "$(OF_PATH)/addons/bullet281/libs/libBulletSoftBody.a"
+BULLET_LIBS_4 = "$(OF_PATH)/addons/bullet281/libs/libLinearMath.a"
+BULLET_LIBS_5 = "$(OF_PATH)/addons/bullet281/libs/libMiniCL.a"
 
 SRC = "src/**" "src"
-
 EXTRA_HEADERS = $(ADDON_HEADERS) $(SRC)
-EXTRA_LIBS = $(ADDON_LIBS)
+EXTRA_LIBS = $(ADDON_LIBS) $(BULLET_LIBS_1) $(BULLET_LIBS_2) $(BULLET_LIBS_3) $(BULLET_LIBS_4) $(BULLET_LIBS_5)

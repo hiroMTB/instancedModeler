@@ -8,34 +8,27 @@
 
 #include "rnApp.h"
 
-//bool rnApp::connectInstanace(instance &instA, instance &instB, float minDist, float maxDist, instance& newIns){
-//    
-//    // 3. check A - B distance
-//    ofVec3f vA = instA.matrix.getTranslation();
-//    ofVec3f vB = instB.matrix.getTranslation();
-//    
-//    ofVec3f vAB = vB - vA;
-//    float dist = vAB.length();
-//    
-//    if(minDist<dist && dist<maxDist){
-//        
-//        // 4. put
-//        //        ofMatrix4x4 mat;
-//        //        ofVec3f scale;
-//        //        ofVec3f pos = vA + vAB*0.5;
-//        
-//        ofVec3f yAxis(0,0,1);
-//        float angle = yAxis.angle(vAB);
-//        ofVec3f prep = yAxis.cross(vAB);
-//        
-//        newIns.scale.set(1, 1, dist);
-//        newIns.matrix.rotate(angle, prep.x, prep.y, prep.z);
-//        newIns.matrix.translate(vA + vAB*0.5);
-//        return true;
-//    }else{
-//        return false;
-//    }
-//}
+void rnApp::connectSelected(){
+    
+    int n = instancedComponent::selectedInsVec.size();
+    INSTANCE_MAP_ITR & itrA = instancedComponent::selectedInsVec[0];
+    
+    if(itrA->second.type == INSTANCE_SPHERE && n>=2){
+        
+        for(int i=1; i<n; i++){
+            INSTANCE_MAP_ITR & itrB = spheres.selectedInsVec[i];
+
+            if (itrB->second.type == INSTANCE_SPHERE ) {
+                instance newCylinder;
+                connectInstanace(itrA, itrB, 1, 999999999, newCylinder);
+                newCylinder.type = INSTANCE_CYLINDER;
+                INSTANCE_MAP_ITR itr = cylinders.addInstance(newCylinder);
+                cylinders.selectedInsVec.push_back(itr);
+                cylinders.updateInstanceNum();
+            }
+        }
+    }
+}
 
 void rnApp::connectInstance(int indexA, int indexB){
     

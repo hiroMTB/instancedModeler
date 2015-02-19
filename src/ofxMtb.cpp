@@ -174,3 +174,130 @@ bool operator==(const idPair& lhs, const idPair& rhs ){
     bool abba =(lhs.a==rhs.b) && (lhs.b==rhs.a);
     return aabb || abba;
 }
+
+
+
+
+float fBm1f( float x, int octave){
+    
+    float noise = 0;
+    float amp = 0.5;
+    for (int i=0; i<octave; i++){
+        noise += ofSignedNoise(x) * amp;
+        amp *= 0.5;
+        x *= 2.0;
+    }
+    return noise;
+}
+
+float fBm1uf( float x, int octave){
+    float noise = 0;
+    float amp = 0.5;
+    for (int i=0; i<octave; i++){
+        noise += ofNoise(x) * amp;
+        amp *= 0.5;
+        x *= 2.0;
+    }
+    return noise;
+}
+
+float fbm3f( float x, float y, float z, int octave){
+    
+    float noise = 0;
+    float amp = 0.5;
+    for (int i=0; i<octave; i++){
+        noise += ofSignedNoise(x,y,z) * amp;
+        amp *= 0.5;
+        x *= 2.0;
+        y *= 2.0;
+        z *= 2.0;
+    }
+    return noise;
+}
+
+float fbm3uf( float x, float y, float z, int octave){
+    
+    float noise = 0;
+    float amp = 0.5;
+    for (int i=0; i<octave; i++){
+        noise += ofNoise(x,y,z) * amp;
+        amp *= 0.5;
+        x *= 2.0;
+        y *= 2.0;
+        z *= 2.0;
+    }
+    return noise;
+}
+
+
+float distSeg2Seg( ofVec3f p1, ofVec3f p2, ofVec3f p3, ofVec3f p4){
+    ofVec3f   u = p2 - p1;
+    ofVec3f   v = p4 - p3;
+    ofVec3f   w = p1 - p3;
+    float    a = u.dot(u);         // always >= 0
+    float    b = u.dot(v);
+    float    c = v.dot(v);         // always >= 0
+    float    d = u.dot(w);
+    float    e = v.dot(w);
+    float    D = a*c - b*b;        // always >= 0
+    float    sc, sN, sD = D;       // sc = sN / sD, default sD = D >= 0
+    float    tc, tN, tD = D;       // tc = tN / tD, default tD = D >= 0
+    
+    
+    float SMALL_NUM = std::numeric_limits<float>::min();
+    
+    // compute the line parameters of the two closest points
+    if (D < SMALL_NUM) { // the lines are almost parallel
+        sN = 0.0;         // force using point P0 on segment S1
+        sD = 1.0;         // to prevent possible division by 0.0 later
+        tN = e;
+        tD = c;
+    }
+    else {                 // get the closest points on the infinite lines
+        sN = (b*e - c*d);
+        tN = (a*e - b*d);
+        if (sN < 0.0) {        // sc < 0 => the s=0 edge is visible
+            sN = 0.0;
+            tN = e;
+            tD = c;
+        }
+        else if (sN > sD) {  // sc > 1  => the s=1 edge is visible
+            sN = sD;
+            tN = e + b;
+            tD = c;
+        }
+    }
+    
+    if (tN < 0.0) {            // tc < 0 => the t=0 edge is visible
+        tN = 0.0;
+        // recompute sc for this edge
+        if (-d < 0.0)
+            sN = 0.0;
+            else if (-d > a)
+                sN = sD;
+                else {
+                    sN = -d;
+                    sD = a;
+                }
+    }
+    else if (tN > tD) {      // tc > 1  => the t=1 edge is visible
+        tN = tD;
+        // recompute sc for this edge
+        if ((-d + b) < 0.0)
+            sN = 0;
+            else if ((-d + b) > a)
+                sN = sD;
+                else {
+                    sN = (-d +  b);
+                    sD = a;
+                }
+    }
+    // finally do the division to get sc and tc
+    sc = (abs(sN) < SMALL_NUM ? 0.0 : sN / sD);
+    tc = (abs(tN) < SMALL_NUM ? 0.0 : tN / tD);
+    
+    // get the difference of the two closest points
+    ofVec3f   dP = w + (sc * u) - (tc * v);  // =  S1(sc) - S2(tc)
+    
+    return dP.length();   // return the closest distance
+}

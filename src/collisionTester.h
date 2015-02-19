@@ -40,7 +40,7 @@ public:
     void clearContanctPts();
     void drawAllContanctPts();
     
-private:
+//private:
     void initCollisionWorld();
     
     void destroy();
