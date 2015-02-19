@@ -802,7 +802,7 @@ INSTANCE_MAP_ITR instancedComponent::getInstanceIterator(int index, INSTANCE_TYP
     return instanceMap.end();
 }
 
-void instancedComponent::mousePick(ofVec3f winPos, int mode){
+void instancedComponent::mousePick(ofVec3f winPos, INSTANCE_TYPE type, int mode){
     bool find = false;
     ofCamera & cam = rnApp::get()->camMain;
     ofVec3f s2w = cam.screenToWorld(winPos);
@@ -818,53 +818,64 @@ void instancedComponent::mousePick(ofVec3f winPos, int mode){
     btTransform rayToTrans;
     rayToTrans.setOrigin(rayTo);
     
+    float minDist = 9999;
+    INSTANCE_MAP_ITR nominate;
+    
     if( instanceMap.size() != 0 ){
         INSTANCE_MAP_ITR itr = instanceMap.begin();
         int i = 0;
         for(; itr!=instanceMap.end(); itr++ ){
             
             instance & ins = itr->second;
-                ofMatrix4x4 mat = ins.matrix;
-                ofVec3f pos = mat.getTranslation();
-                ofVec3f scale = ins.scale;
-                ofQuaternion quat = mat.getRotate();
-                
-                btTransform colObjWorldTransform;
-                colObjWorldTransform.setIdentity();
-                colObjWorldTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
-                colObjWorldTransform.setRotation(btQuaternion(quat.x(), quat.y(), quat.z(), quat.w()));
-                btCollisionObject * colObj;
-                if( ins.type == INSTANCE_SPHERE ){
-                    colObj = &collisionTester::sphereA;
-                }else if (ins.type == INSTANCE_CYLINDER ){
-                    colObj = &collisionTester::cylinderA;
-                }
-                
-                collisionTester::setTransformFromOF(mat, scale, *colObj);
-                btCollisionShape * collisionShape = colObj->getCollisionShape();
-                
-                btCollisionWorld::ClosestRayResultCallback rayCallback(rayFrom,rayTo);
-                
+            if( ins.type != type ) continue;
+            
+            ofMatrix4x4 mat = ins.matrix;
+            ofVec3f pos = mat.getTranslation();
+            ofVec3f scale = ins.scale;
+            ofQuaternion quat = mat.getRotate();
+            
+            btTransform colObjWorldTransform;
+            colObjWorldTransform.setIdentity();
+            colObjWorldTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
+            colObjWorldTransform.setRotation(btQuaternion(quat.x(), quat.y(), quat.z(), quat.w()));
+            btCollisionObject * colObj;
+            if( ins.type == INSTANCE_SPHERE ){
+                colObj = &collisionTester::sphereA;
+//                scale *= 1.2;
+            }else if (ins.type == INSTANCE_CYLINDER ){
+                colObj = &collisionTester::cylinderA;
+            }
+            
+            collisionTester::setTransformFromOF(mat, scale, *colObj);
+            btCollisionShape * collisionShape = colObj->getCollisionShape();
+            btCollisionWorld::ClosestRayResultCallback rayCallback(rayFrom,rayTo);
             collisionTester::collisionWorld->rayTestSingle(rayFromTrans, rayToTrans, colObj, collisionShape, colObjWorldTransform, rayCallback);
             
             if (rayCallback.hasHit()){
-                switch (mode) {
-                    case 0:
-                        clearSelectedInstance();
-                        selectedInsVec.push_back(itr);
-                        break;
-                    case 1:
-                        selectedInsVec.push_back(itr);
-                        break;
-                    case 2:
-                        vector<INSTANCE_MAP_ITR>::iterator target = std::find(selectedInsVec.begin(), selectedInsVec.end(), itr);
-                        if(target!=selectedInsVec.end())
-                            selectedInsVec.erase(target);
-                        break;
+                btVector3 hp = rayCallback.m_hitPointWorld;
+                float distance =rayFrom.distance(hp);
+                if( distance < minDist){
+                    minDist = distance;
+                    nominate = itr;
+                    find = true;
                 }
-                find = true;
-                cout << "hit";
-                break;
+            }
+        }
+        
+        if( find ){
+            switch (mode) {
+                case 0:
+                    clearSelectedInstance();
+                    selectedInsVec.push_back(nominate);
+                    break;
+                case 1:
+                    selectedInsVec.push_back(nominate);
+                    break;
+                case 2:
+                    vector<INSTANCE_MAP_ITR>::iterator target = std::find(selectedInsVec.begin(), selectedInsVec.end(), nominate);
+                    if(target!=selectedInsVec.end())
+                        selectedInsVec.erase(target);
+                    break;
             }
         }
     }

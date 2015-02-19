@@ -109,7 +109,6 @@ public:
     static bool DRAW_SPHERE;
     static bool DRAW_CYLINDER;
     
-    
     // shader uniform name
     static bool RENDER_NORMALS;
     static bool FLAT_SHADING;

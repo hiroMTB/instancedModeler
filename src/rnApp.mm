@@ -341,8 +341,10 @@ void rnApp::mouseReleased(int x, int y, int button){
         bool shift = ofGetModifierPressed(OF_KEY_SHIFT);
         bool ctrl = ofGetModifierPressed(OF_KEY_ALT);
         if( shift ) mode = 1;
-        if( ctrl ) mode = 2;
-        instancedComponent::mousePick( ofVec3f(x, y, 0), mode);
+        //if( ctrl ) mode = 2;
+        INSTANCE_TYPE type = INSTANCE_SPHERE;
+        if(ctrl) type = INSTANCE_CYLINDER;
+        instancedComponent::mousePick( ofVec3f(x, y, 0), type, mode);
     }else{    
         bMouseDragging = false;
     }
