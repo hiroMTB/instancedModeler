@@ -180,6 +180,9 @@ void instancedComponent::drawSelector(){
             quat.getRotate(angle, axis);
             axis.normalize();
             ofVec3f scale = ins.scale;
+           
+            glLineWidth(1);
+            glPointSize(1);
             
             glPushMatrix();
             glTranslatef( pos.x, pos.y, pos.z );
@@ -188,12 +191,13 @@ void instancedComponent::drawSelector(){
             if( ins.type == INSTANCE_SPHERE) {
                 if(i==0) ofSetColor(255, 0, 0, 255);
                 else ofSetColor(255, 0, 200, 255);
-                glScalef(1.2, 1.2, 1.2);
-                rnApp::sphereMesh.draw();
+                //rnApp::sphereMesh.draw();
+                ofBox(0, 0, 0, rnApp::SPHERE_RADIUS*3);
             }else if( ins.type == INSTANCE_CYLINDER ){
                 ofSetColor(0, 2, 255, 255);
-                glScalef(1.15, 1.15, 1);
-                rnApp::cylinderMesh.draw();
+                glScalef(rnApp::CYLINDER_RADIUS*3,rnApp::CYLINDER_RADIUS*3,1);
+                ofBox(0, 0, 0, 1);
+                //rnApp::cylinderMesh.draw();
             }
             glPopMatrix();
         }

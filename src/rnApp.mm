@@ -83,7 +83,7 @@ void rnApp::setup(){
     posScale = 10;
     boxSize = 330;
     
-    //testCase.loadRandomSphere(30, 100);
+    testCase.loadRandomSphere(30, 100);
 }
 void rnApp::loadModelData(){
     //cylinders.reset();
@@ -240,7 +240,9 @@ void rnApp::mainDraw(){
         ofSetColor(255,255,255);
         ofDisableLighting();
         
+        ofPushStyle();
         instancedComponent::drawSelector();
+        ofPopStyle();
         
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
@@ -311,8 +313,9 @@ void rnApp::mousePressed(int x, int y, int button){
 
 }
 void rnApp::mouseReleased(int x, int y, int button){
+    cout << ofGetWindowWidth() << endl;
+    
     camMain.mouseReleased(x, y, button);
-
     bool isClick =( ofGetFrameNum() - mousePressedStartFrame ) < 30;
     if( isClick && !bMouseDragging){
         INSTANCE_TYPE type = INSTANCE_SPHERE;
@@ -321,12 +324,14 @@ void rnApp::mouseReleased(int x, int y, int button){
         bool alt = ofGetModifierPressed(OF_KEY_ALT);
         if( shift ) mode = 1;
         if( alt ) type = INSTANCE_CYLINDER;
-        instancedComponent::mousePick( ofVec3f(x, y, 0), type, mode);
+        instancedComponent::mousePick( ofVec3f(x, y, -10), type, mode);
     }else{
         bMouseDragging = false;
     }
 }
 void rnApp::windowResized(int w, int h){
+    cout << "window resized" << ofGetWindowWidth() << "," << ofGetWindowHeight() << endl;
+
 }
 void rnApp::gotMessage(ofMessage msg){}
 void rnApp::dragEvent(ofDragInfo dragInfo){}

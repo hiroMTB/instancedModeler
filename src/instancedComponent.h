@@ -169,6 +169,6 @@ public:
     void serialize(Archive & ar, const unsigned int version){
         ar  & instanceMap & insType;
     }
-    
+
 };
 
