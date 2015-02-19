@@ -154,7 +154,7 @@ public:
     // mode 0 : clear and select
     // mode 1 : add
     // mode 2 : remove
-    static void mousePick( ofVec3f winpos, int mode);
+    static void mousePick( ofVec3f winpos, INSTANCE_TYPE type, int mode);
     
     // single remove
     void removeSelectedInstance();

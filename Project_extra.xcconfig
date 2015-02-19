@@ -13,7 +13,12 @@ ADDON_LIB_1 = "$(OF_PATH)/addons/ofxAssimpModelLoader/libs/assimp/lib/osx/assimp
 
 ADDON_LIBS = $(ADDON_LIB_1)
 
-SRC = "src/**" "src"
+BULLET_LIBS_1 = "$(OF_PATH)/addons/bullet281/libs/libBulletCollision.a"
+BULLET_LIBS_2 = "$(OF_PATH)/addons/bullet281/libs/libBulletDynamics.a"
+BULLET_LIBS_3 = "$(OF_PATH)/addons/bullet281/libs/libBulletSoftBody.a"
+BULLET_LIBS_4 = "$(OF_PATH)/addons/bullet281/libs/libLinearMath.a"
+BULLET_LIBS_5 = "$(OF_PATH)/addons/bullet281/libs/libMiniCL.a"
 
+SRC = "src/**" "src"
 EXTRA_HEADERS = $(ADDON_HEADERS) $(SRC)
-EXTRA_LIBS = $(ADDON_LIBS)
+EXTRA_LIBS = $(ADDON_LIBS) $(BULLET_LIBS_1) $(BULLET_LIBS_2) $(BULLET_LIBS_3) $(BULLET_LIBS_4) $(BULLET_LIBS_5)

@@ -802,7 +802,7 @@ INSTANCE_MAP_ITR instancedComponent::getInstanceIterator(int index, INSTANCE_TYP
     return instanceMap.end();
 }
 
-void instancedComponent::mousePick(ofVec3f winPos, int mode){
+void instancedComponent::mousePick(ofVec3f winPos, INSTANCE_TYPE type, int mode){
     bool find = false;
     ofCamera & cam = rnApp::get()->camMain;
     ofVec3f s2w = cam.screenToWorld(winPos);
@@ -824,6 +824,7 @@ void instancedComponent::mousePick(ofVec3f winPos, int mode){
         for(; itr!=instanceMap.end(); itr++ ){
             
             instance & ins = itr->second;
+            if( ins.type == type){
                 ofMatrix4x4 mat = ins.matrix;
                 ofVec3f pos = mat.getTranslation();
                 ofVec3f scale = ins.scale;
@@ -845,26 +846,27 @@ void instancedComponent::mousePick(ofVec3f winPos, int mode){
                 
                 btCollisionWorld::ClosestRayResultCallback rayCallback(rayFrom,rayTo);
                 
-            collisionTester::collisionWorld->rayTestSingle(rayFromTrans, rayToTrans, colObj, collisionShape, colObjWorldTransform, rayCallback);
-            
-            if (rayCallback.hasHit()){
-                switch (mode) {
-                    case 0:
-                        clearSelectedInstance();
-                        selectedInsVec.push_back(itr);
-                        break;
-                    case 1:
-                        selectedInsVec.push_back(itr);
-                        break;
-                    case 2:
-                        vector<INSTANCE_MAP_ITR>::iterator target = std::find(selectedInsVec.begin(), selectedInsVec.end(), itr);
-                        if(target!=selectedInsVec.end())
-                            selectedInsVec.erase(target);
-                        break;
+                collisionTester::collisionWorld->rayTestSingle(rayFromTrans, rayToTrans, colObj, collisionShape, colObjWorldTransform, rayCallback);
+                
+                if (rayCallback.hasHit()){
+                    switch (mode) {
+                        case 0:
+                            clearSelectedInstance();
+                            selectedInsVec.push_back(itr);
+                            break;
+                        case 1:
+                            selectedInsVec.push_back(itr);
+                            break;
+                        case 2:
+                            vector<INSTANCE_MAP_ITR>::iterator target = std::find(selectedInsVec.begin(), selectedInsVec.end(), itr);
+                            if(target!=selectedInsVec.end())
+                                selectedInsVec.erase(target);
+                            break;
+                    }
+                    find = true;
+                    cout << "hit";
+                    break;
                 }
-                find = true;
-                cout << "hit";
-                break;
             }
         }
     }
@@ -873,3 +875,4 @@ void instancedComponent::mousePick(ofVec3f winPos, int mode){
 void instancedComponent::clearSelectedInstance(){
     selectedInsVec.clear();
 }
+

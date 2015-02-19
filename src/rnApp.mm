@@ -337,16 +337,18 @@ void rnApp::mouseReleased(int x, int y, int button){
 
     bool isClick =( ofGetFrameNum() - mousePressedStartFrame ) < 30;
     if( isClick && !bMouseDragging){
+        INSTANCE_TYPE type = INSTANCE_SPHERE;
         int mode = 0;
         bool shift = ofGetModifierPressed(OF_KEY_SHIFT);
-        bool ctrl = ofGetModifierPressed(OF_KEY_ALT);
+        bool alt = ofGetModifierPressed(OF_KEY_ALT);
         if( shift ) mode = 1;
-        if( ctrl ) mode = 2;
-        instancedComponent::mousePick( ofVec3f(x, y, 0), mode);
-    }else{    
+        if( alt ) type = INSTANCE_CYLINDER;
+        instancedComponent::mousePick( ofVec3f(x, y, 0), type, mode);
+    }else{
         bMouseDragging = false;
     }
 }
+
 void rnApp::windowResized(int w, int h){
 }
 void rnApp::gotMessage(ofMessage msg){}
