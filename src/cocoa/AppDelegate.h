@@ -14,6 +14,4 @@
 
 -(IBAction)showPreference:(id)sender;
 
-- (void) updateUI;
-
 @end

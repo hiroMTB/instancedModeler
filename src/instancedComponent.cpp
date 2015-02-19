@@ -6,13 +6,10 @@
 #include "ofxMtb.h"
 #include "ofxAssimpModelLoader.h"
 #include "collisionTester.h"
-#include "rnApp.h"
-#include <vector>
 
 int instancedComponent::groupIdMaster = -1;
 int instancedComponent::groupTotalNum = 1;
 INSTANCE_MAP instancedComponent::instanceMap;
-vector<INSTANCE_MAP_ITR> instancedComponent::selectedInsVec;
 
 instancedComponent::instancedComponent():
 bVtxtexNeedUpdate(true),
@@ -167,36 +164,31 @@ void instancedComponent::draw(ofShader * shader){
 }
 
 void instancedComponent::drawSelector(){
-    int n = selectedInsVec.size();
-    for( int i=0; i<n; i++){
-        INSTANCE_MAP_ITR &selectedInstance = selectedInsVec[i];
+    if( instanceNum !=0 && selectedInstance != instanceMap.end()){
+        instance & ins = selectedInstance->second;
+        INSTANCE_TYPE type = ins.type;
+        ofMatrix4x4 mat = ins.matrix;
+        ofVec3f pos = mat.getTranslation();
+        ofQuaternion quat = mat.getRotate();
+        ofVec3f axis;
+        float angle;
+        quat.getRotate(angle, axis);
+        axis.normalize();
         
-        if( instanceMap.size() !=0 && selectedInstance != instanceMap.end()){
-            instance & ins = selectedInstance->second;
-            ofVec3f pos = ins.matrix.getTranslation();
-            ofQuaternion quat = ins.matrix.getRotate();
-            ofVec3f axis;
-            float angle;
-            quat.getRotate(angle, axis);
-            axis.normalize();
-            ofVec3f scale = ins.scale;
-            
-            glPushMatrix();
-            glTranslatef( pos.x, pos.y, pos.z );
-            glRotatef(angle, axis.x, axis.y, axis.z);
-            glScalef(scale.x, scale.y, scale.z);
-            if( ins.type == INSTANCE_SPHERE) {
-                if(i==0) ofSetColor(255, 0, 0, 255);
-                else ofSetColor(255, 0, 200, 255);
-                glScalef(1.2, 1.2, 1.2);
-                rnApp::sphereMesh.draw();
-            }else if( ins.type == INSTANCE_CYLINDER ){
-                ofSetColor(0, 2, 255, 255);
-                glScalef(1.15, 1.15, 1);
-                rnApp::cylinderMesh.draw();
-            }
-            glPopMatrix();
+        ofVec3f scale = ins.scale;
+        ofMesh & mesh = vmi;
+
+        ofPushMatrix();
+        if( type == INSTANCE_SPHERE) {
+            ofSetColor(255, 0, 0, 255);
+        }else{
+            ofSetColor(0, 255, 0, 255);
         }
+        ofTranslate( pos );
+        ofRotate(angle, axis.x, axis.y, axis.z);
+        ofScale(scale.x, scale.y, scale.z);
+        mesh.draw();
+        ofPopMatrix();
     }
 }
 
@@ -221,18 +213,26 @@ void instancedComponent::debugDraw(){
     INSTANCE_MAP_ITR itr = instanceMap.begin();
     for(; itr!=instanceMap.end(); itr++){
         instance& d = itr->second;
-        collisionTester::debugDraw(d.matrix, d.scale, d.type);  // type should be same with bullet shape type
-    }    
+        //if (d.type == t) {
+            collisionTester::debugDraw(d.matrix, d.scale, d.type);  // type should be same with bullet shape type
+        //}
+    }
 }
+
+
 
 // instance param
 //
-INSTANCE_MAP_ITR instancedComponent::addInstance(instance ins, int groupId){
-    INSTANCE_MAP_ITR itr = instanceMap.insert(pair<int, instance>(groupId, ins));
+
+void instancedComponent::addInstance(instance ins, int groupId){
+    instanceMap.insert(pair<int, instance>(groupId, ins));
     bVtxtexNeedUpdate = true;
     bCltexNeedUpdate = true;
-    return itr;
+    
+    selectedInstance = instanceMap.end()--;
+//    instanceNum++;
 }
+
 
 void instancedComponent::addInstanceMatrix(ofMatrix4x4 m, ofVec3f s, int groupId){
     if(index<0){
@@ -315,6 +315,7 @@ void instancedComponent::loadInstancePositionFromModel(string path, int res, flo
     
     model.clear();
     
+    selectedInstance = instanceMap.begin();
 }
 
 void instancedComponent::loadInstancePositionFromMatrices(ofMatrix4x4 *ms, ofVec3f *ss, int size){
@@ -328,6 +329,7 @@ void instancedComponent::loadInstancePositionFromMatrices(ofMatrix4x4 *ms, ofVec
     bVtxtexNeedUpdate = true;
     updateInstanceNum();
     
+    selectedInstance = instanceMap.begin();
 }
 
 void instancedComponent::clearInstanceMatrices(){
@@ -542,6 +544,7 @@ int instancedComponent::updateGroupTotalNum(){
     return groupTotalNum;
 }
 
+
 void instancedComponent::removeGroup(int groupId){
     instanceMap.erase(groupId);
     bCltexNeedUpdate = true;
@@ -566,6 +569,7 @@ void instancedComponent::removeSmallGroup(int minNum){
     updateInstanceNum();
 }
 
+
 void instancedComponent::updateInstanceNum(){
     instanceNum = 0;
     INSTANCE_MAP_ITR itr = instanceMap.begin();
@@ -577,6 +581,8 @@ void instancedComponent::updateInstanceNum(){
         }
     }
 }
+
+
 
 void instancedComponent::resetGroup(){
     
@@ -599,12 +605,14 @@ void instancedComponent::resetGroup(){
     groupIdMaster = 0;
 }
 
+
 //
 //  save tp csv
 //
 //  NOTICE: first 3 lines are version and format info
 //
 void instancedComponent::saveInstanceDataToCsv(string dirpath){
+
     
     float meshScale = 0.00000001;    // TODO:
     
@@ -677,6 +685,7 @@ void instancedComponent::saveInstanceDataToCsv(string dirpath){
     }
 }
 
+
 void instancedComponent::loadInstanceDataFromCsv(string filePath){
     
     ofFile file(filePath);
@@ -724,10 +733,16 @@ void instancedComponent::loadInstanceDataFromCsv(string filePath){
 //    setGroupColorGradient();
     setGroupColor(-1, ofColor(0,0,0));
     
+    
     bVtxtexNeedUpdate = true;
     bCltexNeedUpdate = true;
     updateInstanceNum();
+    
+    selectedInstance = instanceMap.begin();
+    selectInstance(0);
 }
+
+
 
 void instancedComponent::removeDuplication(){
     
@@ -751,25 +766,18 @@ void instancedComponent::removeDuplication(){
     }
 }
 
-//void instancedComponent::addSelectedInstance(int index){
-//
-//    if( 0<=index && index<instanceMap.size() ){
-//        selectedInsVec.push_back( getInstanceIterator(index, insType) );
-//    }
-//}
+
+void instancedComponent::selectInstance(int index){
+
+    int typed_i = 0;
+    if( 0<=index && index<instanceNum ){
+        selectedInstance = getInstanceIterator(index, insType);
+    }
+}
 
 void instancedComponent::removeSelectedInstance(){
-
-    int removeCount = 0;;
-    for( int i=0; i<selectedInsVec.size(); i++){
-        INSTANCE_MAP_ITR &selectedInstance = selectedInsVec[i];
-        if( selectedInstance->second.type == insType ){
-            removeInstance(selectedInstance);
-            removeCount++;
-        }
-    }
-    if(removeCount!=0)
-        selectedInsVec.clear();
+    removeInstance(selectedInstance);
+    selectedInstance = instanceMap.end()--;
 }
 
 void instancedComponent::removeInstance( INSTANCE_MAP_ITR itr ){
@@ -801,78 +809,3 @@ INSTANCE_MAP_ITR instancedComponent::getInstanceIterator(int index, INSTANCE_TYP
     }
     return instanceMap.end();
 }
-
-void instancedComponent::mousePick(ofVec3f winPos, INSTANCE_TYPE type, int mode){
-    bool find = false;
-    ofCamera & cam = rnApp::get()->camMain;
-    ofVec3f s2w = cam.screenToWorld(winPos);
-    ofVec3f camPos = cam.getGlobalPosition();
-    ofVec3f dir = s2w - camPos;
-    ofVec3f rayFar = camPos + dir*cam.getFarClip();
-    
-    btVector3 rayFrom = btVector3(camPos.x, camPos.y, camPos.z);
-    btTransform rayFromTrans;
-    rayFromTrans.setOrigin(rayFrom);
-
-    btVector3 rayTo = btVector3(rayFar.x, rayFar.y, rayFar.z);
-    btTransform rayToTrans;
-    rayToTrans.setOrigin(rayTo);
-    
-    if( instanceMap.size() != 0 ){
-        INSTANCE_MAP_ITR itr = instanceMap.begin();
-        int i = 0;
-        for(; itr!=instanceMap.end(); itr++ ){
-            
-            instance & ins = itr->second;
-            if( ins.type == type){
-                ofMatrix4x4 mat = ins.matrix;
-                ofVec3f pos = mat.getTranslation();
-                ofVec3f scale = ins.scale;
-                ofQuaternion quat = mat.getRotate();
-                
-                btTransform colObjWorldTransform;
-                colObjWorldTransform.setIdentity();
-                colObjWorldTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
-                colObjWorldTransform.setRotation(btQuaternion(quat.x(), quat.y(), quat.z(), quat.w()));
-                btCollisionObject * colObj;
-                if( ins.type == INSTANCE_SPHERE ){
-                    colObj = &collisionTester::sphereA;
-                }else if (ins.type == INSTANCE_CYLINDER ){
-                    colObj = &collisionTester::cylinderA;
-                }
-                
-                collisionTester::setTransformFromOF(mat, scale, *colObj);
-                btCollisionShape * collisionShape = colObj->getCollisionShape();
-                
-                btCollisionWorld::ClosestRayResultCallback rayCallback(rayFrom,rayTo);
-                
-                collisionTester::collisionWorld->rayTestSingle(rayFromTrans, rayToTrans, colObj, collisionShape, colObjWorldTransform, rayCallback);
-                
-                if (rayCallback.hasHit()){
-                    switch (mode) {
-                        case 0:
-                            clearSelectedInstance();
-                            selectedInsVec.push_back(itr);
-                            break;
-                        case 1:
-                            selectedInsVec.push_back(itr);
-                            break;
-                        case 2:
-                            vector<INSTANCE_MAP_ITR>::iterator target = std::find(selectedInsVec.begin(), selectedInsVec.end(), itr);
-                            if(target!=selectedInsVec.end())
-                                selectedInsVec.erase(target);
-                            break;
-                    }
-                    find = true;
-                    cout << "hit";
-                    break;
-                }
-            }
-        }
-    }
-}
-
-void instancedComponent::clearSelectedInstance(){
-    selectedInsVec.clear();
-}
-

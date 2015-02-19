@@ -34,6 +34,7 @@
     IBOutlet NSTextField *cylinderRadiusNBox;
     IBOutlet NSTextField *cylinderResolutionNBox;
     IBOutlet NSTextField *cylinderCollisionMarginNBox;
+    IBOutlet NSButton *resetInstanceShapeButton;
     
     // Sculpt pane
     IBOutlet NSSlider *connectRandomCylinderNumSlider;
@@ -49,18 +50,19 @@
     IBOutlet NSTextField *connectGroupCylinderNumNBox;
     IBOutlet NSTextField *connectGroupMinDistanceNBox;
     IBOutlet NSTextField *connectGroupMaxDistanceNBox;
+    
+    IBOutlet NSSlider *manualConnectSphereASlider;
+    IBOutlet NSSlider *manualConnectSphereBSlider;
+    IBOutlet NSTextField *manualConnectSphereANBox;
+    IBOutlet NSTextField *manualConnectSphereBNBox;
     IBOutlet NSButton *manualConnectButton;
+    
     IBOutlet NSButton *connectGroupButton;
     IBOutlet NSButton *collisionTestButton;
     IBOutlet NSSlider *removeGroupsMinNumSlider;
     IBOutlet NSTextField *removeGroupsMinNumNBox;
     IBOutlet NSButton *removeGroupButton;
-    IBOutlet NSButton *removeSingleSphereButton;
-    IBOutlet NSButton *removeSingleCylinderButton;
-    IBOutlet NSButton *removeAllSpheresButton;
-    IBOutlet NSButton *removeAllCylinderButton;
 
-    
     // Draw pane
     IBOutlet NSColorWell *colorSphere;
     IBOutlet NSColorWell *colorCylinder;
@@ -80,62 +82,74 @@
     // Save pane
     IBOutlet NSButton *exportToCsvButton;
     IBOutlet NSButton *removeDuplicateButton;
+    
+    // Bottom Selector pane
+    IBOutlet NSSlider *selectSpehreSlider;
+    IBOutlet NSSlider *selectCylinderSlider;
+    IBOutlet NSTextField *selectSphereNBox;
+    IBOutlet NSTextField *selectCylinderNBox;
+    IBOutlet NSButton *connetc1SpherePairButton;
+    IBOutlet NSButton *removeSingleSphereButton;
+    IBOutlet NSButton *removeSingleCylinderButton;
+    IBOutlet NSButton *removeAllSpheresButton;
+    IBOutlet NSButton *removeAllCylinderButton;
 }
 
-
-- (void) setupDefault;
-- (void) initializeParameters;
-
-
-// Load Panel
-- (IBAction)changeLoadModelResolutionSlider:(NSSlider *)sender;
-- (IBAction)changeLoadModelResolutionNBox:(NSTextField *)sender;
-- (IBAction)pushNoiseFilterSegment:(NSSegmentedControl *)sender;
-- (IBAction)pushLoadCsvbutton:(NSButton *)sender;
-- (IBAction)puchLoadModelDataButton:(NSButton *)sender;
-
-// Shape
 - (IBAction)changeSphereRadiusSlider:(NSSlider *)sender;
 - (IBAction)changeSphereResolutionSlider:(NSSlider *)sender;
 - (IBAction)changeSphereCollisionMarginSlider:(NSSlider *)sender;
+
 - (IBAction)changeCylinderRadiusSlider:(NSSlider *)sender;
 - (IBAction)changeCylinderResolutionSlider:(NSSlider *)sender;
 - (IBAction)changeCylinderCollisionMarginSlider:(NSSlider *)sender;
-- (IBAction)changeSphereRadiusNBox:(NSTextField *)sender;
-- (IBAction)changeSphereResolutionNBox:(NSTextField *)sender;
-- (IBAction)changeSphereCollisionMarginNBox:(NSTextField *)sender;
-- (IBAction)changeCylinderRadiusNBox:(NSTextField *)sender;
-- (IBAction)changeCylinderResolutionNBox:(NSTextField *)sender;
-- (IBAction)changeCylinderCollisionMarginNBox:(NSTextField *)sender;
 
-
-// Sculpt
 - (IBAction)changeConnectRandomCylinderNumSlider:(NSSlider *)sender;
 - (IBAction)changeConnectRandomMinDistanceSlider:(NSSlider *)sender;
 - (IBAction)changeConnectRandomMaxDistanceSlider:(NSSlider *)sender;
 - (IBAction)changeConnectGroupCylinderNumSlider:(NSSlider *)sender;
 - (IBAction)changeConnectGroupMinDistanceSlider:(NSSlider *)sender;
 - (IBAction)changeConnectGroupMaxDistanceSlider:(NSSlider *)sender;
+
 - (IBAction)changeRemoveGroupsMinNumSlider:(NSSlider *)sender;
+
+- (IBAction)changeSphereRadiusNBox:(NSTextField *)sender;
+- (IBAction)changeSphereResolutionNBox:(NSTextField *)sender;
+- (IBAction)changeSphereCollisionMarginNBox:(NSTextField *)sender;
+
+- (IBAction)changeCylinderRadiusNBox:(NSTextField *)sender;
+- (IBAction)changeCylinderResolutionNBox:(NSTextField *)sender;
+- (IBAction)changeCylinderCollisionMarginNBox:(NSTextField *)sender;
+
 - (IBAction)changeConnectRandomCylinderNumNBox:(NSTextField *)sender;
 - (IBAction)changeConnectRandomMinDistanceNBox:(NSTextField *)sender;
 - (IBAction)changeConnectRandomMaxDistanceNBox:(NSTextField *)sender;
 - (IBAction)changeConnectGroupCylinderNumNBox:(NSTextField *)sender;
 - (IBAction)changeConnectGroupMinDistanceNBox:(NSTextField *)sender;
 - (IBAction)changeConnectGroupMaxDistanceNBox:(NSTextField *)sender;
+- (IBAction)changeManualConnectSphereASlider:(NSSlider *)sender;
+- (IBAction)changeManualConnectSphereBSlider:(NSSlider *)sender;
+- (IBAction)changeManualConnectSphereANBox:(NSTextField *)sender;
+- (IBAction)changeManualConnectSphereBNBox:(NSTextField *)sender;
 - (IBAction)pushManualConnectButton:(NSButton *)sender;
+
 - (IBAction)changeRemoveGroupsMinNumNBox:(NSTextField *)sender;
+
+- (IBAction)pushResetInstanceShapeButton:(NSButton *)sender;
 - (IBAction)pushConnectRandomButton:(NSButton *)sender;
 - (IBAction)pushConnectGroupButton:(NSButton *)sender;
 - (IBAction)pushCollisionTestButton:(NSButton *)sender;
 - (IBAction)pushRemoveGroupsButton:(NSButton *)sender;
-- (IBAction)pushRemoveSphereButton:(NSButton *)sender;
-- (IBAction)pushRemoveCylinderButton:(NSButton *)sender;
-- (IBAction)pushRemoveAllSpheres:(NSButton *)sender;
-- (IBAction)pushRemoveAllCylinderButton:(NSButton *)sender;
+- (IBAction)pushRemoveDuplicateButton:(NSButton *)sender;
+
+- (IBAction)pushExportToCsvButton:(NSButton *)sender;
+- (IBAction)pushLoadCsvbutton:(NSButton *)sender;
+
+- (IBAction)puchLoadModelDataButton:(NSButton *)sender;
+
+- (IBAction)pushLoadSphereCsvButton:(NSButton *)sender;
+- (IBAction)pushLoadCylinderCsvButton:(NSButton *)sender;
 
 
-// Draw Panel
 - (IBAction)changeColorSphere:(NSColorWell *)sender;
 - (IBAction)changeColorCylinder:(NSColorWell *)sender;
 - (IBAction)changeBgType:(NSMatrix *)sender;
@@ -150,12 +164,25 @@
 - (IBAction)changeShowCollisionShapeCheck:(NSButton *)sender;
 - (IBAction)changeShowCollisionDistanceCheck:(NSButton *)sender;
 - (IBAction)changeShowReferenceBoxCheck:(NSButton *)sender;
-- (IBAction)changeShowSphereCheck:(NSButton *)sender;
-- (IBAction)changeShowCylinderCheck:(NSButton *)sender;
+
+- (IBAction)changeLoadModelResolutionSlider:(NSSlider *)sender;
+- (IBAction)changeLoadModelResolutionNBox:(NSTextField *)sender;
+
+- (IBAction)pushNoiseFilterSegment:(NSSegmentedControl *)sender;
+- (void) setupDefault;
+- (void) initializeParameters;
 
 
-// Save
-- (IBAction)pushRemoveDuplicateButton:(NSButton *)sender;
-- (IBAction)pushExportToCsvButton:(NSButton *)sender;
+// Bottom Control
+- (IBAction)changeSelectSphereSlider:(NSSlider *)sender;
+- (IBAction)changeSelectCylinderSlider:(NSSlider *)sender;
+- (IBAction)changeSelectSphereNBox:(NSTextField *)sender;
+- (IBAction)changeSelectCylinderNBox:(NSTextField *)sender;
+- (IBAction)pushRemoveSphereButton:(NSButton *)sender;
+- (IBAction)pushRemoveCylinderButton:(NSButton *)sender;
+
+- (IBAction)pushRemoveAllSpheres:(NSButton *)sender;
+- (IBAction)pushRemoveAllCylinderButton:(NSButton *)sender;
+
 
 @end

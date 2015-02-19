@@ -9,7 +9,7 @@
 
 #pragma once
 
-//#define USE_TBB
+#define USE_TBB
 
 #ifdef USE_TBB
     //#define USE_TBB_COLLISIION

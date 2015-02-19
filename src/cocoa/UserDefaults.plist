@@ -29,17 +29,17 @@
 	<key>cylinderColor</key>
 	<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmgyj9DT6Dj/2/PoOIEtg+AYY=</data>
 	<key>sphereRadius</key>
-	<integer>1</integer>
+	<real>1.5</real>
 	<key>sphereResolution</key>
 	<integer>8</integer>
 	<key>sphereCollisionMargin</key>
-	<string>-0.2</string>
+	<string>0</string>
 	<key>cylinderRadius</key>
-	<real>0.5</real>
+	<integer>1</integer>
 	<key>cylinderResolution</key>
 	<integer>14</integer>
 	<key>cylinderCollisionMargin</key>
-	<string>-0.2</string>
+	<string>0</string>
 	<key>connectRandomCylinderNum</key>
 	<integer>10</integer>
 	<key>connectRandomMinDistance</key>
@@ -52,6 +52,8 @@
 	<integer>100</integer>
 	<key>connectGroupMaxDistance</key>
 	<integer>800</integer>
+	<key>collisionMargin</key>
+	<integer>0</integer>
 	<key>removeGroupsMinNum</key>
 	<integer>1</integer>
 	<key>loadModelResolution</key>

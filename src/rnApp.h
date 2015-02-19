@@ -20,8 +20,6 @@ class rnApp{  // : public ofBaseApp{
     
 public:
     
-    ofVec3f pick;
-    
     static rnApp * get(){ return singleton; }
     static void init(){
         if(!singleton){ singleton = new rnApp(); }
@@ -39,8 +37,7 @@ public:
 	ofLight         mLigDirectional;
 	ofMaterial      mMatMainMaterial;
 
-    static ofMesh sphereMesh;
-    static ofMesh cylinderMesh;
+
     static collisionTester * tester;
 
     instancedComponent spheres;
@@ -106,9 +103,6 @@ public:
         
     static int LOAD_MODEL_RESOLUTION;
     static bool LOAD_MODEL_WITH_NOISE_FILTER;
-    static bool DRAW_SPHERE;
-    static bool DRAW_CYLINDER;
-    
     
     // shader uniform name
     static bool RENDER_NORMALS;
@@ -134,12 +128,7 @@ public:
 
 
     void connectInstance    ( int indexA, int indexB );
-    void connectSelected();
-    
-    
-    // Call Cocoa GUI func
-    void updateSelectedSphereA();
-    void updateSelectedSphereB();
+
 private:
     void setupCameraLightMaterial();
     void setupCylinderShape(float radius, int resolution, float collisionMargin);
@@ -182,11 +171,6 @@ private:
     
     ofSoundPlayer finishSound;
     void playFinishSound(){ finishSound.play(); }
-    
-    
-    bool bMouseDragging;
-    int mousePressedStartFrame;
-    
 };
 
 
@@ -200,6 +184,11 @@ using namespace tbb;
 using namespace std;
 
 #endif
+
+//struct MyHashCompare{
+//
+//};
+
 
 #if defined (USE_TBB) && defined(USE_TBB_COLLISIION)
 typedef concurrent_hash_map<instance*, int> CollisionTable;

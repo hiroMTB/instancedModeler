@@ -15,7 +15,6 @@
 #include "ofxVboMeshInstanced.h"
 #include "ofxMtb.h"
 #include "btBulletCollisionCommon.h"
-#include "ofxRay.h"
 
 #include <map>
 
@@ -62,7 +61,7 @@ typedef INSTANCE_MAP::iterator INSTANCE_MAP_ITR;
 class instancedComponent{
     
 public:
-    static vector<INSTANCE_MAP_ITR> selectedInsVec;
+    INSTANCE_MAP_ITR selectedInstance;
     
 private:
     static INSTANCE_MAP instanceMap;
@@ -100,7 +99,7 @@ public:
     
     void draw(ofShader * shader);
     void drawWireframe(ofShader * shader);
-    static void drawSelector();
+    void drawSelector();
     static void debugDraw();
     
     void loadInstanceMesh(ofMesh mesh, ofVec3f scale=ofVec3f(1,1,1));
@@ -108,7 +107,7 @@ public:
     void loadInstancePositionFromMatrices(ofMatrix4x4 * ms, ofVec3f * ss, int size);
 
     // instance param
-    INSTANCE_MAP_ITR addInstance(instance ins, int groupId=-1);
+    void addInstance(instance ins, int groupId=-1);
     void addInstanceMatrix      (ofMatrix4x4 m, ofVec3f s, int groupId=-1);
     void clearInstanceMatrices();
     void setInstanceColor(INSTANCE_MAP_ITR itr, ofFloatColor color);
@@ -148,13 +147,8 @@ public:
     static INSTANCE_MAP_ITR getInstanceIterator( int index, INSTANCE_TYPE type );
     
     // selection
-    static void addSelectedInstance( int index );
-    static void clearSelectedInstance();
+    void selectInstance( int index );
     
-    // mode 0 : clear and select
-    // mode 1 : add
-    // mode 2 : remove
-    static void mousePick( ofVec3f winpos, INSTANCE_TYPE type, int mode);
     
     // single remove
     void removeSelectedInstance();
@@ -171,4 +165,3 @@ public:
     }
     
 };
-

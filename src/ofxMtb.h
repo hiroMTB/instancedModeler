@@ -96,12 +96,53 @@ namespace STL_UTIL{
 
 
 
-float fBm1f( float x, int octave=4);
-float fBm1uf( float x, int octave=4);
-float fbm3f( float x, float y, float z, int octave=4);
-float fbm3uf( float x, float y, float z, int octave=4);
+float fBm1f( float x, int octave=4){
+    
+    float noise = 0;
+    float amp = 0.5;
+    for (int i=0; i<octave; i++){
+        noise += ofSignedNoise(x) * amp;
+        amp *= 0.5;
+        x *= 2.0;
+    }
+    return noise;
+}
 
+float fBm1uf( float x, int octave=4){
+    float noise = 0;
+    float amp = 0.5;
+    for (int i=0; i<octave; i++){
+        noise += ofNoise(x) * amp;
+        amp *= 0.5;
+        x *= 2.0;
+    }
+    return noise;
+}
 
+float fbm3f( float x, float y, float z, int octave){
+    
+    float noise = 0;
+    float amp = 0.5;
+    for (int i=0; i<octave; i++){
+        noise += ofSignedNoise(x,y,z) * amp;
+        amp *= 0.5;
+        x *= 2.0;
+        y *= 2.0;
+        z *= 2.0;
+    }
+    return noise;
+}
 
-
-float distSeg2Seg( ofVec3f p1, ofVec3f p2, ofVec3f p3, ofVec3f p4);
+float fbm3uf( float x, float y, float z, int octave){
+    
+    float noise = 0;
+    float amp = 0.5;
+    for (int i=0; i<octave; i++){
+        noise += ofNoise(x,y,z) * amp;
+        amp *= 0.5;
+        x *= 2.0;
+        y *= 2.0;
+        z *= 2.0;
+    }
+    return noise;
+}

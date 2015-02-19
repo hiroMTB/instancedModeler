@@ -40,15 +40,20 @@ NSString *const connectGroupCylinderNum  = @"connectGroupCylinderNum";
 NSString *const connectGroupMinDistance  = @"connectGroupMinDistance";
 NSString *const connectGroupMaxDistance  = @"connectGroupMaxDistance";
 
+NSString *const collisionMargin          = @"collisionMargin";
 NSString *const removeGroupsMinNum          = @"removeGroupsMinNum";
 
+// button
+NSString *const resetInstanceShape      = @"resetInstanceShape";
 NSString *const connectRandom           = @"connectRandom";
 NSString *const connectGroup            = @"connectGroup";
 NSString *const removeGroups            = @"removeGroups";
 NSString *const removeDuplicate         = @"removeDuplicate";
 NSString *const removeAllCylinders       = @"removeAllCylinders";
 NSString *const removeAllSpheres       = @"removeAllSpheres";
+
 NSString *const loadModelResolution = @"loadModelResolution";
+
 
 @implementation MainWindowController
 
@@ -67,6 +72,7 @@ NSString *const loadModelResolution = @"loadModelResolution";
     [[NSUserDefaults standardUserDefaults] registerDefaults:userDefaultsValuesDict];
     
 }
+
 - (void) initializeParameters{
     NSDictionary * defaults = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
 
@@ -169,139 +175,43 @@ NSString *const loadModelResolution = @"loadModelResolution";
         rnApp::bgBar1.set(color.redComponent*255.0, color.greenComponent*255.0, color.blueComponent*255.0);
     }
 }
+
 -(void)awakeFromNib{
     [self setupDefault];
     [self initializeParameters];
 }
+
 - (id)initWithWindow:(NSWindow *)window{
     self = [super initWithWindow:window];
     return self;
 }
 
-// Load Panel
-- (IBAction)pushLoadCsvbutton:(NSButton *)sender {
-    NSOpenPanel* openPanel = [NSOpenPanel openPanel];
-    
-    NSArray* fileTypes = [NSArray arrayWithObjects:@"csv", nil];
-    [openPanel setAllowsMultipleSelection:NO];
-    [openPanel setAllowedFileTypes:fileTypes];
-    [openPanel setMessage:@"Select .csv file"];
-    [openPanel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
-        if (result == NSOKButton){
-            if ([[openPanel URL] isFileURL]){
-                string path = std::string([[[openPanel URL] path] UTF8String]);
-                rnApp::get()->loadCsvData(path);
-            }
-        }
-    }];
-    
-    [self updateUIMaxInstance];
-}
-- (IBAction)puchLoadModelDataButton:(NSButton *)sender {
-    NSOpenPanel* openPanel = [NSOpenPanel openPanel];
-    
-    NSArray* fileTypes = [NSArray arrayWithObjects:@"ply", nil];
-    [openPanel setAllowsMultipleSelection:NO];
-    [openPanel setMessage:@"Select .ply file for original particle position"];
-    [openPanel setAllowedFileTypes:fileTypes];
-    //    [openPanel setDirectoryURL:[NSURL fileURLWithPath:@"/Library/Desktop Pictures/"]];
-    [openPanel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
-        
-        if (result == NSOKButton)
-        {
-            if ([[openPanel URL] isFileURL]){
-                //[self configureImage:[[openPanel URL] path]];
-                string path = std::string([[[openPanel URL] path] UTF8String]);
-                rnApp::posModelPath_P = path;
-                rnApp::CURRENT_PROCESS = rnApp::LOAD_MODEL_DATA;
-                rnApp::get()->loadModelData();
-            }
-        }
-    }];
-}
-- (IBAction)pushNoiseFilterSegment:(NSSegmentedControl *)sender {
-    rnApp::LOAD_MODEL_WITH_NOISE_FILTER = (bool)sender.selectedSegment;
-    cout << rnApp::LOAD_MODEL_WITH_NOISE_FILTER << endl;
-}
-- (IBAction)changeLoadModelResolutionSlider:(NSSlider *)sender {
-    rnApp::LOAD_MODEL_RESOLUTION = sender.intValue;
-    [loadModelResolutionNBox setIntValue:sender.intValue];
-}
-- (IBAction)changeLoadModelResolutionNBox:(NSTextField *)sender {
-    rnApp::LOAD_MODEL_RESOLUTION = sender.intValue;
-    [loadModelResolutionSlider setIntValue:sender.intValue];
-    [[NSUserDefaults standardUserDefaults] setInteger:sender.intValue forKey:loadModelResolution];
-}
-
-// Shape Panel
 - (IBAction)changeSphereRadiusSlider:(NSSlider *)sender{
     rnApp::SPHERE_RADIUS = sender.floatValue;
     [sphereRadiusNBox setFloatValue:sender.floatValue];
-    rnApp::CURRENT_PROCESS = rnApp::RESET_INSTSANCE_SHAPE;
 }
 - (IBAction)changeSphereResolutionSlider:(NSSlider *)sender{
     rnApp::SPHERE_RESOLUTION = sender.intValue;
     [sphereResolutionNBox setIntValue:sender.intValue];
-    rnApp::CURRENT_PROCESS = rnApp::RESET_INSTSANCE_SHAPE;
 }
 - (IBAction)changeSphereCollisionMarginSlider:(NSSlider *)sender {
     rnApp::SPHERE_COLLISION_MARGIN = sender.floatValue;
     [sphereCollisionMarginNBox setFloatValue:sender.floatValue];
-    rnApp::CURRENT_PROCESS = rnApp::RESET_INSTSANCE_SHAPE;
 }
+
 - (IBAction)changeCylinderRadiusSlider:(NSSlider *)sender{
     rnApp::CYLINDER_RADIUS = sender.floatValue;
     [cylinderRadiusNBox setFloatValue:sender.floatValue];
-    rnApp::CURRENT_PROCESS = rnApp::RESET_INSTSANCE_SHAPE;
 }
 - (IBAction)changeCylinderResolutionSlider:(NSSlider *)sender{
     rnApp::CYLINDER_RESOLUTION = sender.intValue;
     [cylinderResolutionNBox setIntValue:sender.intValue];
-    rnApp::CURRENT_PROCESS = rnApp::RESET_INSTSANCE_SHAPE;
 }
 - (IBAction)changeCylinderCollisionMarginSlider:(NSSlider *)sender {
     rnApp::CYLINDER_COLLISION_MARGIN = sender.floatValue;
     [cylinderCollisionMarginNBox setFloatValue:sender.floatValue];
-    rnApp::CURRENT_PROCESS = rnApp::RESET_INSTSANCE_SHAPE;
-}
-- (IBAction)changeSphereRadiusNBox:(NSTextField *)sender{
-    rnApp::SPHERE_RADIUS = sender.floatValue;
-    [sphereRadiusSlider setFloatValue:sender.floatValue];
-    [[NSUserDefaults standardUserDefaults] setFloat:sender.floatValue forKey:sphereRadius];
-    rnApp::CURRENT_PROCESS = rnApp::RESET_INSTSANCE_SHAPE;
-}
-- (IBAction)changeSphereResolutionNBox:(NSTextField *)sender{
-    rnApp::SPHERE_RESOLUTION = sender.intValue;
-    [sphereResolutionSlider setIntValue:sender.intValue];
-    [[NSUserDefaults standardUserDefaults] setInteger:sender.intValue forKey:sphereResolution];
-    rnApp::CURRENT_PROCESS = rnApp::RESET_INSTSANCE_SHAPE;
-}
-- (IBAction)changeSphereCollisionMarginNBox:(NSTextField *)sender {
-    rnApp::SPHERE_COLLISION_MARGIN = sender.floatValue;
-    [sphereCollisionMarginSlider setFloatValue:sender.floatValue];
-    [[NSUserDefaults standardUserDefaults] setFloat:sender.floatValue forKey:sphereCollisionMargin];
-    rnApp::CURRENT_PROCESS = rnApp::RESET_INSTSANCE_SHAPE;
-}
-- (IBAction)changeCylinderRadiusNBox:(NSTextField *)sender{
-    rnApp::CYLINDER_RADIUS = sender.floatValue;
-    [cylinderRadiusSlider setFloatValue:sender.floatValue];
-    [[NSUserDefaults standardUserDefaults] setFloat:sender.floatValue forKey:cylinderRadius];
-    rnApp::CURRENT_PROCESS = rnApp::RESET_INSTSANCE_SHAPE;
-}
-- (IBAction)changeCylinderResolutionNBox:(NSTextField *)sender{
-    rnApp::CYLINDER_RESOLUTION = sender.intValue;
-    [cylinderResolutionSlider setIntValue:sender.intValue];
-    [[NSUserDefaults standardUserDefaults] setInteger:sender.intValue forKey:cylinderResolution];
-    rnApp::CURRENT_PROCESS = rnApp::RESET_INSTSANCE_SHAPE;
-}
-- (IBAction)changeCylinderCollisionMarginNBox:(NSTextField *)sender {
-    rnApp::CYLINDER_COLLISION_MARGIN = sender.floatValue;
-    [cylinderCollisionMarginSlider setFloatValue:sender.floatValue];
-    [[NSUserDefaults standardUserDefaults] setFloat:sender.floatValue forKey:cylinderCollisionMargin];
-    rnApp::CURRENT_PROCESS = rnApp::RESET_INSTSANCE_SHAPE;
 }
 
-// Scultp Panel
 - (IBAction)changeConnectRandomCylinderNumSlider:(NSSlider *)sender{
     rnApp::CONNECT_RANDOM_CYLINDER_NUM = sender.intValue;
     [connectRandomCylinderNumNBox setIntValue:sender.intValue];
@@ -326,9 +236,45 @@ NSString *const loadModelResolution = @"loadModelResolution";
     rnApp::CONNECT_GROUP_MAX_DIST = sender.floatValue;
     [connectGroupMaxDistanceNBox setFloatValue:sender.floatValue];
 }
+
 - (IBAction)changeRemoveGroupsMinNumSlider:(NSSlider *)sender{
     rnApp::REMOVE_GROUPS_MIN_NUM = sender.intValue;
     [removeGroupsMinNumNBox setIntValue:sender.intValue];
+}
+
+//
+//  NUMBER BOX
+//
+- (IBAction)changeSphereRadiusNBox:(NSTextField *)sender{
+    rnApp::SPHERE_RADIUS = sender.floatValue;
+    [sphereRadiusSlider setFloatValue:sender.floatValue];
+    [[NSUserDefaults standardUserDefaults] setFloat:sender.floatValue forKey:sphereRadius];
+}
+- (IBAction)changeSphereResolutionNBox:(NSTextField *)sender{
+    rnApp::SPHERE_RESOLUTION = sender.intValue;
+    [sphereResolutionSlider setIntValue:sender.intValue];
+    [[NSUserDefaults standardUserDefaults] setInteger:sender.intValue forKey:sphereResolution];
+}
+- (IBAction)changeSphereCollisionMarginNBox:(NSTextField *)sender {
+    rnApp::SPHERE_COLLISION_MARGIN = sender.floatValue;
+    [sphereCollisionMarginSlider setFloatValue:sender.floatValue];
+    [[NSUserDefaults standardUserDefaults] setFloat:sender.floatValue forKey:sphereCollisionMargin];
+}
+
+- (IBAction)changeCylinderRadiusNBox:(NSTextField *)sender{
+    rnApp::CYLINDER_RADIUS = sender.floatValue;
+    [cylinderRadiusSlider setFloatValue:sender.floatValue];
+    [[NSUserDefaults standardUserDefaults] setFloat:sender.floatValue forKey:cylinderRadius];
+}
+- (IBAction)changeCylinderResolutionNBox:(NSTextField *)sender{
+    rnApp::CYLINDER_RESOLUTION = sender.intValue;
+    [cylinderResolutionSlider setIntValue:sender.intValue];
+    [[NSUserDefaults standardUserDefaults] setInteger:sender.intValue forKey:cylinderResolution];
+}
+- (IBAction)changeCylinderCollisionMarginNBox:(NSTextField *)sender {
+    rnApp::CYLINDER_COLLISION_MARGIN = sender.floatValue;
+    [cylinderCollisionMarginSlider setFloatValue:sender.floatValue];
+    [[NSUserDefaults standardUserDefaults] setFloat:sender.floatValue forKey:cylinderCollisionMargin];
 }
 
 - (IBAction)changeConnectRandomCylinderNumNBox:(NSTextField *)sender{
@@ -361,8 +307,42 @@ NSString *const loadModelResolution = @"loadModelResolution";
     [connectGroupMaxDistanceSlider setFloatValue:sender.floatValue];
     [[NSUserDefaults standardUserDefaults] setFloat:sender.floatValue forKey:connectGroupMaxDistance];
 }
+
+- (IBAction)changeManualConnectSphereASlider:(NSSlider *)sender {
+    int n = sender.intValue;
+    [manualConnectSphereANBox setIntegerValue:n];
+
+    // change selector as well
+    [selectSphereNBox setIntValue:n];
+    rnApp::get()->spheres.selectInstance(n);
+    [self updateUIMaxInstance];
+}
+
+- (IBAction)changeManualConnectSphereBSlider:(NSSlider *)sender {
+    int n = sender.intValue;
+    [manualConnectSphereBNBox setIntegerValue:n];
+
+    
+    // change selector as well
+    [selectSphereNBox setIntValue:n];
+    rnApp::get()->spheres.selectInstance(n);
+    [self updateUIMaxInstance];
+}
+
+- (IBAction)changeManualConnectSphereANBox:(NSTextField *)sender {
+    int n = sender.intValue;
+    [manualConnectSphereASlider setIntValue:n];
+}
+
+- (IBAction)changeManualConnectSphereBNBox:(NSTextField *)sender {
+    int n = sender.intValue;
+    [manualConnectSphereBSlider setIntValue:n];
+}
+
 - (IBAction)pushManualConnectButton:(NSButton *)sender {
-    rnApp::get()->connectSelected();
+    int idA = manualConnectSphereANBox.intValue;
+    int idB = manualConnectSphereBNBox.intValue;
+    rnApp::get()->connectInstance(idA, idB);
     [self updateUIMaxInstance];
 }
 
@@ -371,128 +351,41 @@ NSString *const loadModelResolution = @"loadModelResolution";
     [removeGroupsMinNumSlider setIntValue:sender.intValue];
     [[NSUserDefaults standardUserDefaults] setInteger:sender.intValue forKey:removeGroupsMinNum];
 }
+
+- (IBAction)pushResetInstanceShapeButton:(NSButton *)sender {
+    rnApp::CURRENT_PROCESS = rnApp::RESET_INSTSANCE_SHAPE;
+}
+
 - (IBAction)pushConnectRandomButton:(NSButton *)sender {
     rnApp::CURRENT_PROCESS = rnApp::CONNECT_RANDOM;
 }
+
 - (IBAction)pushConnectGroupButton:(NSButton *)sender {
     rnApp::CURRENT_PROCESS = rnApp::CONNECT_GROUP;
 }
+
 - (IBAction)pushCollisionTestButton:(NSButton *)sender {
     rnApp::CURRENT_PROCESS = rnApp::COLLISION_TEST;
 }
+
 - (IBAction)pushRemoveGroupsButton:(NSButton *)sender {
     rnApp::CURRENT_PROCESS = rnApp::REMOVE_GROUPS;
 }
-- (IBAction)pushRemoveSphereButton:(NSButton *)sender {
-    rnApp::get()->spheres.removeSelectedInstance();
+
+- (IBAction)pushRemoveDuplicateButton:(NSButton *)sender {
+    rnApp::CURRENT_PROCESS = rnApp::REMOVE_DUPLICATE;
 }
-- (IBAction)pushRemoveCylinderButton:(NSButton *)sender {
-    rnApp::get()->cylinders.removeSelectedInstance();
-}
+
 - (IBAction)pushRemoveAllSpheres:(NSButton *)sender {
     rnApp::CURRENT_PROCESS = rnApp::REMOVE_ALL_SPHERES;
 }
+
 - (IBAction)pushRemoveAllCylinderButton:(NSButton *)sender {
     rnApp::CURRENT_PROCESS = rnApp::REMOVE_ALL_CYLINDERS;
 }
 
-// Draw Panel
-- (IBAction)changeColorSphere:(NSColorWell *)sender {
-    float r = sender.color.redComponent;
-    float g = sender.color.greenComponent;
-    float b = sender.color.blueComponent;
-    rnApp::colorSphere.set(r*255.0, g*255.0, b*255.0);
-}
-- (IBAction)changeColorCylinder:(NSColorWell *)sender{
-    float r = sender.color.redComponent;
-    float g = sender.color.greenComponent;
-    float b = sender.color.blueComponent;
-    rnApp::colorCylinder.set(r*255.0, g*255.0, b*255.0);
-}
-- (IBAction)changeBgType:(NSMatrix *)sender {
-    rnApp::bgType = sender.selectedTag;
-}
-- (IBAction)changeBgNormal:(NSColorWell *)sender {
-    float r = sender.color.redComponent;
-    float g = sender.color.greenComponent;
-    float b = sender.color.blueComponent;
-    rnApp::bgNormal.set(r*255.0, g*255.0, b*255.0);
-    rnApp::bgType = 0;
-    [bgTypeMatrix selectCellWithTag:0];
-}
-- (IBAction)changeBgLinear0:(NSColorWell *)sender {
-    float r = sender.color.redComponent;
-    float g = sender.color.greenComponent;
-    float b = sender.color.blueComponent;
-    rnApp::bgLinear0.set(r*255.0, g*255.0, b*255.0);
-    rnApp::bgType = 1;
-    [bgTypeMatrix selectCellWithTag:1];
-}
-- (IBAction)changeBgLinear1:(NSColorWell *)sender {
-    float r = sender.color.redComponent;
-    float g = sender.color.greenComponent;
-    float b = sender.color.blueComponent;
-    rnApp::bgLinear1.set(r*255.0, g*255.0, b*255.0);
-    rnApp::bgType = 1;
-    [bgTypeMatrix selectCellWithTag:1];
-}
-- (IBAction)changeBgCircular0:(NSColorWell *)sender {
-    float r = sender.color.redComponent;
-    float g = sender.color.greenComponent;
-    float b = sender.color.blueComponent;
-    rnApp::bgCircular0.set(r*255.0, g*255.0, b*255.0);
-    rnApp::bgType = 2;
-    [bgTypeMatrix selectCellWithTag:2];
-}
-- (IBAction)changeBgCircular1:(NSColorWell *)sender {
-    float r = sender.color.redComponent;
-    float g = sender.color.greenComponent;
-    float b = sender.color.blueComponent;
-    rnApp::bgCircular1.set(r*255.0, g*255.0, b*255.0);
-    rnApp::bgType = 2;
-    [bgTypeMatrix selectCellWithTag:2];
-}
-- (IBAction)changeBgBar0:(NSColorWell *)sender {
-    float r = sender.color.redComponent;
-    float g = sender.color.greenComponent;
-    float b = sender.color.blueComponent;
-    rnApp::bgBar0.set(r*255.0, g*255.0, b*255.0);
-    rnApp::bgType = 3;
-    [bgTypeMatrix selectCellWithTag:3];
-}
-- (IBAction)changeBgBar1:(NSColorWell *)sender {
-    float r = sender.color.redComponent;
-    float g = sender.color.greenComponent;
-    float b = sender.color.blueComponent;
-    rnApp::bgBar1.set(r*255.0, g*255.0, b*255.0);
-    rnApp::bgType = 3;
-    [bgTypeMatrix selectCellWithTag:3];
-}
-- (IBAction)changeShowWireframeCheck:(NSButton *)sender {
-    rnApp::DRAW_WIREFRAME = (bool)sender.state;
-}
-- (IBAction)changeShowCollisionShapeCheck:(NSButton *)sender {
-    rnApp::DRAW_COLLISION_SHAPE = (bool)sender.state;
-}
-- (IBAction)changeShowCollisionDistanceCheck:(NSButton *)sender {
-    rnApp::DRAW_COLLISION_DISTANCE = (bool)sender.state;
-}
-- (IBAction)changeShowReferenceBoxCheck:(NSButton *)sender {
-    rnApp::DRAW_REFERENCE_BOX = (bool)sender.state;
-}
-- (IBAction)changeShowSphereCheck:(NSButton *)sender {
-    rnApp::DRAW_SPHERE = (bool)sender.state;
-}
-- (IBAction)changeShowCylinderCheck:(NSButton *)sender {
-    rnApp::DRAW_CYLINDER = (bool)sender.state;
-}
-
-// Save panel
-- (IBAction)pushRemoveDuplicateButton:(NSButton *)sender {
-    rnApp::CURRENT_PROCESS = rnApp::REMOVE_DUPLICATE;
-}
 - (IBAction)pushExportToCsvButton:(NSButton *)sender {
-    //    rnApp::CURRENT_PROCESS = rnApp::SAVE_CSV;
+//    rnApp::CURRENT_PROCESS = rnApp::SAVE_CSV;
     
     NSSavePanel* savePanel = [NSSavePanel savePanel];
     
@@ -506,6 +399,198 @@ NSString *const loadModelResolution = @"loadModelResolution";
     
 }
 
+- (IBAction)pushLoadCsvbutton:(NSButton *)sender {
+    NSOpenPanel* openPanel = [NSOpenPanel openPanel];
+
+	NSArray* fileTypes = [NSArray arrayWithObjects:@"csv", nil];
+	[openPanel setAllowsMultipleSelection:NO];
+    [openPanel setAllowedFileTypes:fileTypes];
+	[openPanel setMessage:@"Select .csv file"];
+    [openPanel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
+        if (result == NSOKButton){
+            if ([[openPanel URL] isFileURL]){
+                string path = std::string([[[openPanel URL] path] UTF8String]);
+                rnApp::get()->loadCsvData(path);
+            }
+        }
+    }];
+    
+   [self updateUIMaxInstance];
+}
+
+- (IBAction)puchLoadModelDataButton:(NSButton *)sender {
+    NSOpenPanel* openPanel = [NSOpenPanel openPanel];
+	
+	NSArray* fileTypes = [NSArray arrayWithObjects:@"ply", nil];
+	[openPanel setAllowsMultipleSelection:NO];
+	[openPanel setMessage:@"Select .ply file for original particle position"];
+    [openPanel setAllowedFileTypes:fileTypes];
+//    [openPanel setDirectoryURL:[NSURL fileURLWithPath:@"/Library/Desktop Pictures/"]];
+    [openPanel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
+        
+        if (result == NSOKButton)
+        {
+            if ([[openPanel URL] isFileURL]){
+                //[self configureImage:[[openPanel URL] path]];
+                string path = std::string([[[openPanel URL] path] UTF8String]);
+                rnApp::posModelPath_P = path;
+                rnApp::CURRENT_PROCESS = rnApp::LOAD_MODEL_DATA;
+                rnApp::get()->loadModelData();
+            }
+        }
+    }];
+}
+
+- (IBAction)changeColorSphere:(NSColorWell *)sender {
+    float r = sender.color.redComponent;
+    float g = sender.color.greenComponent;
+    float b = sender.color.blueComponent;
+    rnApp::colorSphere.set(r*255.0, g*255.0, b*255.0);
+}
+
+- (IBAction)changeColorCylinder:(NSColorWell *)sender{
+    float r = sender.color.redComponent;
+    float g = sender.color.greenComponent;
+    float b = sender.color.blueComponent;
+    rnApp::colorCylinder.set(r*255.0, g*255.0, b*255.0);
+}
+
+- (IBAction)changeBgType:(NSMatrix *)sender {
+    rnApp::bgType = sender.selectedTag;
+}
+
+- (IBAction)changeBgNormal:(NSColorWell *)sender {
+    float r = sender.color.redComponent;
+    float g = sender.color.greenComponent;
+    float b = sender.color.blueComponent;
+    rnApp::bgNormal.set(r*255.0, g*255.0, b*255.0);
+    rnApp::bgType = 0;
+    [bgTypeMatrix selectCellWithTag:0];
+}
+
+- (IBAction)changeBgLinear0:(NSColorWell *)sender {
+    float r = sender.color.redComponent;
+    float g = sender.color.greenComponent;
+    float b = sender.color.blueComponent;
+    rnApp::bgLinear0.set(r*255.0, g*255.0, b*255.0);
+    rnApp::bgType = 1;
+    [bgTypeMatrix selectCellWithTag:1];
+}
+
+- (IBAction)changeBgLinear1:(NSColorWell *)sender {
+    float r = sender.color.redComponent;
+    float g = sender.color.greenComponent;
+    float b = sender.color.blueComponent;
+    rnApp::bgLinear1.set(r*255.0, g*255.0, b*255.0);
+    rnApp::bgType = 1;
+    [bgTypeMatrix selectCellWithTag:1];
+}
+
+- (IBAction)changeBgCircular0:(NSColorWell *)sender {
+    float r = sender.color.redComponent;
+    float g = sender.color.greenComponent;
+    float b = sender.color.blueComponent;
+    rnApp::bgCircular0.set(r*255.0, g*255.0, b*255.0);
+    rnApp::bgType = 2;
+    [bgTypeMatrix selectCellWithTag:2];
+}
+
+- (IBAction)changeBgCircular1:(NSColorWell *)sender {
+    float r = sender.color.redComponent;
+    float g = sender.color.greenComponent;
+    float b = sender.color.blueComponent;
+    rnApp::bgCircular1.set(r*255.0, g*255.0, b*255.0);
+    rnApp::bgType = 2;
+    [bgTypeMatrix selectCellWithTag:2];
+}
+
+- (IBAction)changeBgBar0:(NSColorWell *)sender {
+    float r = sender.color.redComponent;
+    float g = sender.color.greenComponent;
+    float b = sender.color.blueComponent;
+    rnApp::bgBar0.set(r*255.0, g*255.0, b*255.0);
+    rnApp::bgType = 3;
+    [bgTypeMatrix selectCellWithTag:3];
+}
+
+- (IBAction)changeBgBar1:(NSColorWell *)sender {
+    float r = sender.color.redComponent;
+    float g = sender.color.greenComponent;
+    float b = sender.color.blueComponent;
+    rnApp::bgBar1.set(r*255.0, g*255.0, b*255.0);
+    rnApp::bgType = 3;
+    [bgTypeMatrix selectCellWithTag:3];
+}
+
+- (IBAction)changeShowWireframeCheck:(NSButton *)sender {
+    rnApp::DRAW_WIREFRAME = (bool)sender.state;
+}
+
+- (IBAction)changeShowCollisionShapeCheck:(NSButton *)sender {
+    rnApp::DRAW_COLLISION_SHAPE = (bool)sender.state;
+}
+
+- (IBAction)changeShowCollisionDistanceCheck:(NSButton *)sender {
+    rnApp::DRAW_COLLISION_DISTANCE = (bool)sender.state;
+}
+
+- (IBAction)changeShowReferenceBoxCheck:(NSButton *)sender {
+    rnApp::DRAW_REFERENCE_BOX = (bool)sender.state;
+}
+
+- (IBAction)changeLoadModelResolutionSlider:(NSSlider *)sender {
+    rnApp::LOAD_MODEL_RESOLUTION = sender.intValue;
+    [loadModelResolutionNBox setIntValue:sender.intValue];
+}
+
+- (IBAction)changeLoadModelResolutionNBox:(NSTextField *)sender {
+    rnApp::LOAD_MODEL_RESOLUTION = sender.intValue;
+    [loadModelResolutionSlider setIntValue:sender.intValue];
+    [[NSUserDefaults standardUserDefaults] setInteger:sender.intValue forKey:loadModelResolution];
+}
+
+- (IBAction)changeSelectSphereSlider:(NSSlider *)sender {
+    int n = sender.intValue;
+    [selectSphereNBox setIntValue:n];
+    rnApp::get()->spheres.selectInstance(n);
+    [self updateUIMaxInstance];
+}
+
+- (IBAction)changeSelectCylinderSlider:(NSSlider *)sender {
+    int n = sender.intValue;
+    [selectCylinderNBox setIntValue:n];
+    rnApp::get()->cylinders.selectInstance(n);
+    [self updateUIMaxInstance];
+}
+
+- (IBAction)changeSelectSphereNBox:(NSTextField *)sender {
+    int n = sender.intValue;
+    [selectSpehreSlider setIntValue:n];
+    rnApp::get()->spheres.selectInstance(n);
+    [self updateUIMaxInstance];
+}
+
+- (IBAction)changeSelectCylinderNBox:(NSTextField *)sender {
+    int n = sender.intValue;
+    [selectCylinderSlider setIntValue:n];
+    rnApp::get()->cylinders.selectInstance(n);
+    [self updateUIMaxInstance];
+}
+
+- (IBAction)pushRemoveSphereButton:(NSButton *)sender {
+    rnApp::get()->spheres.removeSelectedInstance();
+}
+
+- (IBAction)pushRemoveCylinderButton:(NSButton *)sender {
+    rnApp::get()->cylinders.removeSelectedInstance();
+}
+
+- (IBAction)pushNoiseFilterSegment:(NSSegmentedControl *)sender {
+    rnApp::LOAD_MODEL_WITH_NOISE_FILTER = (bool)sender.selectedSegment;
+    cout << rnApp::LOAD_MODEL_WITH_NOISE_FILTER << endl;
+}
+
+
 // ??? can not call this func.
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender{
     cout << "applicationShouldTerminate" << endl;
@@ -516,5 +601,15 @@ NSString *const loadModelResolution = @"loadModelResolution";
     return true;
 }
 
-@end
+- (void) updateUIMaxInstance{
+    int maxS = rnApp::get()->spheres.getInstanceNum() - 1;
+    int maxC = rnApp::get()->cylinders.getInstanceNum() - 1;
 
+    [selectSpehreSlider setMaxValue:maxS];
+    [selectCylinderSlider setMaxValue:maxC];
+    [manualConnectSphereASlider setMaxValue:maxS];
+    [manualConnectSphereBSlider setMaxValue:maxS];
+    
+}
+
+@end
