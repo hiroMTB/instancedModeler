@@ -14,7 +14,6 @@
 		4D339CCB16B24F9300B46DA0 /* rnApp_collision.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D339CC916B24F9300B46DA0 /* rnApp_collision.cpp */; };
 		4D3A44BE16A4F8AE00328314 /* collisionTester.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A44BC16A4F8AE00328314 /* collisionTester.cpp */; };
 		4D4F588817E015C300E72686 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F587E17E015C300E72686 /* AppDelegate.mm */; };
-		4D4F588917E015C300E72686 /* PreferenceController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F588217E015C300E72686 /* PreferenceController.mm */; };
 		4D4F588A17E015C300E72686 /* rnMainGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F588417E015C300E72686 /* rnMainGLView.mm */; };
 		4D4F588B17E015C300E72686 /* MainWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F588617E015C300E72686 /* MainWindowController.mm */; };
 		4D4F58C717E0175E00E72686 /* ofxCocoaGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D4F58BE17E0175E00E72686 /* ofxCocoaGLView.mm */; };
@@ -110,9 +109,6 @@
 		4D4F587D17E015C300E72686 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		4D4F587E17E015C300E72686 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		4D4F587F17E015C300E72686 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
-		4D4F588017E015C300E72686 /* Preference.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preference.xib; sourceTree = "<group>"; };
-		4D4F588117E015C300E72686 /* PreferenceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferenceController.h; sourceTree = "<group>"; };
-		4D4F588217E015C300E72686 /* PreferenceController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PreferenceController.mm; sourceTree = "<group>"; };
 		4D4F588317E015C300E72686 /* rnMainGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rnMainGLView.h; sourceTree = "<group>"; };
 		4D4F588417E015C300E72686 /* rnMainGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = rnMainGLView.mm; sourceTree = "<group>"; };
 		4D4F588517E015C300E72686 /* MainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainWindowController.h; sourceTree = "<group>"; };
@@ -288,9 +284,6 @@
 				4D4F588617E015C300E72686 /* MainWindowController.mm */,
 				4D4F588317E015C300E72686 /* rnMainGLView.h */,
 				4D4F588417E015C300E72686 /* rnMainGLView.mm */,
-				4D4F588017E015C300E72686 /* Preference.xib */,
-				4D4F588117E015C300E72686 /* PreferenceController.h */,
-				4D4F588217E015C300E72686 /* PreferenceController.mm */,
 				4D4F588717E015C300E72686 /* UserDefaults.plist */,
 			);
 			path = cocoa;
@@ -834,7 +827,6 @@
 				4D339CC816B24E6300B46DA0 /* rnApp_connect.cpp in Sources */,
 				4D339CCB16B24F9300B46DA0 /* rnApp_collision.cpp in Sources */,
 				4D4F588817E015C300E72686 /* AppDelegate.mm in Sources */,
-				4D4F588917E015C300E72686 /* PreferenceController.mm in Sources */,
 				4D4F588A17E015C300E72686 /* rnMainGLView.mm in Sources */,
 				4D4F588B17E015C300E72686 /* MainWindowController.mm in Sources */,
 				4D4F58C717E0175E00E72686 /* ofxCocoaGLView.mm in Sources */,

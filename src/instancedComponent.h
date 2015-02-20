@@ -163,12 +163,6 @@ public:
     // util
     void saveInstanceDataToCsv(string dirName);
     void loadInstanceDataFromCsv(string dirName);
-    
-    template<class Archive>
-
-    void serialize(Archive & ar, const unsigned int version){
-        ar  & instanceMap & insType;
-    }
 
 };
 

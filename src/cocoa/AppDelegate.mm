@@ -14,18 +14,5 @@
     [mainWindowController showWindow:self];
 }
 
--(IBAction)showPreference:(id)sender
-{
-    if(prefController == NULL){
-        prefController = [[PreferenceController alloc] initWithWindowNibName:@"Preference"];
-    }
-    
-    [prefController showWindow:self];
-}
-
-
-- (void) updateUI{
-    [mainWindowController updateUIMaxInstance];
-}
 
 @end

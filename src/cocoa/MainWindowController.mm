@@ -194,8 +194,6 @@ NSString *const loadModelResolution = @"loadModelResolution";
             }
         }
     }];
-    
-    [self updateUIMaxInstance];
 }
 - (IBAction)puchLoadModelDataButton:(NSButton *)sender {
     NSOpenPanel* openPanel = [NSOpenPanel openPanel];
@@ -363,7 +361,6 @@ NSString *const loadModelResolution = @"loadModelResolution";
 }
 - (IBAction)pushManualConnectButton:(NSButton *)sender {
     rnApp::get()->connectSelected();
-    [self updateUIMaxInstance];
 }
 
 - (IBAction)changeRemoveGroupsMinNumNBox:(NSTextField *)sender{
@@ -510,7 +507,6 @@ NSString *const loadModelResolution = @"loadModelResolution";
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender{
     cout << "applicationShouldTerminate" << endl;
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    
     [prefs setFloat:sphereRadiusSlider.floatValue forKey:sphereRadius];
     [prefs synchronize];
     return true;
