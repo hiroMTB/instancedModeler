@@ -83,7 +83,7 @@ void rnApp::setup(){
     posScale = 10;
     boxSize = 330;
     
-    testCase.loadRandomSphere(30, 100);
+//    testCase.loadRandomSphere(30, 100);
 }
 void rnApp::loadModelData(){
     //cylinders.reset();

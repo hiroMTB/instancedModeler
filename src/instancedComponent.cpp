@@ -226,7 +226,8 @@ void instancedComponent::debugDraw(){
     for(; itr!=instanceMap.end(); itr++){
         instance& d = itr->second;
         collisionTester::debugDraw(d.matrix, d.scale, d.type);  // type should be same with bullet shape type
-    }    
+//        cout << d.matrix << endl;
+    }
 }
 
 // instance param
@@ -725,7 +726,7 @@ void instancedComponent::loadInstanceDataFromCsv(string filePath){
         }
     }
     
-//    setGroupColorGradient();
+    setGroupColorGradient();
     setGroupColor(-1, ofColor(0,0,0));
     
     bVtxtexNeedUpdate = true;
