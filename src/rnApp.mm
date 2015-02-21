@@ -81,9 +81,9 @@ void rnApp::setup(){
 
     compScale = 1;
     posScale = 10;
-    boxSize = 330;
+    boxSize = 100;
     
-//    testCase.loadRandomSphere(30, 100);
+    testCase.loadRandomSphere(30, 100);
 }
 void rnApp::loadModelData(){
     //cylinders.reset();
@@ -97,13 +97,16 @@ void rnApp::loadModelData(){
     }
 }
 void rnApp::setupSphereShape(float radius, int resolution, float collisionMargin){
+    sphereMesh.clear();
     ofSetSphereResolution(resolution);
     sphereMesh = ofGetGLRenderer()->ofGetSphereMesh();
+    sphereMesh = createIcosphere(1, MIN(resolution, 4));
     spheres.setInstanceType(INSTANCE_SPHERE);
     spheres.loadInstanceMesh(sphereMesh, ofVec3f(radius, radius, radius));
     collisionTester::resetSphereShape(radius, collisionMargin);
 }
 void rnApp::setupCylinderShape(float radius, int resolution, float collisionMargin){
+    cylinderMesh.clear();
     cylinderMesh = createCylinderZ(radius, 1, resolution, 1);
     cylinders.setInstanceType(INSTANCE_CYLINDER);
     cylinders.loadInstanceMesh(cylinderMesh);
@@ -210,6 +213,7 @@ void rnApp::mainDraw(){
         mLigDirectional.lookAt(ofVec3f(0,0,0));
         ofEnableSeparateSpecularLight();
 
+        //glPushAttrib(GL_ALL_ATTRIB_BITS);
         glShadeModel(GL_FLAT);
         glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);		// OpenGL default is GL_LAST_VERTEX_CONVENTION
 
@@ -247,6 +251,7 @@ void rnApp::mainDraw(){
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
         glShadeModel(GL_SMOOTH);
+        //glPopAttrib();
 
         
         if(DRAW_COLLISION_SHAPE){
@@ -307,15 +312,13 @@ void rnApp::mouseDragged(int x, int y, int button){
     bMouseDragging = true;
 }
 void rnApp::mousePressed(int x, int y, int button){
-    
     mousePressedStartFrame = ofGetFrameNum();
     camMain.mousePressed(x, y, button);
-
 }
 void rnApp::mouseReleased(int x, int y, int button){
-    cout << ofGetWindowWidth() << endl;
-    
     camMain.mouseReleased(x, y, button);
+    
+    
     bool isClick =( ofGetFrameNum() - mousePressedStartFrame ) < 30;
     if( isClick && !bMouseDragging){
         INSTANCE_TYPE type = INSTANCE_SPHERE;
@@ -324,7 +327,11 @@ void rnApp::mouseReleased(int x, int y, int button){
         bool alt = ofGetModifierPressed(OF_KEY_ALT);
         if( shift ) mode = 1;
         if( alt ) type = INSTANCE_CYLINDER;
+    
+        
+        cout << ofGetWindowWidth() << endl;
         instancedComponent::mousePick( ofVec3f(x, y, -10), type, mode);
+
     }else{
         bMouseDragging = false;
     }
@@ -415,7 +422,7 @@ void rnApp::waitDraw(){
 void rnApp::setupCameraLightMaterial(){
     camMain.setupPerspective(false);
     camMain.setDistance(400);
-    camMain.setFov(50);
+    camMain.setFov(60);             // same with blender
     camMain.disableMouseInput();
     camMain.setNearClip(1);
 	camMain.setFarClip(10000);

@@ -164,5 +164,6 @@ public:
     void saveInstanceDataToCsv(string dirName);
     void loadInstanceDataFromCsv(string dirName);
 
+    static btVector3 rayTo;
 };
 

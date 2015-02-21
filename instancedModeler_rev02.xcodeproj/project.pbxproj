@@ -27,16 +27,9 @@
 		6A9883821A834DF9004322D7 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A9883811A834DF9004322D7 /* Quartz.framework */; };
 		6A9883841A834E08004322D7 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A9883831A834E08004322D7 /* QuartzCore.framework */; };
 		6A9883861A834F6A004322D7 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A9883851A834F6A004322D7 /* AVFoundation.framework */; };
-		6A9DE8CC1A943B7900FE300A /* readme.md in Sources */ = {isa = PBXBuildFile; fileRef = 6A9DE89B1A943B7800FE300A /* readme.md */; };
-		6A9DE8CD1A943B7900FE300A /* Base.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6A9DE89E1A943B7900FE300A /* Base.cpp */; };
-		6A9DE8CE1A943B7900FE300A /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6A9DE8A01A943B7900FE300A /* Camera.cpp */; };
-		6A9DE8CF1A943B7900FE300A /* Plane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6A9DE8A21A943B7900FE300A /* Plane.cpp */; };
-		6A9DE8D01A943B7900FE300A /* Projector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6A9DE8A41A943B7900FE300A /* Projector.cpp */; };
-		6A9DE8D11A943B7900FE300A /* Ray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6A9DE8A61A943B7900FE300A /* Ray.cpp */; };
 		6A9DE9041A9445D900FE300A /* ofxModifierKeys_impl_linux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6A9DE8F71A9445D900FE300A /* ofxModifierKeys_impl_linux.cpp */; };
 		6A9DE9051A9445D900FE300A /* ofxModifierKeys_impl_mac.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6A9DE8F81A9445D900FE300A /* ofxModifierKeys_impl_mac.mm */; };
 		6A9DE9061A9445D900FE300A /* ofxModifierKeys_impl_win.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6A9DE8F91A9445D900FE300A /* ofxModifierKeys_impl_win.cpp */; };
-		6AB3BBAF1A94F9B900DC74F9 /* openFrameworks-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */; };
 		6AB3BBB21A955A4800DC74F9 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D4F587F17E015C300E72686 /* MainMenu.xib */; };
 		6AB3BBB31A955A4D00DC74F9 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D0A2D9517E0A44F00E026EF /* MainWindow.xib */; };
 		6ADC93251A888AC400512491 /* rnTestCase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ADC93231A888AC400512491 /* rnTestCase.cpp */; };
@@ -44,7 +37,7 @@
 		6AE555DF1A95F33F0048F863 /* GLDebugDrawer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6AE555DD1A95F33F0048F863 /* GLDebugDrawer.cpp */; };
 		933a2227713c720ceff80fd967d0a8ee /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2b40eda85beb63e46785bc299a638898 /* tinyxml.cpp */; };
 		9d44dc88ef9e7991b4a09951e2e4769f /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 832bdc407620cdba568b713d2252c43c /* tinyxmlerror.cpp */; };
-		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
+		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
 		E45BE97C0E8CC7DD009D7055 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9720E8CC7DD009D7055 /* ApplicationServices.framework */; };
@@ -184,20 +177,6 @@
 		6A9883811A834DF9004322D7 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		6A9883831A834E08004322D7 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		6A9883851A834F6A004322D7 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		6A9DE8991A943B7800FE300A /* ofxRayLib.vcxproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxRayLib.vcxproj; sourceTree = "<group>"; };
-		6A9DE89A1A943B7800FE300A /* ofxRayLib.vcxproj.filters */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ofxRayLib.vcxproj.filters; sourceTree = "<group>"; };
-		6A9DE89B1A943B7800FE300A /* readme.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
-		6A9DE89E1A943B7900FE300A /* Base.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Base.cpp; sourceTree = "<group>"; };
-		6A9DE89F1A943B7900FE300A /* Base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Base.h; sourceTree = "<group>"; };
-		6A9DE8A01A943B7900FE300A /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
-		6A9DE8A11A943B7900FE300A /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
-		6A9DE8A21A943B7900FE300A /* Plane.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Plane.cpp; sourceTree = "<group>"; };
-		6A9DE8A31A943B7900FE300A /* Plane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Plane.h; sourceTree = "<group>"; };
-		6A9DE8A41A943B7900FE300A /* Projector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Projector.cpp; sourceTree = "<group>"; };
-		6A9DE8A51A943B7900FE300A /* Projector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Projector.h; sourceTree = "<group>"; };
-		6A9DE8A61A943B7900FE300A /* Ray.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Ray.cpp; sourceTree = "<group>"; };
-		6A9DE8A71A943B7900FE300A /* Ray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ray.h; sourceTree = "<group>"; };
-		6A9DE8A81A943B7900FE300A /* ofxRay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxRay.h; sourceTree = "<group>"; };
 		6A9DE8F61A9445D900FE300A /* ofxModifierKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxModifierKeys.h; sourceTree = "<group>"; };
 		6A9DE8F71A9445D900FE300A /* ofxModifierKeys_impl_linux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxModifierKeys_impl_linux.cpp; sourceTree = "<group>"; };
 		6A9DE8F81A9445D900FE300A /* ofxModifierKeys_impl_mac.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxModifierKeys_impl_mac.mm; sourceTree = "<group>"; };
@@ -496,52 +475,6 @@
 			path = src;
 			sourceTree = "<group>";
 		};
-		6A9DE85A1A943B7800FE300A /* ofxRay */ = {
-			isa = PBXGroup;
-			children = (
-				6A9DE8981A943B7800FE300A /* ofxRayLib */,
-				6A9DE89B1A943B7800FE300A /* readme.md */,
-				6A9DE89C1A943B7900FE300A /* src */,
-			);
-			name = ofxRay;
-			path = ../../../addons/ofxRay;
-			sourceTree = "<group>";
-		};
-		6A9DE8981A943B7800FE300A /* ofxRayLib */ = {
-			isa = PBXGroup;
-			children = (
-				6A9DE8991A943B7800FE300A /* ofxRayLib.vcxproj */,
-				6A9DE89A1A943B7800FE300A /* ofxRayLib.vcxproj.filters */,
-			);
-			path = ofxRayLib;
-			sourceTree = "<group>";
-		};
-		6A9DE89C1A943B7900FE300A /* src */ = {
-			isa = PBXGroup;
-			children = (
-				6A9DE89D1A943B7900FE300A /* ofxRay */,
-				6A9DE8A81A943B7900FE300A /* ofxRay.h */,
-			);
-			path = src;
-			sourceTree = "<group>";
-		};
-		6A9DE89D1A943B7900FE300A /* ofxRay */ = {
-			isa = PBXGroup;
-			children = (
-				6A9DE89E1A943B7900FE300A /* Base.cpp */,
-				6A9DE89F1A943B7900FE300A /* Base.h */,
-				6A9DE8A01A943B7900FE300A /* Camera.cpp */,
-				6A9DE8A11A943B7900FE300A /* Camera.h */,
-				6A9DE8A21A943B7900FE300A /* Plane.cpp */,
-				6A9DE8A31A943B7900FE300A /* Plane.h */,
-				6A9DE8A41A943B7900FE300A /* Projector.cpp */,
-				6A9DE8A51A943B7900FE300A /* Projector.h */,
-				6A9DE8A61A943B7900FE300A /* Ray.cpp */,
-				6A9DE8A71A943B7900FE300A /* Ray.h */,
-			);
-			path = ofxRay;
-			sourceTree = "<group>";
-		};
 		6A9DE8E11A9445D800FE300A /* ofxModifierKeys */ = {
 			isa = PBXGroup;
 			children = (
@@ -586,7 +519,6 @@
 			isa = PBXGroup;
 			children = (
 				6A9DE8E11A9445D800FE300A /* ofxModifierKeys */,
-				6A9DE85A1A943B7800FE300A /* ofxRay */,
 				4D4F589117E0175D00E72686 /* ofxCocoaGLView */,
 				4D65FBCE1689DCB700D7B2F5 /* ofxAssimpModelLoader */,
 				4D9D72C51689005500CE7F68 /* ofxDirList */,
@@ -724,7 +656,7 @@
 		E4B69B4C0A3A1720003C02F2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0610;
 			};
 			buildConfigurationList = E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "instancedModeler_rev02" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -770,7 +702,6 @@
 			files = (
 				6AB3BBB31A955A4D00DC74F9 /* MainWindow.xib in Resources */,
 				6AB3BBB21A955A4800DC74F9 /* MainMenu.xib in Resources */,
-				6AB3BBAF1A94F9B900DC74F9 /* openFrameworks-Info.plist in Resources */,
 				4D1F79D117E44867006DA349 /* UserDefaults.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -814,16 +745,10 @@
 				4DA082B31693F01900DF20AD /* ofxMtb.cpp in Sources */,
 				6AE555DC1A95F3270048F863 /* GL_ShapeDrawer.cpp in Sources */,
 				6A9DE9051A9445D900FE300A /* ofxModifierKeys_impl_mac.mm in Sources */,
-				6A9DE8D11A943B7900FE300A /* Ray.cpp in Sources */,
 				6A9DE9041A9445D900FE300A /* ofxModifierKeys_impl_linux.cpp in Sources */,
-				6A9DE8D01A943B7900FE300A /* Projector.cpp in Sources */,
-				6A9DE8CE1A943B7900FE300A /* Camera.cpp in Sources */,
-				6A9DE8CD1A943B7900FE300A /* Base.cpp in Sources */,
 				4D3A44BE16A4F8AE00328314 /* collisionTester.cpp in Sources */,
 				6ADC93251A888AC400512491 /* rnTestCase.cpp in Sources */,
 				6A9DE9061A9445D900FE300A /* ofxModifierKeys_impl_win.cpp in Sources */,
-				6A9DE8CF1A943B7900FE300A /* Plane.cpp in Sources */,
-				6A9DE8CC1A943B7900FE300A /* readme.md in Sources */,
 				4D339CC816B24E6300B46DA0 /* rnApp_connect.cpp in Sources */,
 				4D339CCB16B24F9300B46DA0 /* rnApp_collision.cpp in Sources */,
 				4D4F588817E015C300E72686 /* AppDelegate.mm in Sources */,
@@ -875,6 +800,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = ../../../addons/bullet281/libs;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-D__MACOSX_CORE__",
 					"-lpthread",
@@ -886,7 +812,7 @@
 					"-headerpad_max_install_names",
 				);
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
-				SDKROOT = macosx10.9;
+				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Debug;
@@ -934,7 +860,7 @@
 					"-headerpad_max_install_names",
 				);
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
-				SDKROOT = macosx10.9;
+				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;
@@ -942,7 +868,6 @@
 		E4B69B600A3A1757003C02F2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LIBRARY = "libstdc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -1029,8 +954,6 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_50)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_52)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"\"$(SRCROOT)/../../../addons/tbb41_20121003oss/lib\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../addons/ofxAssimpModelLoader/libs/assimp/lib/osx\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
@@ -1040,7 +963,7 @@
 					"-headerpad_max_install_names",
 				);
 				PRODUCT_NAME = renatureModeller_rev024_Debug;
-				SDKROOT = macosx10.9;
+				SDKROOT = macosx;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1048,7 +971,6 @@
 		E4B69B610A3A1757003C02F2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LIBRARY = "libstdc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
@@ -1135,7 +1057,6 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_50)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"\"$(SRCROOT)/../../../addons/tbb41_20121003oss/lib\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../addons/ofxAssimpModelLoader/libs/assimp/lib/osx\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
@@ -1145,7 +1066,7 @@
 					"-headerpad_max_install_names",
 				);
 				PRODUCT_NAME = renatureModeller_rev024;
-				SDKROOT = macosx10.9;
+				SDKROOT = macosx;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

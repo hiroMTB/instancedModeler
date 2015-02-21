@@ -9,6 +9,7 @@
 #include "rnApp.h"
 #include <vector>
 
+btVector3 instancedComponent::rayTo;
 int instancedComponent::groupIdMaster = -1;
 int instancedComponent::groupTotalNum = 1;
 INSTANCE_MAP instancedComponent::instanceMap;
@@ -163,7 +164,6 @@ void instancedComponent::draw(ofShader * shader){
     vmi.draw();
 
     glPopMatrix();
-    
 }
 
 void instancedComponent::drawSelector(){
@@ -191,17 +191,18 @@ void instancedComponent::drawSelector(){
             if( ins.type == INSTANCE_SPHERE) {
                 if(i==0) ofSetColor(255, 0, 0, 255);
                 else ofSetColor(255, 0, 200, 255);
-                //rnApp::sphereMesh.draw();
                 ofBox(0, 0, 0, rnApp::SPHERE_RADIUS*3);
             }else if( ins.type == INSTANCE_CYLINDER ){
                 ofSetColor(0, 2, 255, 255);
                 glScalef(rnApp::CYLINDER_RADIUS*3,rnApp::CYLINDER_RADIUS*3,1);
                 ofBox(0, 0, 0, 1);
-                //rnApp::cylinderMesh.draw();
             }
             glPopMatrix();
         }
     }
+
+    ofCircle(rayTo.x(), rayTo.y(), rayTo.z(), 10);
+
 }
 
 void instancedComponent::drawWireframe(ofShader * shader){
@@ -717,6 +718,10 @@ void instancedComponent::loadInstanceDataFromCsv(string filePath){
         ins.matrix.setTranslation(ofToFloat(posx), ofToFloat(posy), ofToFloat(posz));
         ins.matrix.setRotate(ofQuaternion(ofToFloat(angle), ofVec3f(ofToFloat(axisx), ofToFloat(axisy), ofToFloat(axisz))));
         
+        if( ofToFloat(scalex) * ofToFloat(scaley) * ofToFloat(scalez) == 0){
+            cout << "\n\nZERO scale CSV load \n\n" <<  endl;
+            continue;
+        }
         ins.scale.set(ofToFloat(scalex), ofToFloat(scaley),ofToFloat(scalez));
         ins.type    = (INSTANCE_TYPE)ofToInt(type);
         addInstance(ins, ofToInt(groupId) );
@@ -809,6 +814,7 @@ INSTANCE_MAP_ITR instancedComponent::getInstanceIterator(int index, INSTANCE_TYP
 
 void instancedComponent::mousePick(ofVec3f winPos, INSTANCE_TYPE type, int mode){
     bool find = false;
+    
     ofCamera & cam = rnApp::get()->camMain;
     ofVec3f s2w = cam.screenToWorld(winPos);
     ofVec3f camPos = cam.getGlobalPosition();
@@ -819,13 +825,15 @@ void instancedComponent::mousePick(ofVec3f winPos, INSTANCE_TYPE type, int mode)
     btTransform rayFromTrans;
     rayFromTrans.setOrigin(rayFrom);
 
-    btVector3 rayTo = btVector3(rayFar.x, rayFar.y, rayFar.z);
+    rayTo = btVector3(rayFar.x, rayFar.y, rayFar.z);
     btTransform rayToTrans;
     rayToTrans.setOrigin(rayTo);
+    INSTANCE_MAP_ITR nominee = instanceMap.end();
     
     if( instanceMap.size() != 0 ){
         INSTANCE_MAP_ITR itr = instanceMap.begin();
         int i = 0;
+        float hitDistMin = std::numeric_limits<float>::max();
         for(; itr!=instanceMap.end(); itr++ ){
             
             instance & ins = itr->second;
@@ -847,32 +855,40 @@ void instancedComponent::mousePick(ofVec3f winPos, INSTANCE_TYPE type, int mode)
                 }
                 
                 collisionTester::setTransformFromOF(mat, scale, *colObj);
+                
                 btCollisionShape * collisionShape = colObj->getCollisionShape();
-                
-                btCollisionWorld::ClosestRayResultCallback rayCallback(rayFrom,rayTo);
-                
+                btCollisionWorld::ClosestRayResultCallback rayCallback(rayFrom,rayTo);                
                 collisionTester::collisionWorld->rayTestSingle(rayFromTrans, rayToTrans, colObj, collisionShape, colObjWorldTransform, rayCallback);
                 
                 if (rayCallback.hasHit()){
-                    switch (mode) {
-                        case 0:
-                            clearSelectedInstance();
-                            selectedInsVec.push_back(itr);
-                            break;
-                        case 1:
-                            selectedInsVec.push_back(itr);
-                            break;
-                        case 2:
-                            vector<INSTANCE_MAP_ITR>::iterator target = std::find(selectedInsVec.begin(), selectedInsVec.end(), itr);
-                            if(target!=selectedInsVec.end())
-                                selectedInsVec.erase(target);
-                            break;
-                    }
                     find = true;
-                    cout << "hit";
-                    break;
+                    btVector3 hitpoint = rayCallback.m_hitPointWorld;
+                    float hitDist = rayFrom.distance(hitpoint);
+                    if( hitDist < hitDistMin ){
+                        hitDistMin = hitDist;
+                        nominee = itr;
+                    }
+                    cout << "hit ";
                 }
             }
+        }
+
+        if(find && nominee!=instanceMap.end()){
+            switch (mode) {
+                case 0:
+                    clearSelectedInstance();
+                    selectedInsVec.push_back(nominee);
+                    break;
+                case 1:
+                    selectedInsVec.push_back(nominee);
+                    break;
+                case 2:
+                    vector<INSTANCE_MAP_ITR>::iterator target = std::find(selectedInsVec.begin(), selectedInsVec.end(), nominee);
+                    if(target!=selectedInsVec.end())
+                        selectedInsVec.erase(target);
+                    break;
+            }
+            cout << endl;
         }
     }
 }

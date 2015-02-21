@@ -15,8 +15,9 @@ void myLogDebug(string message);
 void myLogRelease(string message);
 ofMesh createCylinderZ(float radius, float height, int slices, int stacks);
 ofMesh createCylinderY(float radius, float height, int slices, int stacks);
-
+ofMesh createIcosphere(float radius, int iteration);
 ofMesh createQuadSphere(float r, int lats, int longs);
+ofMesh createIcosahedron(float radius);
 
 struct idPair{
     private:
@@ -74,8 +75,6 @@ namespace STL_UTIL{
         container.erase(itr);
     }
     
-    
-
     // for multimap only?
     template <typename CONTAINER>
     int getElementSize(CONTAINER& container, const typename CONTAINER::key_type& key){
@@ -93,15 +92,10 @@ namespace STL_UTIL{
     }
 }
 
-
-
-
 float fBm1f( float x, int octave=4);
 float fBm1uf( float x, int octave=4);
 float fbm3f( float x, float y, float z, int octave=4);
 float fbm3uf( float x, float y, float z, int octave=4);
 
-
-
-
 float distSeg2Seg( ofVec3f p1, ofVec3f p2, ofVec3f p3, ofVec3f p4);
+
