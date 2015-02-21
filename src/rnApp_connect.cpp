@@ -90,7 +90,7 @@ void rnApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int nu
     int startTime = ofGetElapsedTimeMillis();
     myLogRelease("Start ConnectGroup Process : time : " + ofToString(startTime));
     
-    INSTANCE_MAP& instanceMap = instancedComponent::getInstanceMap();
+    INSTANCE_MAP& instanceMap = instancedComponent::instanceMap;
     int numGroups = STL_UTIL::getAllKeySize(instanceMap);
     
     if(numGroups<2){
@@ -235,7 +235,7 @@ void rnApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int n
     int startTime = ofGetElapsedTimeMillis();
     myLogRelease("Start ConnectRandom Process : time : " + ofToString(startTime));
     
-    INSTANCE_MAP& instanceMap = instancedComponent::getInstanceMap();
+    INSTANCE_MAP& instanceMap = instancedComponent::instanceMap;
     int numInstances = instanceMap.size();
     
     int numFind = 0;
@@ -303,7 +303,7 @@ void rnApp::connectFloating(instancedComponent *ic, instancedComponent *ic2, int
     int startTime = ofGetElapsedTimeMillis();
     myLogRelease("Start ConnectGroup Process : time : " + ofToString(startTime));
     
-    INSTANCE_MAP& instanceMap = instancedComponent::getInstanceMap();
+    INSTANCE_MAP& instanceMap = instancedComponent::instanceMap;
     int numGroups = STL_UTIL::getAllKeySize(instanceMap);
     
     if(numGroups<2){

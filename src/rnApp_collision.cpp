@@ -37,13 +37,9 @@ float rnApp::getCollisionDistance(instance &insA, instance &insB){
 }
 
 void rnApp::processCollision(){
-#if defined (USE_TBB) && defined(USE_TBB_COLLISIION)
-    processCollisionParallel();
-#else
-    
     int startTime = collisionStart();
     
-    INSTANCE_MAP& instanceMap = instancedComponent::getInstanceMap();
+    INSTANCE_MAP& instanceMap = instancedComponent::instanceMap;
     INSTANCE_MAP_ITR itrA = instanceMap.begin();
     
     typedef map<instance*, int> TMAP;
@@ -95,7 +91,7 @@ void rnApp::processCollision(){
                 if(groupIdA==-1){
                     if(groupIdB==-1){
                         // move instance A, B to new group
-                        int newId = instancedComponent::incGroupIdMaster();
+                        int newId = instancedComponent::groupIdMaster++;
                         tmap.insert(TPAIR(&itrA->second, newId));
                         tmap.insert(TPAIR(&itrB->second, newId));
                     }else{
@@ -146,7 +142,6 @@ void rnApp::processCollision(){
     }
     
     collisionEnd(startTime);
-#endif
 }
 
 int rnApp::collisionStart(){
@@ -171,46 +166,13 @@ void rnApp::collisionEnd(int startTime){
     spheres.setGroupColor(-1, ofColor(0,0,0));
     
     
-    spheres.setCltexNeedUpdate(true);
-    spheres.setVtxtexNeedUpdate(true);
+    spheres.bCltexNeedUpdate = true;
+    spheres.bVtxtexNeedUpdate = true;
     
-    cylinders.setCltexNeedUpdate(true);
-    cylinders.setVtxtexNeedUpdate(true);
-    
+    cylinders.bCltexNeedUpdate = true;
+    cylinders.bVtxtexNeedUpdate = true;
     
     int endTime = ofGetElapsedTimeMillis();
     myLogRelease("collisionTest endTime:  "+ ofToString(endTime)+", elapsed: " + ofToString((float)(endTime-startTime)/1000.0));
     myLogRelease("finish CollisionTest");
 }
-
-
-#if defined (USE_TBB) && defined(USE_TBB_COLLISIION)
-void rnApp::processCollisionParallel(){
-    
-    int startTime = collisionStart();
-    
-    INSTANCE_MAP& instanceMap = instancedComponent::getInstanceMap();
-    int N = instanceMap.size();
-    CollisionTable table;
-    parallel_for(blocked_range<size_t>(0, N), Tally(table, instanceMap));
-    
-    // change group id
-    CollisionTable::iterator itr = table.begin();
-    for(; itr!=table.end(); ++itr){
-        instance * ins = itr->first;
-        int groupId = itr->second;
-        if(ins!=NULL){
-            INSTANCE_MAP_ITR  iitr = instanceMap.begin();
-            for(; iitr!=instanceMap.end(); iitr++){
-                if(&iitr->second == ins){
-                    spheres.changeInstanceGroupId(iitr, groupId);
-                    break;
-                }
-            }
-        }
-    }
-    
-    collisionEnd(startTime);
-    
-}
-#endif

@@ -7,13 +7,11 @@
 //
 
 #include "rnTestCase.h"
-
 #include "rnApp.h"
-
 
 void rnTestCase::setup_mergin_test(){
     
-    static rnApp * app = rnApp::get();
+    static rnApp * app = rnApp::app;
     
     float radius = 1.75;
     rnApp::SPHERE_RADIUS = radius;
@@ -33,14 +31,11 @@ void rnTestCase::setup_mergin_test(){
     ms[1].translate(10 + radius*2 + 0.5, 1, 1);
     scales[1].set(1, 1, 1);
     app->spheres.loadInstancePositionFromMatrices(&ms[0], &scales[0], 2);
-    
- 
 }
-
 
 void rnTestCase::loadRandomSphere(int num, float pos_max){
 
-    static rnApp * app = rnApp::get();
+    static rnApp * app = rnApp::app;
 
     vector<ofMatrix4x4> ms(num);
     vector<ofVec3f> scales(num);
@@ -54,7 +49,7 @@ void rnTestCase::loadRandomSphere(int num, float pos_max){
 
 void rnTestCase::loadRandomCylinder(int num, float pos_max){
     
-    static rnApp * app = rnApp::get();
+    static rnApp * app = rnApp::app;
 
     vector<ofMatrix4x4> ms(num);
     vector<ofVec3f> scales(num);

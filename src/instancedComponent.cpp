@@ -8,6 +8,7 @@
 #include "collisionTester.h"
 #include "rnApp.h"
 #include <vector>
+#include <set>
 
 btVector3 instancedComponent::rayTo;
 int instancedComponent::groupIdMaster = -1;
@@ -38,25 +39,14 @@ cltexId(GL_NONE)
 }
 
 instancedComponent::~instancedComponent(){
-    destroy();
-}
-
-void instancedComponent::destroy(){
     glDeleteTextures(1, &vtxtexId);
     glDeleteTextures(1, &cltexId);
-    //delete matrices;
-    
     vmi.clear();
     myLogDebug("instancedComponent destroyed");
 }
 
-void instancedComponent::setInstanceType(INSTANCE_TYPE t){
-    insType = t;
-}
-
 void instancedComponent::update(){
     updateVertexTexture();
-    
     updateColorTexture();
 }
 
@@ -231,8 +221,6 @@ void instancedComponent::debugDraw(){
     }
 }
 
-// instance param
-//
 INSTANCE_MAP_ITR instancedComponent::addInstance(instance ins, int groupId){
     INSTANCE_MAP_ITR itr = instanceMap.insert(pair<int, instance>(groupId, ins));
     bVtxtexNeedUpdate = true;
@@ -454,15 +442,14 @@ void instancedComponent::changeInstanceGroupId(INSTANCE_MAP_ITR& itr, int groupI
     STL_UTIL::changeKey(instanceMap, itr, groupId);
 }
 
-//
-//  groupA += groupB
-//
-//  result:
-//      A = A+B
-//      B = 0
-//
 void instancedComponent::mergeInstanceGroup(int groupIdA, int groupIdB){
-    
+    //
+    //  groupA += groupB
+    //
+    //  result:
+    //      A = A+B
+    //      B = 0
+    //
     INSTANCE_MAP_ITR end = instanceMap.end();
     
     INSTANCE_MAP_ITR itrA = instanceMap.find(groupIdA);
@@ -485,7 +472,6 @@ void instancedComponent::mergeInstanceGroup(int groupIdA, int groupIdB){
     
 }
 
-#include <set>
 void instancedComponent::mergeInstanceGroupAll(int groupId){
 
     set<int> tmp;
@@ -605,13 +591,10 @@ void instancedComponent::resetGroup(){
     groupIdMaster = 0;
 }
 
-//
-//  save tp csv
-//
-//  NOTICE: first 3 lines are version and format info
-//
 void instancedComponent::saveInstanceDataToCsv(string dirpath){
-    
+    //
+    //  NOTICE: first 3 lines are version and format info
+    //
     float meshScale = 0.00000001;    // TODO:
     
     string version = "v0.3";
@@ -761,13 +744,6 @@ void instancedComponent::removeDuplication(){
     }
 }
 
-//void instancedComponent::addSelectedInstance(int index){
-//
-//    if( 0<=index && index<instanceMap.size() ){
-//        selectedInsVec.push_back( getInstanceIterator(index, insType) );
-//    }
-//}
-
 void instancedComponent::removeSelectedInstance(){
 
     int removeCount = 0;;
@@ -813,9 +789,13 @@ INSTANCE_MAP_ITR instancedComponent::getInstanceIterator(int index, INSTANCE_TYP
 }
 
 void instancedComponent::mousePick(ofVec3f winPos, INSTANCE_TYPE type, int mode){
+    // mode 0 : clear and select
+    // mode 1 : add
+    // mode 2 : remove
+
     bool find = false;
     
-    ofCamera & cam = rnApp::get()->camMain;
+    ofCamera & cam = rnApp::app->camMain;
     ofVec3f s2w = cam.screenToWorld(winPos);
     ofVec3f camPos = cam.getGlobalPosition();
     ofVec3f dir = s2w - camPos;
@@ -876,7 +856,7 @@ void instancedComponent::mousePick(ofVec3f winPos, INSTANCE_TYPE type, int mode)
         if(find && nominee!=instanceMap.end()){
             switch (mode) {
                 case 0:
-                    clearSelectedInstance();
+                    selectedInsVec.clear();
                     selectedInsVec.push_back(nominee);
                     break;
                 case 1:
@@ -892,8 +872,3 @@ void instancedComponent::mousePick(ofVec3f winPos, INSTANCE_TYPE type, int mode)
         }
     }
 }
-
-void instancedComponent::clearSelectedInstance(){
-    selectedInsVec.clear();
-}
-

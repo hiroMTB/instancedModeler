@@ -6,10 +6,8 @@
 //
 //
 
-#include "myDef.h"
 #include "collisionTester.h"
 #include "ofxMtb.h"
-
 #include "BulletMultiThreaded/SpuGatheringCollisionDispatcher.h"
 #include "BulletMultiThreaded/PlatformDefinitions.h"
 #include "BulletMultiThreaded/PosixThreadSupport.h"
@@ -47,29 +45,24 @@ collisionTester::collisionTester(){
     initAlgo();
 }
 
-
 collisionTester::~collisionTester(){
     
-    destroy();
+    //    ???
+    //    if(algoSS){ delete algoSS; algoSS=0; }
+    //    if(algoCC){ delete algoCC; algoCC=0; }
+    //    if(algoSC){ delete algoSC; algoSC=0; }
+    
+    delete sphereA.getCollisionShape();
+    delete sphereB.getCollisionShape();
+    delete cylinderA.getCollisionShape();
+    delete cylinderB.getCollisionShape();
+    if(collisionWorld){ delete collisionWorld; collisionWorld=0; }
 }
-
 
 void collisionTester::initCollisionWorld(){
     btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
 	
-#if defined (USE_TBB) && defined(USE_TBB_COLLISIION)
-    int maxNumOutstandingTasks = 4;
-    PosixThreadSupport::ThreadConstructionInfo constructionInfo("collision",
-                                                                processCollisionTask,
-                                                                createCollisionLocalStoreMemory,
-                                                                maxNumOutstandingTasks);
-
-    m_threadSupportCollision = new PosixThreadSupport(constructionInfo);
-    
-	btCollisionDispatcher * dispatcher = new SpuGatheringCollisionDispatcher(m_threadSupportCollision,maxNumOutstandingTasks, collisionConfiguration);
-#else
     btCollisionDispatcher * dispatcher = new btCollisionDispatcher(collisionConfiguration);
-#endif
 
     btVector3	worldAabbMin(-10000,-10000,-10000);
 	btVector3	worldAabbMax( 10000, 10000, 10000);
@@ -77,7 +70,6 @@ void collisionTester::initCollisionWorld(){
 	collisionWorld = new btCollisionWorld(dispatcher, broadphase, collisionConfiguration);
 	collisionWorld->setDebugDrawer(&debugDrawer);    
 }
-
 
 void collisionTester::initAlgo(){
     
@@ -90,7 +82,6 @@ void collisionTester::initAlgo(){
   	algoSC = collisionWorld->getDispatcher()->findAlgorithm(&sA, &cA);
     algoCC = collisionWorld->getDispatcher()->findAlgorithm(&cA, &cB);
 }
-
 
 void collisionTester::resetSphereShape(float radius, float collisionMargin){
     
@@ -129,23 +120,6 @@ void collisionTester::resetCylinderShape(ofVec3f halfExtent, float collisionMarg
     cylinderB.setCollisionShape(cB);
 }
 
-
-
-void collisionTester::destroy(){
-
-//    ???
-//    if(algoSS){ delete algoSS; algoSS=0; }
-//    if(algoCC){ delete algoCC; algoCC=0; }
-//    if(algoSC){ delete algoSC; algoSC=0; }
-    
-    delete sphereA.getCollisionShape();
-    delete sphereB.getCollisionShape();
-    delete cylinderA.getCollisionShape();
-    delete cylinderB.getCollisionShape();
-    if(collisionWorld){ delete collisionWorld; collisionWorld=0; }
-}
-
-
 void collisionTester::debugDraw(ofMatrix4x4& mat, ofVec3f& scale, int shapeType){
 	glDisable(GL_LIGHTING);
     glDisable(GL_TEXTURE_2D);
@@ -163,10 +137,6 @@ void collisionTester::debugDraw(ofMatrix4x4& mat, ofVec3f& scale, int shapeType)
     collisionWorld->debugDrawObject(obj->getWorldTransform(),obj->getCollisionShape(), color);
 }
 
-
-
-
-
 void collisionTester::setTransformFromOF(ofMatrix4x4& mat, ofVec3f& s, btCollisionObject& obj){
     
     btTransform trans;
@@ -175,10 +145,8 @@ void collisionTester::setTransformFromOF(ofMatrix4x4& mat, ofVec3f& s, btCollisi
     obj.getCollisionShape()->setLocalScaling(btVector3(s.x, s.y, s.z));
 }
 
-//
-//  see bulletPhysics CollisionInterfaceDemo.cpp
-//
 float collisionTester::testSphereSphere(ofMatrix4x4& matA, ofVec3f& sA, ofMatrix4x4& matB, ofVec3f& sB){
+    //  see bulletPhysics CollisionInterfaceDemo.cpp
     setTransformFromOF(matA, sA, sphereA);
     setTransformFromOF(matB, sB, sphereB);
     return collisionTest(&sphereA, &sphereB, algoSS);
@@ -196,16 +164,12 @@ float collisionTester::testCylinderCylinder(ofMatrix4x4& matA, ofVec3f& sA, ofMa
     return collisionTest(&cylinderA, &cylinderB, algoCC);
 }
 
-
 float collisionTester::collisionTest(btCollisionObject * objectA, btCollisionObject * objectB, btCollisionAlgorithm * algo){
     
     float dist = 99999;
     
     btCollisionObjectWrapper ob0(0,objectA->getCollisionShape(),objectA, objectA->getWorldTransform());
     btCollisionObjectWrapper ob1(0,objectB->getCollisionShape(),objectB, objectB->getWorldTransform());
-//    
-//	btCollisionAlgorithm* algo = collisionWorld->getDispatcher()->findAlgorithm(&ob0, &ob1);
-    
 	btManifoldResult contactPointResult(&ob0,&ob1);
 	algo->processCollision(&ob0,&ob1,collisionWorld->getDispatchInfo(),&contactPointResult);
 	
@@ -217,31 +181,20 @@ float collisionTester::collisionTest(btCollisionObject * objectA, btCollisionObj
 	{
 		btPersistentManifold* contactManifold = manifoldArray[i];
 		const btCollisionObject* obA = static_cast<const btCollisionObject*>(contactManifold->getBody0());
-        //	btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
-        
 	
 		int numContacts = contactManifold->getNumContacts();
 		bool swap = obA == objectA;
-        
-        //printf("numManifolds=%i, numContact = %i \n", numManifolds, numContacts);
         
 		for (int j=0;j<numContacts;j++)
 		{
 			btManifoldPoint& pt = contactManifold->getContactPoint(j);
             
-//          glDisable(GL_DEPTH_TEST);
-//			glBegin(GL_LINES);
-//			glColor3f(0, 0, 1);
 			btVector3 ptA = swap ?pt.getPositionWorldOnA():pt.getPositionWorldOnB();
 			btVector3 ptB = swap ? pt.getPositionWorldOnB():pt.getPositionWorldOnA();
-//			glVertex3d(ptA.x(),ptA.y(),ptA.z());
-//			glVertex3d(ptB.x(),ptB.y(),ptB.z());
             
             //contactPts.push_back(ptA);
             //contactPts.push_back(ptB);
             
-//			glEnd();
-
             float distTmp = pt.getDistance();
             if(distTmp<dist)
                 dist=distTmp;
@@ -263,12 +216,10 @@ void collisionTester::drawAllContanctPts(){
     for (int i=0; i<contactPts.size(); i++) {
         btVector3& ptA = contactPts[i];
 		glVertex3d(ptA.x(),ptA.y(),ptA.z());
-//		glVertex3d(ptB.x(),ptB.y(),ptB.z());
     }
     glEnd();
 
 }
-
 
 void collisionTester::clearContanctPts(){
     contactPts.clear();
