@@ -190,7 +190,7 @@ NSString *const loadModelResolution = @"loadModelResolution";
         if (result == NSOKButton){
             if ([[openPanel URL] isFileURL]){
                 string path = std::string([[[openPanel URL] path] UTF8String]);
-                rnApp::app->loadCsvData(path);
+                rnApp::get()->loadCsvData(path);
             }
         }
     }];
@@ -212,7 +212,7 @@ NSString *const loadModelResolution = @"loadModelResolution";
                 string path = std::string([[[openPanel URL] path] UTF8String]);
                 rnApp::posModelPath_P = path;
                 rnApp::CURRENT_PROCESS = rnApp::LOAD_MODEL_DATA;
-                rnApp::app->loadModelData();
+                rnApp::get()->loadModelData();
             }
         }
     }];
@@ -360,7 +360,7 @@ NSString *const loadModelResolution = @"loadModelResolution";
     [[NSUserDefaults standardUserDefaults] setFloat:sender.floatValue forKey:connectGroupMaxDistance];
 }
 - (IBAction)pushManualConnectButton:(NSButton *)sender {
-    rnApp::app->connectSelected();
+    rnApp::get()->connectSelected();
 }
 
 - (IBAction)changeRemoveGroupsMinNumNBox:(NSTextField *)sender{
@@ -381,10 +381,10 @@ NSString *const loadModelResolution = @"loadModelResolution";
     rnApp::CURRENT_PROCESS = rnApp::REMOVE_GROUPS;
 }
 - (IBAction)pushRemoveSphereButton:(NSButton *)sender {
-    rnApp::app->spheres.removeSelectedInstance();
+    rnApp::get()->spheres.removeSelectedInstance();
 }
 - (IBAction)pushRemoveCylinderButton:(NSButton *)sender {
-    rnApp::app->cylinders.removeSelectedInstance();
+    rnApp::get()->cylinders.removeSelectedInstance();
 }
 - (IBAction)pushRemoveAllSpheres:(NSButton *)sender {
     rnApp::CURRENT_PROCESS = rnApp::REMOVE_ALL_SPHERES;
@@ -497,9 +497,10 @@ NSString *const loadModelResolution = @"loadModelResolution";
     [savePanel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
         if(result == NSOKButton){
             string path = std::string([[[savePanel URL] path] UTF8String]);
-            rnApp::app->saveCsvData(path);
+            rnApp::get()->saveCsvData(path);
         }
-    }];    
+    }];
+    
 }
 
 // ??? can not call this func.

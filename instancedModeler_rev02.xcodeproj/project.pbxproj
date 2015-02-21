@@ -92,6 +92,7 @@
 		4D0A2D9517E0A44F00E026EF /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		4D159999168B215400D10232 /* instancedTexTrans.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = instancedTexTrans.frag; sourceTree = "<group>"; };
 		4D15999A168B215400D10232 /* instancedTexTrans.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = instancedTexTrans.vert; sourceTree = "<group>"; };
+		4D27813016AF3FB800BBD8E2 /* myDef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = myDef.h; sourceTree = "<group>"; };
 		4D31ABA117E1EA6E0026C218 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = bin/data; sourceTree = "<group>"; };
 		4D339CC616B24E6300B46DA0 /* rnApp_connect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rnApp_connect.cpp; sourceTree = "<group>"; };
 		4D339CC916B24F9300B46DA0 /* rnApp_collision.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rnApp_collision.cpp; sourceTree = "<group>"; };
@@ -606,6 +607,7 @@
 				4D3A44BC16A4F8AE00328314 /* collisionTester.cpp */,
 				4D3A44BD16A4F8AE00328314 /* collisionTester.h */,
 				4DB98A8116AD4A0900F0864B /* performanceMemo.rtf */,
+				4D27813016AF3FB800BBD8E2 /* myDef.h */,
 				6ADC93231A888AC400512491 /* rnTestCase.cpp */,
 				6ADC93241A888AC400512491 /* rnTestCase.h */,
 				6AE555DA1A95F3270048F863 /* GL_ShapeDrawer.cpp */,

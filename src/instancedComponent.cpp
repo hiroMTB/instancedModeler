@@ -38,14 +38,25 @@ cltexId(GL_NONE)
 }
 
 instancedComponent::~instancedComponent(){
+    destroy();
+}
+
+void instancedComponent::destroy(){
     glDeleteTextures(1, &vtxtexId);
     glDeleteTextures(1, &cltexId);
+    //delete matrices;
+    
     vmi.clear();
     myLogDebug("instancedComponent destroyed");
 }
 
+void instancedComponent::setInstanceType(INSTANCE_TYPE t){
+    insType = t;
+}
+
 void instancedComponent::update(){
     updateVertexTexture();
+    
     updateColorTexture();
 }
 
@@ -191,6 +202,7 @@ void instancedComponent::drawSelector(){
     }
 
     ofCircle(rayTo.x(), rayTo.y(), rayTo.z(), 10);
+
 }
 
 void instancedComponent::drawWireframe(ofShader * shader){
@@ -215,9 +227,12 @@ void instancedComponent::debugDraw(){
     for(; itr!=instanceMap.end(); itr++){
         instance& d = itr->second;
         collisionTester::debugDraw(d.matrix, d.scale, d.type);  // type should be same with bullet shape type
+//        cout << d.matrix << endl;
     }
 }
 
+// instance param
+//
 INSTANCE_MAP_ITR instancedComponent::addInstance(instance ins, int groupId){
     INSTANCE_MAP_ITR itr = instanceMap.insert(pair<int, instance>(groupId, ins));
     bVtxtexNeedUpdate = true;
@@ -226,7 +241,10 @@ INSTANCE_MAP_ITR instancedComponent::addInstance(instance ins, int groupId){
 }
 
 void instancedComponent::addInstanceMatrix(ofMatrix4x4 m, ofVec3f s, int groupId){
-    if(groupId<-2){
+    if(index<0){
+        myLogRelease("invalid value for index num");
+        return;
+    }else if(groupId<-2){
         myLogRelease("invalid value for groupId");
         return;
     }
@@ -587,8 +605,11 @@ void instancedComponent::resetGroup(){
     groupIdMaster = 0;
 }
 
+//
 //  save tp csv
+//
 //  NOTICE: first 3 lines are version and format info
+//
 void instancedComponent::saveInstanceDataToCsv(string dirpath){
     
     float meshScale = 0.00000001;    // TODO:
@@ -740,6 +761,13 @@ void instancedComponent::removeDuplication(){
     }
 }
 
+//void instancedComponent::addSelectedInstance(int index){
+//
+//    if( 0<=index && index<instanceMap.size() ){
+//        selectedInsVec.push_back( getInstanceIterator(index, insType) );
+//    }
+//}
+
 void instancedComponent::removeSelectedInstance(){
 
     int removeCount = 0;;
@@ -784,13 +812,10 @@ INSTANCE_MAP_ITR instancedComponent::getInstanceIterator(int index, INSTANCE_TYP
     return instanceMap.end();
 }
 
-// mode 0 : clear and select
-// mode 1 : add
-// mode 2 : remove
 void instancedComponent::mousePick(ofVec3f winPos, INSTANCE_TYPE type, int mode){
     bool find = false;
     
-    ofCamera & cam = rnApp::app->camMain;
+    ofCamera & cam = rnApp::get()->camMain;
     ofVec3f s2w = cam.screenToWorld(winPos);
     ofVec3f camPos = cam.getGlobalPosition();
     ofVec3f dir = s2w - camPos;
@@ -834,7 +859,7 @@ void instancedComponent::mousePick(ofVec3f winPos, INSTANCE_TYPE type, int mode)
                 btCollisionShape * collisionShape = colObj->getCollisionShape();
                 btCollisionWorld::ClosestRayResultCallback rayCallback(rayFrom,rayTo);                
                 collisionTester::collisionWorld->rayTestSingle(rayFromTrans, rayToTrans, colObj, collisionShape, colObjWorldTransform, rayCallback);
-                                
+                
                 if (rayCallback.hasHit()){
                     find = true;
                     btVector3 hitpoint = rayCallback.m_hitPointWorld;
@@ -851,7 +876,7 @@ void instancedComponent::mousePick(ofVec3f winPos, INSTANCE_TYPE type, int mode)
         if(find && nominee!=instanceMap.end()){
             switch (mode) {
                 case 0:
-                    selectedInsVec.clear();
+                    clearSelectedInstance();
                     selectedInsVec.push_back(nominee);
                     break;
                 case 1:
@@ -867,3 +892,8 @@ void instancedComponent::mousePick(ofVec3f winPos, INSTANCE_TYPE type, int mode)
         }
     }
 }
+
+void instancedComponent::clearSelectedInstance(){
+    selectedInsVec.clear();
+}
+

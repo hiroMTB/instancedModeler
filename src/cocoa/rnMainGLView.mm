@@ -14,7 +14,7 @@
     
     
     rnApp::init();
-    rnApp::app->setup();
+    rnApp::get()->setup();
 
     // resize
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -32,51 +32,51 @@
 
 
 - (void)update{
-    rnApp::app->update();
+    rnApp::get()->update();
 }
 
 - (void)draw{
-    rnApp::app->draw();
+    rnApp::get()->draw();
 }
 
 - (void)exit
 {
-    rnApp::app->exit();
+    rnApp::get()->exit();
 }
 
 - (void)keyPressed:(int)key
 {
-    rnApp::app->keyPressed(key);
+    rnApp::get()->keyPressed(key);
 }
 
 - (void)keyReleased:(int)key
 {
-    rnApp::app->keyReleased(key);
+    rnApp::get()->keyReleased(key);
 }
 
 - (void)mouseMoved:(NSPoint)p
 {
-    rnApp::app->mouseMoved(p.x, p.y);
+    rnApp::get()->mouseMoved(p.x, p.y);
 }
 
 - (void)mouseDragged:(NSPoint)p button:(int)button
 {
-    rnApp::app->mouseDragged(p.x, p.y, button);
+    rnApp::get()->mouseDragged(p.x, p.y, button);
 }
 
 - (void)mousePressed:(NSPoint)p button:(int)button
 {
-    rnApp::app->mousePressed(p.x, p.y, button);
+    rnApp::get()->mousePressed(p.x, p.y, button);
 }
 
 - (void)mouseReleased:(NSPoint)p button:(int)button
 {
-    rnApp::app->mouseReleased(p.x, p.y, button);
+    rnApp::get()->mouseReleased(p.x, p.y, button);
 }
 
 - (void)windowResized:(NSSize)size
 {
-    rnApp::app->windowResized(size.width, size.height);
+    rnApp::get()->windowResized(size.width, size.height);
 }
 
 static bool bWindowing;

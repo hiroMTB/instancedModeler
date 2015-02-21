@@ -5,7 +5,7 @@
 #include "ofxModifierKeys.h"
 
 collisionTester * rnApp::tester = NULL;
-rnApp * rnApp::app = NULL;
+rnApp * rnApp::singleton = NULL;
 ofColor rnApp::colorSphere    = ofColor(100);
 ofColor rnApp::colorCylinder  = ofColor(100, 100, 50);
 string  rnApp::posModelPath_P = "none";
@@ -41,18 +41,17 @@ bool  rnApp::DRAW_CYLINDER            = true;
 int rnApp::LOAD_MODEL_RESOLUTION = 10;
 bool rnApp::LOAD_MODEL_WITH_NOISE_FILTER = true;
 
-rnApp::PROCESS_NAME rnApp::CURRENT_PROCESS = rnApp::NO_PROCESS;
+static bool RENDER_NORMALS; // shader uniform name
+static bool FLAT_SHADING;
 
-void rnApp::init(){
-    if(!app)
-        app = new rnApp;
-}
+rnApp::PROCESS_NAME rnApp::CURRENT_PROCESS = rnApp::NO_PROCESS;
 
 void rnApp::setup(){
 
 #ifndef NDEBUG
     cout << "app running on DEBUG MODE" << endl;
     ofSetLogLevel(OF_LOG_VERBOSE);
+    
 #else
     ofSetLogLevel(OF_LOG_WARNING);
 #endif
@@ -63,63 +62,127 @@ void rnApp::setup(){
     sprintf(mes, "using openFrameworks %d.%d", OF_VERSION, OF_VERSION_MINOR);
     myLogRelease(mes);
     
+    glEnable(GL_DEPTH_TEST);
+    
     bNowProcessing = false;
     mShdInstanced = NULL;
-    compScale = 1;
-    posScale = 10;
-    boxSize = 100;
-
+    
 	ofSetVerticalSync(false);
+	setupCameraLightMaterial();
     setupShaders();
 
     tester = new collisionTester();
     finishSound.loadSound("sound/finishSound.wav");
 
+    // ---------------------------------------------------
     posModelPath_P = "none";
     setupSphereShape(   SPHERE_RADIUS,   SPHERE_RESOLUTION, SPHERE_COLLISION_MARGIN);
     setupCylinderShape( CYLINDER_RADIUS, CYLINDER_RESOLUTION, CYLINDER_COLLISION_MARGIN);
 
-    setupCameraLightMaterial();
-    testCase.loadRandomSphere(1, 10);
+    compScale = 1;
+    posScale = 10;
+    boxSize = 100;
+    
+    testCase.loadRandomSphere(30, 100);
 }
-
 void rnApp::loadModelData(){
-    char mes[255];
-    sprintf(mes, "start loading renature model %s", posModelPath_P.c_str());
-    myLogRelease(mes);
-    spheres.loadInstancePositionFromModel(posModelPath_P, LOAD_MODEL_RESOLUTION, posScale, LOAD_MODEL_WITH_NOISE_FILTER);
+    //cylinders.reset();
+    //spheres.reset();
+    
+    {
+        char mes[255];
+        sprintf(mes, "start loading renature model %s", posModelPath_P.c_str());
+        myLogRelease(mes);
+        spheres.loadInstancePositionFromModel(posModelPath_P, LOAD_MODEL_RESOLUTION, posScale, LOAD_MODEL_WITH_NOISE_FILTER);
+    }
 }
-
 void rnApp::setupSphereShape(float radius, int resolution, float collisionMargin){
     sphereMesh.clear();
     ofSetSphereResolution(resolution);
     sphereMesh = ofGetGLRenderer()->ofGetSphereMesh();
     sphereMesh = createIcosphere(1, MIN(resolution, 4));
-    spheres.insType = INSTANCE_SPHERE;
+    spheres.setInstanceType(INSTANCE_SPHERE);
     spheres.loadInstanceMesh(sphereMesh, ofVec3f(radius, radius, radius));
     collisionTester::resetSphereShape(radius, collisionMargin);
 }
-
 void rnApp::setupCylinderShape(float radius, int resolution, float collisionMargin){
     cylinderMesh.clear();
     cylinderMesh = createCylinderZ(radius, 1, resolution, 1);
-    cylinders.insType = INSTANCE_CYLINDER;
+    cylinders.setInstanceType(INSTANCE_CYLINDER);
     cylinders.loadInstanceMesh(cylinderMesh);
     collisionTester::resetCylinderShape(ofVec3f(radius, 123, 0.5), collisionMargin);  // do not use y value
 }
 
 void rnApp::update(){
+    
     doProcess();
+
     processGui();
     spheres.update();
     cylinders.update();
+
 }
 
 void rnApp::draw(){
     ofDisableAlphaBlending();
     mainDraw();
+    //testDraw();
 }
+void rnApp::testDraw(){
 
+    ofBackground(200, 200, 200);
+    
+    camMain.begin();
+    
+    ofEnableLighting();
+	mLigDirectional.setGlobalPosition(1000, 1000, 1000);
+	mLigDirectional.lookAt(ofVec3f(0,0,0));
+	ofEnableSeparateSpecularLight();
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+    glShadeModel(GL_FLAT);
+    
+    mLigDirectional.enable();
+    mMatMainMaterial.begin();
+    
+    
+    
+    {
+        glPushMatrix();
+        glTranslatef(-10, 0, 0);
+        ofMesh cyl = createCylinderZ(4, 7, 12, 1);
+        ofSetColor(200,200,200);
+        //cyl.drawWireframe();
+        cyl.draw();
+        glPopMatrix();
+    }
+    
+    {
+        glPushMatrix();
+        glTranslatef(0, 0, 0);
+        ofSetSphereResolution(5);
+        ofMesh sphere = ofGetGLRenderer()->ofGetSphereMesh();
+        ofSetColor(200,200,200);
+        //sphere.drawWireframe();
+        sphere.draw();
+        glPopMatrix();
+    }
+
+    {
+        glPushMatrix();
+        glTranslatef(10, 0, 0);
+        ofMesh sphere = createQuadSphere(1, 12, 12);
+        ofSetColor(200,200,200);
+        //sphere.drawWireframe();
+        sphere.draw();
+        glPopMatrix();
+    }
+    
+    mMatMainMaterial.end();
+    mLigDirectional.disable();
+    camMain.end();
+}
 void rnApp::mainDraw(){
 	
     glLineWidth(1);
@@ -173,8 +236,10 @@ void rnApp::mainDraw(){
             mMatMainMaterial.end();
             mLigDirectional.disable();
         }mShdInstanced->end();
+
         
         glProvokingVertex(GL_LAST_VERTEX_CONVENTION);
+
         
         ofSetColor(255,255,255);
         ofDisableLighting();
@@ -203,15 +268,17 @@ void rnApp::mainDraw(){
     ofSetColor(25,25,25);
     stringstream ss;
     ss << "camera position  : " << camMain.getGlobalPosition() << "\n";
-    ss << "particle total   : " << spheres.instanceNum << "\n";
-    ss << "line total       : " << cylinders.instanceNum << "\n";
-    ss << "instance total   : " << instancedComponent::instanceMap.size() << "\n";
+    ss << "particle total   : " << spheres.getInstanceNum() << "\n";
+    ss << "line total       : " << cylinders.getInstanceNum() << "\n";
+    ss << "instance total   : " << instancedComponent::getInstanceMap().size() << "\n";
     
     ofDrawBitmapString(ss.str(), 20, 20);
     waitDraw();
 }
 
 void rnApp::exit(){
+    spheres.destroy();
+    cylinders.destroy();
     delete tester;
     tester = 0;
 }
@@ -229,9 +296,10 @@ void rnApp::keyPressed(int key){
             break;
 
         case OF_KEY_ESC:
-            spheres.selectedInsVec.clear();
-            cylinders.selectedInsVec.clear();
-            break;            
+            spheres.clearSelectedInstance();
+            cylinders.clearSelectedInstance();
+            break;
+            
     }
     
 }
@@ -249,6 +317,7 @@ void rnApp::mousePressed(int x, int y, int button){
 }
 void rnApp::mouseReleased(int x, int y, int button){
     camMain.mouseReleased(x, y, button);
+    
     
     bool isClick =( ofGetFrameNum() - mousePressedStartFrame ) < 30;
     if( isClick && !bMouseDragging){
@@ -269,7 +338,8 @@ void rnApp::mouseReleased(int x, int y, int button){
          *
          *      ANOYYING!!!
          */
-        cout << ofGetWindowWidth() << endl;;
+        cout << ofGetWindowWidth() << endl;
+        
         instancedComponent::mousePick( ofVec3f(x, y, -10), type, mode);
 
     }else{
@@ -301,13 +371,13 @@ void rnApp::doProcess(){
             float min = CONNECT_GROUP_MIN_DIST;
             float max = CONNECT_GROUP_MAX_DIST;
             connectGroup(&spheres, &cylinders, num, min, max);
-            finishSound.play();
+            playFinishSound();
         }else if (CURRENT_PROCESS == CONNECT_NEAR){
             
         
         }else if (CURRENT_PROCESS == COLLISION_TEST){
             processCollision();
-            finishSound.play();
+            playFinishSound();
         }else if(CURRENT_PROCESS == REMOVE_GROUPS){
             int min = REMOVE_GROUPS_MIN_NUM;
             spheres.removeSmallGroup(min);          // should be static
@@ -317,7 +387,7 @@ void rnApp::doProcess(){
             instancedComponent::removeDuplication();
             spheres.updateRequest();
             cylinders.updateRequest();
-            finishSound.play();
+            playFinishSound();
         }else if(CURRENT_PROCESS == REMOVE_ALL_SPHERES){
             spheres.reset();
         }else if(CURRENT_PROCESS == REMOVE_ALL_CYLINDERS){
@@ -327,9 +397,11 @@ void rnApp::doProcess(){
             setupCylinderShape(CYLINDER_RADIUS, CYLINDER_RESOLUTION, CYLINDER_COLLISION_MARGIN);    
         }else{
             cout << "unknown process for process#" << (int)CURRENT_PROCESS << endl;
+            
             bNowProcessing = false;
             CURRENT_PROCESS = NO_PROCESS;
         }
+
 
         bNowProcessing = false;
         CURRENT_PROCESS = NO_PROCESS;
@@ -374,13 +446,15 @@ void rnApp::setupCameraLightMaterial(){
     mMatMainMaterial.setAmbientColor(ofFloatColor(0.8, 0.1, 0.1));
 	mMatMainMaterial.setDiffuseColor(ofFloatColor(0.8, 0.1, 0.1));
 	mMatMainMaterial.setSpecularColor(ofFloatColor(0,0,0));
-	mMatMainMaterial.setShininess(0.1f);
+	mMatMainMaterial.setShininess(10.1f);
 }
 void rnApp::setupShaders(bool doLink){
     GLuint err = glGetError();	// we need this to clear out the error buffer.
     
     if (mShdInstanced != NULL ) delete mShdInstanced;
-    mShdInstanced = new ofShader();    
+    mShdInstanced = new ofShader();
+    
+    //		mShdInstanced->load("shaders/instancedTexTrans");
     mShdInstanced->setupShaderFromFile(GL_VERTEX_SHADER, "shaders/instancedTexTrans.vert");
     mShdInstanced->setupShaderFromFile(GL_FRAGMENT_SHADER, "shaders/instancedTexTrans.frag");
     
@@ -393,10 +467,10 @@ void rnApp::setupShaders(bool doLink){
 void rnApp::saveCsvData(string path){
     spheres.saveInstanceDataToCsv(path);
     cylinders.saveInstanceDataToCsv(path);
-    finishSound.play();
+    playFinishSound();
 }
 void rnApp::loadCsvData(string path){
     spheres.loadInstanceDataFromCsv(path);
     cylinders.loadInstanceDataFromCsv(path);
-    finishSound.play();
+    playFinishSound();
 }

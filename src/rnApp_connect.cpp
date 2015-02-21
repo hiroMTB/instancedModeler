@@ -36,7 +36,7 @@ void rnApp::connectInstance(int indexA, int indexB){
     INSTANCE_MAP_ITR itrB = instancedComponent::getInstanceIterator(indexB, INSTANCE_SPHERE);
     
     instance newCylinder;
-    connectInstanace(itrA, itrB, std::numeric_limits<float>::min(), std::numeric_limits<float>::max(), newCylinder);
+    connectInstanace(itrA, itrB, 1, 999999999, newCylinder);
     newCylinder.type = INSTANCE_CYLINDER;
     cylinders.addInstance(newCylinder);
     cylinders.updateInstanceNum();
@@ -90,7 +90,7 @@ void rnApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int nu
     int startTime = ofGetElapsedTimeMillis();
     myLogRelease("Start ConnectGroup Process : time : " + ofToString(startTime));
     
-    INSTANCE_MAP& instanceMap = instancedComponent::instanceMap;
+    INSTANCE_MAP& instanceMap = instancedComponent::getInstanceMap();
     int numGroups = STL_UTIL::getAllKeySize(instanceMap);
     
     if(numGroups<2){
@@ -229,12 +229,13 @@ void rnApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int nu
 
 }
 
+// should be used parallel_for
 void rnApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int numAllCylinders, float minDist, float maxDist){
     
     int startTime = ofGetElapsedTimeMillis();
     myLogRelease("Start ConnectRandom Process : time : " + ofToString(startTime));
     
-    INSTANCE_MAP& instanceMap = instancedComponent::instanceMap;
+    INSTANCE_MAP& instanceMap = instancedComponent::getInstanceMap();
     int numInstances = instanceMap.size();
     
     int numFind = 0;
@@ -295,16 +296,21 @@ void rnApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int n
     
 }
 
+
 void rnApp::connectFloating(instancedComponent *ic, instancedComponent *ic2, int numAllCylinders, float minDist, float maxDist){
     char m[255];
+    
     int startTime = ofGetElapsedTimeMillis();
     myLogRelease("Start ConnectGroup Process : time : " + ofToString(startTime));
     
-    INSTANCE_MAP& instanceMap = instancedComponent::instanceMap;
+    INSTANCE_MAP& instanceMap = instancedComponent::getInstanceMap();
     int numGroups = STL_UTIL::getAllKeySize(instanceMap);
     
     if(numGroups<2){
         myLogRelease("cancel connect group process. only 1 group found.");
         return;
     }
+
+    
+    
 }
