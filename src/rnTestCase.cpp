@@ -13,7 +13,7 @@
 
 void rnTestCase::setup_mergin_test(){
     
-    static rnApp * app = rnApp::get();
+    static rnApp * app = rnApp::app;
     
     float radius = 1.75;
     rnApp::SPHERE_RADIUS = radius;
@@ -40,7 +40,7 @@ void rnTestCase::setup_mergin_test(){
 
 void rnTestCase::loadRandomSphere(int num, float pos_max){
 
-    static rnApp * app = rnApp::get();
+    static rnApp * app = rnApp::app;
 
     vector<ofMatrix4x4> ms(num);
     vector<ofVec3f> scales(num);
@@ -54,7 +54,7 @@ void rnTestCase::loadRandomSphere(int num, float pos_max){
 
 void rnTestCase::loadRandomCylinder(int num, float pos_max){
     
-    static rnApp * app = rnApp::get();
+    static rnApp * app = rnApp::app;
 
     vector<ofMatrix4x4> ms(num);
     vector<ofVec3f> scales(num);
