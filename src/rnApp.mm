@@ -328,8 +328,18 @@ void rnApp::mouseReleased(int x, int y, int button){
         if( shift ) mode = 1;
         if( alt ) type = INSTANCE_CYLINDER;
     
-        
+        /*
+         *      IMPORTANT
+         *      
+         *      We lose mousepicking if we remove this ofGetWindowWidth() line
+         *      Only happen reelase mode without debug excutable option
+         *      Totally no idea but some miracle thing happening here
+         *      But still can not run mouse picking on standalone mode.
+         *
+         *      ANOYYING!!!
+         */
         cout << ofGetWindowWidth() << endl;
+        
         instancedComponent::mousePick( ofVec3f(x, y, -10), type, mode);
 
     }else{

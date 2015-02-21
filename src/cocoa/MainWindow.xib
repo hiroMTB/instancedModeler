@@ -7,7 +7,6 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="MainWindowController">
             <connections>
-                <outlet property="BgTypeMatrix" destination="5070" id="5255"/>
                 <outlet property="LoadModelDataButton" destination="7003" id="7061"/>
                 <outlet property="bgPickerBar0" destination="5177" id="5288"/>
                 <outlet property="bgPickerBar1" destination="5178" id="5289"/>
@@ -95,11 +94,11 @@
                                         <tabViewItems>
                                             <tabViewItem label="Load" identifier="" id="HeJ-SP-8sz">
                                                 <view key="view" id="q3T-fA-Onp">
-                                                    <rect key="frame" x="10" y="33" width="502" height="850"/>
+                                                    <rect key="frame" x="10" y="33" width="520" height="855"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6742">
-                                                            <rect key="frame" x="15" y="811" width="110" height="17"/>
+                                                            <rect key="frame" x="15" y="816" width="110" height="17"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Load Model Data" id="6744">
                                                                 <font key="font" metaFont="system"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -107,7 +106,7 @@
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6756">
-                                                            <rect key="frame" x="15" y="531" width="121" height="17"/>
+                                                            <rect key="frame" x="15" y="536" width="121" height="17"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Load Position Data" id="6757">
                                                                 <font key="font" metaFont="system"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -115,7 +114,7 @@
                                                             </textFieldCell>
                                                         </textField>
                                                         <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7011">
-                                                            <rect key="frame" x="176" y="470" width="121" height="19"/>
+                                                            <rect key="frame" x="176" y="475" width="121" height="19"/>
                                                             <buttonCell key="cell" type="roundRect" title="Load .csv" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="7012">
                                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                 <font key="font" metaFont="cellTitle"/>
@@ -125,7 +124,7 @@
                                                             </connections>
                                                         </button>
                                                         <textField verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7380">
-                                                            <rect key="frame" x="174" y="757" width="296" height="71"/>
+                                                            <rect key="frame" x="174" y="762" width="296" height="71"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="71" id="7492"/>
                                                             </constraints>
@@ -139,7 +138,7 @@ Maya, etc. </string>
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7442">
-                                                            <rect key="frame" x="174" y="497" width="303" height="51"/>
+                                                            <rect key="frame" x="174" y="502" width="303" height="51"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" id="7444">
                                                                 <font key="font" metaFont="system"/>
                                                                 <string key="title">Make spheres/cylinders from saved cvs file.
@@ -150,7 +149,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </textFieldCell>
                                                         </textField>
                                                         <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CCc-7U-BcC">
-                                                            <rect key="frame" x="174" y="709" width="201" height="27"/>
+                                                            <rect key="frame" x="174" y="714" width="201" height="27"/>
                                                             <sliderCell key="cell" state="on" alignment="left" minValue="1" maxValue="50" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="50" allowsTickMarkValuesOnly="YES" sliderType="linear" id="mJL-62-4LE"/>
                                                             <connections>
                                                                 <action selector="changeLoadModelResolutionSlider:" target="-2" id="l9L-Tp-ZtP"/>
@@ -158,7 +157,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </connections>
                                                         </slider>
                                                         <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uwP-2Q-y4A">
-                                                            <rect key="frame" x="391" y="716" width="64" height="22"/>
+                                                            <rect key="frame" x="391" y="721" width="64" height="22"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="8So-3r-9bu">
                                                                 <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="EWS-9s-3fi"/>
                                                                 <font key="font" metaFont="system"/>
@@ -170,7 +169,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </connections>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lOe-Qb-5kS">
-                                                            <rect key="frame" x="60" y="719" width="65" height="17"/>
+                                                            <rect key="frame" x="60" y="724" width="65" height="17"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="resolution" id="3Cx-fa-wEh">
                                                                 <font key="font" metaFont="system"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -178,7 +177,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4AT-5k-fAc">
-                                                            <rect key="frame" x="60" y="672" width="68" height="17"/>
+                                                            <rect key="frame" x="60" y="677" width="68" height="17"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="noise filter" id="WMF-Ln-531">
                                                                 <font key="font" metaFont="system"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -186,7 +185,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </textFieldCell>
                                                         </textField>
                                                         <button verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7003">
-                                                            <rect key="frame" x="176" y="594" width="121" height="19"/>
+                                                            <rect key="frame" x="176" y="599" width="121" height="19"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="121" id="7362"/>
                                                             </constraints>
@@ -199,7 +198,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </connections>
                                                         </button>
                                                         <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="a18-My-SMf">
-                                                            <rect key="frame" x="176" y="667" width="93" height="25"/>
+                                                            <rect key="frame" x="176" y="672" width="93" height="25"/>
                                                             <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="selectOne" id="OsZ-pI-iTx">
                                                                 <font key="font" metaFont="system"/>
                                                                 <segments>
@@ -216,11 +215,11 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                             </tabViewItem>
                                             <tabViewItem label="Shape" identifier="" id="zns-AE-biB">
                                                 <view key="view" id="ERA-GI-Mbc">
-                                                    <rect key="frame" x="10" y="33" width="520" height="855"/>
+                                                    <rect key="frame" x="10" y="33" width="502" height="850"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <slider verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1836">
-                                                            <rect key="frame" x="127" y="769" width="266" height="21"/>
+                                                            <rect key="frame" x="127" y="764" width="266" height="21"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="17" id="7611"/>
                                                             </constraints>
@@ -231,7 +230,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </connections>
                                                         </slider>
                                                         <textField verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1858">
-                                                            <rect key="frame" x="32" y="770" width="87" height="17"/>
+                                                            <rect key="frame" x="32" y="765" width="87" height="17"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="17" id="7604"/>
                                                             </constraints>
@@ -242,7 +241,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1862">
-                                                            <rect key="frame" x="32" y="748" width="60" height="14"/>
+                                                            <rect key="frame" x="32" y="743" width="60" height="14"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Resolution" id="1863">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -250,7 +249,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2010">
-                                                            <rect key="frame" x="32" y="646" width="39" height="14"/>
+                                                            <rect key="frame" x="32" y="641" width="39" height="14"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Radius" id="2011">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -258,7 +257,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2015">
-                                                            <rect key="frame" x="32" y="624" width="60" height="14"/>
+                                                            <rect key="frame" x="32" y="619" width="60" height="14"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Resolution" id="2016">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -266,7 +265,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2184">
-                                                            <rect key="frame" x="24" y="795" width="54" height="18"/>
+                                                            <rect key="frame" x="24" y="790" width="54" height="18"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="50" id="4789"/>
                                                                 <constraint firstAttribute="height" constant="18" id="5826"/>
@@ -278,7 +277,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2188">
-                                                            <rect key="frame" x="24" y="668" width="103" height="17"/>
+                                                            <rect key="frame" x="24" y="663" width="103" height="17"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Cylinder " id="2189">
                                                                 <font key="font" metaFont="system"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -286,7 +285,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </textFieldCell>
                                                         </textField>
                                                         <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2848">
-                                                            <rect key="frame" x="127" y="740" width="266" height="27"/>
+                                                            <rect key="frame" x="127" y="735" width="266" height="27"/>
                                                             <sliderCell key="cell" alignment="left" minValue="1" maxValue="5" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="5" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2850"/>
                                                             <connections>
                                                                 <action selector="changeSphereResolutionSlider:" target="-2" id="6317"/>
@@ -294,7 +293,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </connections>
                                                         </slider>
                                                         <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2936">
-                                                            <rect key="frame" x="127" y="642" width="266" height="21"/>
+                                                            <rect key="frame" x="127" y="637" width="266" height="21"/>
                                                             <sliderCell key="cell" alignment="left" maxValue="4" doubleValue="2" tickMarkPosition="above" sliderType="linear" id="2940"/>
                                                             <connections>
                                                                 <action selector="changeCylinderRadiusSlider:" target="-2" id="6318"/>
@@ -302,7 +301,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </connections>
                                                         </slider>
                                                         <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2937">
-                                                            <rect key="frame" x="127" y="613" width="266" height="27"/>
+                                                            <rect key="frame" x="127" y="608" width="266" height="27"/>
                                                             <sliderCell key="cell" alignment="left" minValue="3" maxValue="20" doubleValue="3" tickMarkPosition="below" numberOfTickMarks="17" allowsTickMarkValuesOnly="YES" sliderType="linear" id="2938"/>
                                                             <connections>
                                                                 <action selector="changeCylinderResolutionSlider:" target="-2" id="6319"/>
@@ -310,7 +309,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </connections>
                                                         </slider>
                                                         <textField verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5976">
-                                                            <rect key="frame" x="406" y="744" width="50" height="20"/>
+                                                            <rect key="frame" x="406" y="739" width="50" height="20"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="20" id="7203"/>
                                                             </constraints>
@@ -331,7 +330,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </connections>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6009">
-                                                            <rect key="frame" x="406" y="644" width="50" height="20"/>
+                                                            <rect key="frame" x="406" y="639" width="50" height="20"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="20" id="7701"/>
                                                             </constraints>
@@ -349,7 +348,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </connections>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6010">
-                                                            <rect key="frame" x="406" y="618" width="50" height="20"/>
+                                                            <rect key="frame" x="406" y="613" width="50" height="20"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="20" id="7202"/>
                                                             </constraints>
@@ -367,7 +366,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </connections>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7505">
-                                                            <rect key="frame" x="460" y="765" width="27" height="17"/>
+                                                            <rect key="frame" x="460" y="760" width="27" height="17"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="17" id="7616"/>
                                                             </constraints>
@@ -378,7 +377,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7624">
-                                                            <rect key="frame" x="460" y="640" width="26" height="17"/>
+                                                            <rect key="frame" x="460" y="635" width="26" height="17"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="17" id="7626"/>
                                                                 <constraint firstAttribute="width" constant="22" id="7776"/>
@@ -390,7 +389,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oFU-GA-brZ">
-                                                            <rect key="frame" x="32" y="592" width="62" height="14"/>
+                                                            <rect key="frame" x="32" y="587" width="62" height="14"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Col Margin" id="2tM-DQ-O1i">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -398,7 +397,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ohm-yA-MW3">
-                                                            <rect key="frame" x="32" y="719" width="62" height="14"/>
+                                                            <rect key="frame" x="32" y="714" width="62" height="14"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Col Margin" id="jAQ-kR-d44">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -406,7 +405,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </textFieldCell>
                                                         </textField>
                                                         <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V15-P9-hLF">
-                                                            <rect key="frame" x="127" y="714" width="266" height="21"/>
+                                                            <rect key="frame" x="127" y="709" width="266" height="21"/>
                                                             <sliderCell key="cell" alignment="left" minValue="-5" maxValue="5" tickMarkPosition="above" sliderType="linear" id="fFT-Mf-It6"/>
                                                             <connections>
                                                                 <action selector="changeSphereCollisionMarginSlider:" target="-2" id="DOF-12-BEv"/>
@@ -414,7 +413,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </connections>
                                                         </slider>
                                                         <textField verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WNb-qZ-G8J">
-                                                            <rect key="frame" x="406" y="589" width="50" height="20"/>
+                                                            <rect key="frame" x="406" y="584" width="50" height="20"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="20" id="UxF-xu-HKQ"/>
                                                             </constraints>
@@ -435,7 +434,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </connections>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="b1g-JP-O3w">
-                                                            <rect key="frame" x="462" y="710" width="27" height="17"/>
+                                                            <rect key="frame" x="462" y="705" width="27" height="17"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="17" id="zgN-OT-Asv"/>
                                                             </constraints>
@@ -446,7 +445,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7Vo-XL-4GJ">
-                                                            <rect key="frame" x="460" y="585" width="26" height="17"/>
+                                                            <rect key="frame" x="460" y="580" width="26" height="17"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="17" id="Auh-Q3-Jgn"/>
                                                                 <constraint firstAttribute="width" constant="22" id="jQy-V8-ycj"/>
@@ -458,7 +457,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </textFieldCell>
                                                         </textField>
                                                         <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7wi-DU-jZT">
-                                                            <rect key="frame" x="127" y="587" width="266" height="21"/>
+                                                            <rect key="frame" x="127" y="582" width="266" height="21"/>
                                                             <sliderCell key="cell" alignment="left" minValue="-5" maxValue="5" tickMarkPosition="above" sliderType="linear" id="LhH-zo-2nK"/>
                                                             <connections>
                                                                 <action selector="changeCylinderCollisionMarginSlider:" target="-2" id="JlS-l8-a3k"/>
@@ -466,7 +465,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </connections>
                                                         </slider>
                                                         <textField verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Nqu-dp-L09">
-                                                            <rect key="frame" x="406" y="714" width="50" height="20"/>
+                                                            <rect key="frame" x="406" y="709" width="50" height="20"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="20" id="nWc-ez-X8B"/>
                                                             </constraints>
@@ -487,7 +486,7 @@ File name must be Spheres.csv or Cylinders.csv.</string>
                                                             </connections>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5896">
-                                                            <rect key="frame" x="406" y="769" width="50" height="20"/>
+                                                            <rect key="frame" x="406" y="764" width="50" height="20"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="50" id="5926"/>
                                                             </constraints>
