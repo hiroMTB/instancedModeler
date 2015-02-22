@@ -10,30 +10,15 @@
 
 
 float rnApp::getCollisionDistance(instance &insA, instance &insB){
-    float dist=99999;
+    float dist=std::numeric_limits<float>::max();
     
     ofMatrix4x4& matA = insA.matrix;
     ofVec3f& sA = insA.scale;
-    INSTANCE_TYPE tA = insA.type;
-    
     ofMatrix4x4& matB = insB.matrix;
     ofVec3f& sB = insB.scale;
-    INSTANCE_TYPE tB = insB.type;
     
-    if(tA == INSTANCE_SPHERE && tB==INSTANCE_SPHERE){
-        dist = tester->testSphereSphere(matA,sA,matB,sB);
-    }else if(tA==INSTANCE_SPHERE && tB==INSTANCE_CYLINDER){
-        dist = tester->testSphereCylinder(matA,sA,matB,sB);
-    }else if (tA==INSTANCE_CYLINDER && tB==INSTANCE_SPHERE){
-        dist = tester->testSphereCylinder(matB,sB, matA,sA);
-    }else if(tA==INSTANCE_CYLINDER && tB==INSTANCE_CYLINDER){
-        dist = tester->testCylinderCylinder(matA,sA,matB,sB);
-    }else{
-        myLogRelease("Can not test collision");
-        return 98765432;
-    }
+    dist = tester->collisionTest(matA, sA, matB, sB, insA.colObj, insB.colObj);
     return dist;
-    
 }
 
 void rnApp::processCollision(){

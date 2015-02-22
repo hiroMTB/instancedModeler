@@ -22,9 +22,7 @@ bCltexNeedUpdate(true),
 instanceNum(0),
 vtxtexId(GL_NONE),
 cltexId(GL_NONE)
-{
-//    selectedInstance != instanceMap.end();
-}
+{}
 
 
 instancedComponent::instancedComponent(INSTANCE_TYPE t, INSTANCE_MAP& m):
@@ -35,7 +33,6 @@ instanceNum(0),
 vtxtexId(GL_NONE),
 cltexId(GL_NONE)
 {
-//    instanceMap.insert(m);
 }
 
 instancedComponent::~instancedComponent(){
@@ -57,9 +54,7 @@ void instancedComponent::updateRequest(){
 }
 
 void instancedComponent::updateVertexTexture(){
-    // VERTEX UPDATE
     if(bVtxtexNeedUpdate){
-
         float * matrices = new float[VTX_TEX_WIDTH*VTX_TEX_HEIGHT*4];
 
         INSTANCE_MAP_ITR itr = instanceMap.begin();
@@ -70,11 +65,9 @@ void instancedComponent::updateVertexTexture(){
                 // instance.matrix does not have scale info, here we construct for GL
 
                 ofMatrix4x4 m;
-                
                 m.scale(d.scale);
                 m.rotate(d.matrix.getRotate());
                 m.translate(d.matrix.getTranslation());
-                
                 
                 for(int k=0; k<4; k++){
                     for(int l=0; l<4; l++){
@@ -216,15 +209,25 @@ void instancedComponent::debugDraw(){
     INSTANCE_MAP_ITR itr = instanceMap.begin();
     for(; itr!=instanceMap.end(); itr++){
         instance& d = itr->second;
-        collisionTester::debugDraw(d.matrix, d.scale, d.type);  // type should be same with bullet shape type
-//        cout << d.matrix << endl;
+        collisionTester::debugDraw(d);  // type should be same with bullet shape type
     }
 }
 
-INSTANCE_MAP_ITR instancedComponent::addInstance(instance ins, int groupId){
+INSTANCE_MAP_ITR instancedComponent::addInstance(instance &ins, int groupId){
+    
+    if( ins.type == INSTANCE_SPHERE ){
+        ins.colObj.setCollisionShape(collisionTester::sphereShape);
+    }else if( ins.type == INSTANCE_CYLINDER){
+        ins.colObj.setCollisionShape(collisionTester::cylinderShape);
+    }else{
+        cout << "strange value for instance type!!" << endl;
+    }
+    collisionTester::setTransformFromOF(ins.matrix, ins.scale, ins.colObj);
+
     INSTANCE_MAP_ITR itr = instanceMap.insert(pair<int, instance>(groupId, ins));
     bVtxtexNeedUpdate = true;
     bCltexNeedUpdate = true;
+
     return itr;
 }
 
@@ -827,18 +830,13 @@ void instancedComponent::mousePick(ofVec3f winPos, INSTANCE_TYPE type, int mode)
                 colObjWorldTransform.setIdentity();
                 colObjWorldTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
                 colObjWorldTransform.setRotation(btQuaternion(quat.x(), quat.y(), quat.z(), quat.w()));
-                btCollisionObject * colObj;
-                if( ins.type == INSTANCE_SPHERE ){
-                    colObj = &collisionTester::sphereA;
-                }else if (ins.type == INSTANCE_CYLINDER ){
-                    colObj = &collisionTester::cylinderA;
-                }
+                btCollisionObject & colObj = ins.colObj;
                 
-                collisionTester::setTransformFromOF(mat, scale, *colObj);
+                //collisionTester::setTransformFromOF(mat, scale, *colObj);
                 
-                btCollisionShape * collisionShape = colObj->getCollisionShape();
+                btCollisionShape * collisionShape = colObj.getCollisionShape();
                 btCollisionWorld::ClosestRayResultCallback rayCallback(rayFrom,rayTo);                
-                collisionTester::collisionWorld->rayTestSingle(rayFromTrans, rayToTrans, colObj, collisionShape, colObjWorldTransform, rayCallback);
+                collisionTester::collisionWorld->rayTestSingle(rayFromTrans, rayToTrans, &colObj, collisionShape, colObjWorldTransform, rayCallback);
                 
                 if (rayCallback.hasHit()){
                     find = true;

@@ -24,7 +24,8 @@ enum INSTANCE_TYPE{
 struct instance{
 public:
     instance(const instance& i)
-    :color(i.color), type(i.type), matrix(i.matrix),scale(i.scale){}
+    :color(i.color), type(i.type), matrix(i.matrix),scale(i.scale), colObj(i.colObj){
+    }
     
     ofMatrix4x4     matrix;     // NOTICE dont set scaling value
     ofVec3f         scale;
@@ -32,8 +33,10 @@ public:
     INSTANCE_TYPE   type;
     instance(){};
     
+    btCollisionObject colObj;
+    btCollisionShape * colShape;
+    
     bool operator==(const instance& o){
-
         if(type == o.type)
             if(scale == o.scale)
                 if(matrix.getTranslation() == o.matrix.getTranslation())
@@ -79,7 +82,7 @@ public:
     void loadInstanceMesh(ofMesh mesh, ofVec3f scale=ofVec3f(1,1,1));
     void loadInstancePositionFromModel(string path, int res, float posScale=1, bool noiseFilter=false);
     void loadInstancePositionFromMatrices(ofMatrix4x4 * ms, ofVec3f * ss, int size);
-    INSTANCE_MAP_ITR addInstance(instance ins, int groupId=-1);
+    INSTANCE_MAP_ITR addInstance(instance &ins, int groupId=-1);
     void addInstanceMatrix      (ofMatrix4x4 m, ofVec3f s, int groupId=-1);
     void clearInstanceMatrices();
     void setInstanceColor(INSTANCE_MAP_ITR itr, ofFloatColor color);

@@ -53,8 +53,7 @@ void rnApp::setup(){
 
 #ifndef NDEBUG
     cout << "app running on DEBUG MODE" << endl;
-    ofSetLogLevel(OF_LOG_VERBOSE);
-    
+   // ofSetLogLevel(OF_LOG_VERBOSE);
 #else
     ofSetLogLevel(OF_LOG_WARNING);
 #endif
@@ -76,7 +75,7 @@ void rnApp::setup(){
     finishSound.loadSound("sound/finishSound.wav");
 
     posModelPath_P = "none";
-    setupSphereShape(   SPHERE_RADIUS,   SPHERE_RESOLUTION, SPHERE_COLLISION_MARGIN);
+    setupSphereShape( SPHERE_RADIUS, SPHERE_RESOLUTION, SPHERE_COLLISION_MARGIN);
     setupCylinderShape( CYLINDER_RADIUS, CYLINDER_RESOLUTION, CYLINDER_COLLISION_MARGIN);
 
     compScale = 1;
