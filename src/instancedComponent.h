@@ -33,8 +33,7 @@ public:
     INSTANCE_TYPE   type;
     instance(){};
     
-    btCollisionObject colObj;
-    btCollisionShape * colShape;
+    btCollisionObject colObj;   // we dont attach collision shape
     
     bool operator==(const instance& o){
         if(type == o.type)

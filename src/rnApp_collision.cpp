@@ -9,20 +9,11 @@
 #include "rnApp.h"
 
 
-float rnApp::getCollisionDistance(instance &insA, instance &insB){
-    float dist=std::numeric_limits<float>::max();
-    
-    ofMatrix4x4& matA = insA.matrix;
-    ofVec3f& sA = insA.scale;
-    ofMatrix4x4& matB = insB.matrix;
-    ofVec3f& sB = insB.scale;
-    
-    dist = tester->collisionTest(matA, sA, matB, sB, insA.colObj, insB.colObj);
-    return dist;
-}
-
 void rnApp::processCollision(){
+    
     int startTime = collisionStart();
+    
+    tester->prepareAlgo();
     
     INSTANCE_MAP& instanceMap = instancedComponent::instanceMap;
     INSTANCE_MAP_ITR itrA = instanceMap.begin();
@@ -43,7 +34,7 @@ void rnApp::processCollision(){
             instance& insA = itrA->second;
             instance& insB = itrB->second;
             
-            float dist=getCollisionDistance(insA, insB);
+            float dist=tester->collisionTest(insA, insB);
             
             if(dist<0.0) {
                 int groupIdA = itrA->first;

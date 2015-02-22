@@ -80,7 +80,7 @@ void rnApp::setup(){
 
     compScale = 1;
     posScale = 10;
-    boxSize = 100;
+    boxSize = 330;
     
     testCase.loadRandomSphere(30, 100);
 }
@@ -263,7 +263,7 @@ void rnApp::mouseReleased(int x, int y, int button){
          *
          *      ANOYYING!!!
          */
-        cout << ofGetWindowWidth() << endl;
+        //cout << ofGetWindowWidth() << endl;
         
         instancedComponent::mousePick( ofVec3f(x, y, -10), type, mode);
 

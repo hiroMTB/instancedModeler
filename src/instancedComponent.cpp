@@ -215,14 +215,7 @@ void instancedComponent::debugDraw(){
 
 INSTANCE_MAP_ITR instancedComponent::addInstance(instance &ins, int groupId){
     
-    if( ins.type == INSTANCE_SPHERE ){
-        ins.colObj.setCollisionShape(collisionTester::sphereShape);
-    }else if( ins.type == INSTANCE_CYLINDER){
-        ins.colObj.setCollisionShape(collisionTester::cylinderShape);
-    }else{
-        cout << "strange value for instance type!!" << endl;
-    }
-    collisionTester::setTransformFromOF(ins.matrix, ins.scale, ins.colObj);
+    collisionTester::setTransformFromOF(ins.matrix, ins.colObj);
 
     INSTANCE_MAP_ITR itr = instanceMap.insert(pair<int, instance>(groupId, ins));
     bVtxtexNeedUpdate = true;
@@ -834,7 +827,7 @@ void instancedComponent::mousePick(ofVec3f winPos, INSTANCE_TYPE type, int mode)
                 
                 //collisionTester::setTransformFromOF(mat, scale, *colObj);
                 
-                btCollisionShape * collisionShape = colObj.getCollisionShape();
+                btCollisionShape * collisionShape = collisionTester::getShape(ins);
                 btCollisionWorld::ClosestRayResultCallback rayCallback(rayFrom,rayTo);                
                 collisionTester::collisionWorld->rayTestSingle(rayFromTrans, rayToTrans, &colObj, collisionShape, colObjWorldTransform, rayCallback);
                 

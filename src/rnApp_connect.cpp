@@ -13,7 +13,7 @@ void rnApp::connectSelected(){
     int n = instancedComponent::selectedInsVec.size();
     INSTANCE_MAP_ITR & itrA = instancedComponent::selectedInsVec[0];
     
-    if(itrA->second.type == INSTANCE_SPHERE && n>=2){
+    if(n>=2 && itrA->second.type == INSTANCE_SPHERE ){
         
         for(int i=1; i<n; i++){
             INSTANCE_MAP_ITR & itrB = spheres.selectedInsVec[i];
