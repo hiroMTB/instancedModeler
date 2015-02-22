@@ -19,12 +19,10 @@ int tex_h = 2048;
 int cltex_w = 1024;
 int cltex_h = 1024;
 
-
 float tex_w_f = float(tex_w);
 float tex_h_f = float(tex_h);
 float cltex_w_f = float(cltex_w);
 float cltex_h_f = float(cltex_h);
-
 
 
 void main()

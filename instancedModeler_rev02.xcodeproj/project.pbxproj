@@ -24,6 +24,8 @@
 		4DA082B31693F01900DF20AD /* ofxMtb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA082B21693F01900DF20AD /* ofxMtb.cpp */; };
 		5a4349e9754d6fa14c0f2a3a1abc30b6 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = fc5da1c87211d4f6377da7199d8c5a1e /* tinyxmlparser.cpp */; };
 		63b57ac5bf4ef088491e0317dbb2ecaa /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50df87d612c5aae17aafa6c02c6bc570 /* ofxXmlSettings.cpp */; };
+		6A0F279B1A9A588300E6A963 /* simple.frag in Resources */ = {isa = PBXBuildFile; fileRef = 6A0F27991A9A588300E6A963 /* simple.frag */; };
+		6A0F279C1A9A588300E6A963 /* simple.vert in Resources */ = {isa = PBXBuildFile; fileRef = 6A0F279A1A9A588300E6A963 /* simple.vert */; };
 		6A9883821A834DF9004322D7 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A9883811A834DF9004322D7 /* Quartz.framework */; };
 		6A9883841A834E08004322D7 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A9883831A834E08004322D7 /* QuartzCore.framework */; };
 		6A9883861A834F6A004322D7 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A9883851A834F6A004322D7 /* AVFoundation.framework */; };
@@ -173,6 +175,8 @@
 		4DA082B21693F01900DF20AD /* ofxMtb.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMtb.cpp; sourceTree = "<group>"; };
 		4DB98A8116AD4A0900F0864B /* performanceMemo.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = performanceMemo.rtf; sourceTree = "<group>"; };
 		50df87d612c5aae17aafa6c02c6bc570 /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxXmlSettings.cpp; path = ../../../addons/ofxXmlSettings/src/ofxXmlSettings.cpp; sourceTree = SOURCE_ROOT; };
+		6A0F27991A9A588300E6A963 /* simple.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = simple.frag; sourceTree = "<group>"; };
+		6A0F279A1A9A588300E6A963 /* simple.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = simple.vert; sourceTree = "<group>"; };
 		6A9883811A834DF9004322D7 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		6A9883831A834E08004322D7 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		6A9883851A834F6A004322D7 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -812,6 +816,8 @@
 		4D65FB961689630E00D7B2F5 /* shaders */ = {
 			isa = PBXGroup;
 			children = (
+				6A0F27991A9A588300E6A963 /* simple.frag */,
+				6A0F279A1A9A588300E6A963 /* simple.vert */,
 				4D159999168B215400D10232 /* instancedTexTrans.frag */,
 				4D15999A168B215400D10232 /* instancedTexTrans.vert */,
 			);
@@ -2053,7 +2059,9 @@
 			files = (
 				6AB3BBB31A955A4D00DC74F9 /* MainWindow.xib in Resources */,
 				6AB3BBB21A955A4800DC74F9 /* MainMenu.xib in Resources */,
+				6A0F279C1A9A588300E6A963 /* simple.vert in Resources */,
 				4D1F79D117E44867006DA349 /* UserDefaults.plist in Resources */,
+				6A0F279B1A9A588300E6A963 /* simple.frag in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
