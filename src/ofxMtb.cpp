@@ -13,7 +13,8 @@ namespace ofxMtb{
         cout << " " + myModule + " D " + message << endl;
 #endif
     }
-    void ofxMtb::myLogRelease(string message){
+    
+    void myLogRelease(string message){
         cout << " " + ofxMtb::myModule + " R " + message << endl;
     }
     
