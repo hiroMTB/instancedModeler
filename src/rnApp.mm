@@ -138,22 +138,22 @@ void rnApp::draw(){
             ofSetColor(  0, 0, 255); ofLine(0, 0, 0, 0, 0, 10);
         }
         
-        //ofEnableLighting();
-        //mLigDirectional.setGlobalPosition(1000, 1000, 1000);
-        //mLigDirectional.lookAt(ofVec3f(0,0,0));
-        //ofEnableSeparateSpecularLight();
+        ofEnableLighting();
+        mLigDirectional.setGlobalPosition(1000, 1000, 1000);
+        mLigDirectional.lookAt(ofVec3f(0,0,0));
+        ofEnableSeparateSpecularLight();
 
         //glPushAttrib(GL_ALL_ATTRIB_BITS);
-        //glShadeModel(GL_FLAT);
-        //glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);		// OpenGL default is GL_LAST_VERTEX_CONVENTION
+        glShadeModel(GL_FLAT);
+        glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);		// OpenGL default is GL_LAST_VERTEX_CONVENTION
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
         
         mShdInstanced->begin();{
-            //mLigDirectional.enable();
-            //mMatMainMaterial.begin();
+            mLigDirectional.enable();
+            mMatMainMaterial.begin();
         
             if (DRAW_WIREFRAME) {
                 if( DRAW_CYLINDER ) ofSetColor(colorCylinder); cylinders.drawWireframe(mShdInstanced);
@@ -163,15 +163,15 @@ void rnApp::draw(){
                 if( DRAW_SPHERE   ) ofSetColor(colorSphere); spheres.draw(mShdInstanced);
             }
 
-            //mMatMainMaterial.end();
-            //mLigDirectional.disable();
+            mMatMainMaterial.end();
+            mLigDirectional.disable();
         }mShdInstanced->end();
 
         
-        //glProvokingVertex(GL_LAST_VERTEX_CONVENTION);
+        glProvokingVertex(GL_LAST_VERTEX_CONVENTION);
 
         ofSetColor(255,255,255);
-        //ofDisableLighting();
+        ofDisableLighting();
         
         ofPushStyle();
         instancedComponent::drawSelector();
@@ -377,10 +377,10 @@ void rnApp::setupShaders(bool doLink){
     
     if (mShdInstanced != NULL ) delete mShdInstanced;
     mShdInstanced = new ofShader();
-    //mShdInstanced->setupShaderFromFile(GL_VERTEX_SHADER, "shaders/instancedTexTrans.vert");
-    //mShdInstanced->setupShaderFromFile(GL_FRAGMENT_SHADER, "shaders/instancedTexTrans.frag");
-    mShdInstanced->setupShaderFromFile(GL_VERTEX_SHADER, "shaders/simple.vert");
-    mShdInstanced->setupShaderFromFile(GL_FRAGMENT_SHADER, "shaders/simple.frag");
+    mShdInstanced->setupShaderFromFile(GL_VERTEX_SHADER, "shaders/instancedTexTrans.vert");
+    mShdInstanced->setupShaderFromFile(GL_FRAGMENT_SHADER, "shaders/instancedTexTrans.frag");
+    //mShdInstanced->setupShaderFromFile(GL_VERTEX_SHADER, "shaders/simple.vert");
+    //mShdInstanced->setupShaderFromFile(GL_FRAGMENT_SHADER, "shaders/simple.frag");
     
     if(doLink){
         mShdInstanced->linkProgram();
