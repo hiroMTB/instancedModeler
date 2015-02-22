@@ -88,21 +88,21 @@ void rnApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int nu
     char m[255];
     
     int startTime = ofGetElapsedTimeMillis();
-    myLogRelease("Start ConnectGroup Process : time : " + ofToString(startTime));
+    ofxMtb::myLogRelease("Start ConnectGroup Process : time : " + ofToString(startTime));
     
     INSTANCE_MAP& instanceMap = instancedComponent::instanceMap;
-    int numGroups = STL_UTIL::getAllKeySize(instanceMap);
+    int numGroups = ofxMtb::STL_UTIL::getAllKeySize(instanceMap);
     
     if(numGroups<2){
-        myLogRelease("cancel connect group process. only 1 group found.");
+        ofxMtb::myLogRelease("cancel connect group process. only 1 group found.");
         return;
     }
     
     int numFind = 0;
 
-    map<idPair, instance>  connectionList;      // store connection
+    map<ofxMtb::idPair, instance>  connectionList;      // store connection
     
-    typedef idPair groupPair;
+    typedef ofxMtb::idPair groupPair;
     vector<groupPair> groupConnectionList;       // group connection list
     
     INSTANCE_MAP_ITR itr  = instanceMap.begin();
@@ -116,9 +116,9 @@ void rnApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int nu
     
     for(groupIdA=0; itr!=instanceMap.end(); itr=instanceMap.upper_bound(itr->first), groupIdA++){
         groupKeyA = itr->first;
-        myLogDebug("start process connect groupKeyA " + ofToString(groupKeyA) + ", groupIdA " + ofToString(groupIdA));
+        ofxMtb::myLogDebug("start process connect groupKeyA " + ofToString(groupKeyA) + ", groupIdA " + ofToString(groupIdA));
         
-        groupSizeA = STL_UTIL::getElementSize(instanceMap, itr->first);
+        groupSizeA = ofxMtb::STL_UTIL::getElementSize(instanceMap, itr->first);
         groupIndexA += groupSizeA;
         
         for(int i=0; i<numAllCylinders; i++){
@@ -144,7 +144,7 @@ void rnApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int nu
                 INSTANCE_MAP_ITR itrB = instanceMap.begin();
 
                 for(int j=0; itrB!=instanceMap.end(); itrB=instanceMap.upper_bound(itrB->first), j++){
-                    groupSizeB = STL_UTIL::getElementSize(instanceMap, itrB->first);
+                    groupSizeB = ofxMtb::STL_UTIL::getElementSize(instanceMap, itrB->first);
                     groupIndexB += groupSizeB;
 
                     if(j==groupIdB){
@@ -153,7 +153,7 @@ void rnApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int nu
                     }
                 }
 
-//                myLogDebug(" try groupKeyB " + ofToString(groupKeyB) + ", groupIdB" + ofToString(groupIdB));
+//                ofxMtb::myLogDebug(" try groupKeyB " + ofToString(groupKeyB) + ", groupIdB" + ofToString(groupIdB));
 
                 // 2. select instance from group
                 int indexInGroupA = ofRandom(groupSizeA);
@@ -163,7 +163,7 @@ void rnApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int nu
                 int indexB = groupIndexB - indexInGroupB - 1;
                 
                 // 3. check if pair is already connected
-                idPair idp(indexA, indexB);
+                ofxMtb::idPair idp(indexA, indexB);
                 bool unique = (connectionList.find(idp) == connectionList.end());
 
                 if(unique){
@@ -190,13 +190,13 @@ void rnApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int nu
                     find = connectInstanace(itrA, itrB, minDist, maxDist, newCylinder);
                     if(find){
                         sprintf(m, "connect group (key-index) %d_%d + %d_%d", groupKeyA, indexA, groupKeyB, indexB);
-                        myLogRelease(m);
+                        ofxMtb::myLogRelease(m);
 
                         // add
                         newCylinder.type = INSTANCE_CYLINDER;
                         //ic2->addInstance(newCylinder);
                         numFind++;
-                        connectionList.insert(pair<idPair, instance>(idp, newCylinder));
+                        connectionList.insert(pair<ofxMtb::idPair, instance>(idp, newCylinder));
                         
                         groupPair gp(groupIdA, groupIdB);
                         groupConnectionList.push_back(gp);
@@ -212,7 +212,7 @@ void rnApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int nu
     }
     
     {
-        map<idPair, instance>::iterator itr = connectionList.begin();
+        map<ofxMtb::idPair, instance>::iterator itr = connectionList.begin();
         for(; itr!=connectionList.end(); itr++){
             int indexA = itr->first.a;
             int indexB = itr->first.b;
@@ -225,7 +225,7 @@ void rnApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int nu
     cylinders.updateRequest();
     
     int endTime = ofGetElapsedTimeMillis();
-    myLogRelease("Finish ConnectGroup process : elapsed " + ofToString((float)(endTime-startTime)/1000.0)+" sec");
+    ofxMtb::myLogRelease("Finish ConnectGroup process : elapsed " + ofToString((float)(endTime-startTime)/1000.0)+" sec");
 
 }
 
@@ -233,14 +233,14 @@ void rnApp::connectGroup(instancedComponent *ic, instancedComponent *ic2, int nu
 void rnApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int numAllCylinders, float minDist, float maxDist){
     
     int startTime = ofGetElapsedTimeMillis();
-    myLogRelease("Start ConnectRandom Process : time : " + ofToString(startTime));
+    ofxMtb::myLogRelease("Start ConnectRandom Process : time : " + ofToString(startTime));
     
     INSTANCE_MAP& instanceMap = instancedComponent::instanceMap;
     int numInstances = instanceMap.size();
     
     int numFind = 0;
 
-    map<idPair, instance>  connectionList;   // store connection
+    map<ofxMtb::idPair, instance>  connectionList;   // store connection
     
     for(int i=0; i<numAllCylinders; i++){
         int numTry = 0;
@@ -253,7 +253,7 @@ void rnApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int n
             int indexB = ofRandom(numInstances);
             
             // 2. check if pair is already connected
-            idPair idp(indexA, indexB);
+            ofxMtb::idPair idp(indexA, indexB);
             bool unique = connectionList.find(idp) == connectionList.end();
             
             if(unique){
@@ -268,7 +268,7 @@ void rnApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int n
                     newCylinder.type = INSTANCE_CYLINDER;
 //                  ic2->addInstance(newCylinder);
                     numFind++;
-                    connectionList.insert(pair<idPair, instance>(idp, newCylinder));
+                    connectionList.insert(pair<ofxMtb::idPair, instance>(idp, newCylinder));
                 }
             }
             
@@ -280,7 +280,7 @@ void rnApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int n
     }
     
     {
-        map<idPair, instance>::iterator itr = connectionList.begin();
+        map<ofxMtb::idPair, instance>::iterator itr = connectionList.begin();
         for(; itr!=connectionList.end(); itr++){
             int indexA = itr->first.a;
             int indexB = itr->first.b;
@@ -292,7 +292,7 @@ void rnApp::connectRandom(instancedComponent *ic, instancedComponent *ic2, int n
     cylinders.updateInstanceNum();
     
     int endTime = ofGetElapsedTimeMillis();
-    myLogRelease("Finish ConnectRandom process : elapsed " + ofToString((float)(endTime-startTime)/1000.0)+" sec");
+    ofxMtb::myLogRelease("Finish ConnectRandom process : elapsed " + ofToString((float)(endTime-startTime)/1000.0)+" sec");
     
 }
 
@@ -301,13 +301,13 @@ void rnApp::connectFloating(instancedComponent *ic, instancedComponent *ic2, int
     char m[255];
     
     int startTime = ofGetElapsedTimeMillis();
-    myLogRelease("Start ConnectGroup Process : time : " + ofToString(startTime));
+    ofxMtb::myLogRelease("Start ConnectGroup Process : time : " + ofToString(startTime));
     
     INSTANCE_MAP& instanceMap = instancedComponent::instanceMap;
-    int numGroups = STL_UTIL::getAllKeySize(instanceMap);
+    int numGroups = ofxMtb::STL_UTIL::getAllKeySize(instanceMap);
     
     if(numGroups<2){
-        myLogRelease("cancel connect group process. only 1 group found.");
+        ofxMtb::myLogRelease("cancel connect group process. only 1 group found.");
         return;
     }
 

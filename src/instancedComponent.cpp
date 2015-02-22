@@ -39,7 +39,7 @@ instancedComponent::~instancedComponent(){
     glDeleteTextures(1, &vtxtexId);
     glDeleteTextures(1, &cltexId);
     vmi.clear();
-    myLogDebug("instancedComponent destroyed");
+    ofxMtb::myLogDebug("instancedComponent destroyed");
 }
 
 void instancedComponent::update(){
@@ -80,7 +80,7 @@ void instancedComponent::updateVertexTexture(){
     
         if(vtxtexId==GL_NONE){
             glGenTextures(1, &vtxtexId);
-            myLogDebug("Generate vertex texture with id: " + ofToString(vtxtexId));
+            ofxMtb::myLogDebug("Generate vertex texture with id: " + ofToString(vtxtexId));
         }
 
         glBindTexture(GL_TEXTURE_2D, vtxtexId);
@@ -118,7 +118,7 @@ void instancedComponent::updateColorTexture(){
         
         if(cltexId == GL_NONE){
             glGenTextures(1, &cltexId);
-            myLogDebug("Generate color texture with id: " + ofToString(cltexId));
+            ofxMtb::myLogDebug("Generate color texture with id: " + ofToString(cltexId));
         }
         
         glBindTexture(GL_TEXTURE_2D, cltexId);
@@ -226,10 +226,10 @@ INSTANCE_MAP_ITR instancedComponent::addInstance(instance &ins, int groupId){
 
 void instancedComponent::addInstanceMatrix(ofMatrix4x4 m, ofVec3f s, int groupId){
     if(index<0){
-        myLogRelease("invalid value for index num");
+        ofxMtb::myLogRelease("invalid value for index num");
         return;
     }else if(groupId<-2){
-        myLogRelease("invalid value for groupId");
+        ofxMtb::myLogRelease("invalid value for groupId");
         return;
     }
     
@@ -245,7 +245,7 @@ void instancedComponent::loadInstancePositionFromModel(string path, int res, flo
     vector<string> strs = ofSplitString(path, ".");
     string ext = strs.back();
     if( ext == "dae"){
-        myLogRelease("ERROR Do not use .dae file. Use .ply instead");
+        ofxMtb::myLogRelease("ERROR Do not use .dae file. Use .ply instead");
         return;
     }
     
@@ -256,20 +256,20 @@ void instancedComponent::loadInstancePositionFromModel(string path, int res, flo
         ofMatrix4x4 m;
         int numMeshs = model.getNumMeshes();
 
-        myLogRelease("load model for position, including "+ofToString(numMeshs)+" meshs.");
+        ofxMtb::myLogRelease("load model for position, including "+ofToString(numMeshs)+" meshs.");
         
         for(int i=0; i<numMeshs; i++){
             
-            myLogRelease("load mesh(" +ofToString(i)+ ")");
+            ofxMtb::myLogRelease("load mesh(" +ofToString(i)+ ")");
             ofVboMesh mesh;
             mesh = model.getMesh(i);
             int numVertices = mesh.getNumVertices();
             int numNormals = mesh.getNumNormals();
             int numIndices = mesh.getNumIndices();
             
-            myLogRelease("numVertices = " + ofToString(numVertices));
-            myLogRelease("numNormals = "  + ofToString(numNormals) );
-            myLogRelease("numIndices = " + ofToString(numIndices));
+            ofxMtb::myLogRelease("numVertices = " + ofToString(numVertices));
+            ofxMtb::myLogRelease("numNormals = "  + ofToString(numNormals) );
+            ofxMtb::myLogRelease("numIndices = " + ofToString(numIndices));
 
             int skipCount = 0;
             // vertices
@@ -280,7 +280,7 @@ void instancedComponent::loadInstancePositionFromModel(string path, int res, flo
                     if( noiseFilter ){
                         float freq = 0.08;
                         ofVec3f sp = (position + 330) * freq;
-                        float n = fbm3f(sp.x, sp.y, sp.z, 4);
+                        float n = ofxMtb::fbm3f(sp.x, sp.y, sp.z, 4);
                         if( n > 0.0 ) {
                             skipCount++;
                             continue;
@@ -333,7 +333,7 @@ void instancedComponent::clearInstanceMatrices(){
     
     updateInstanceNum();
     
-    myLogDebug("clear instance data");
+    ofxMtb::myLogDebug("clear instance data");
     bVtxtexNeedUpdate = true;
     bCltexNeedUpdate  = true;
 }
@@ -352,10 +352,10 @@ void instancedComponent::loadInstanceMesh(ofMesh mesh, ofVec3f scale){
     int numNormals = vmi.getNumNormals();
     int numIndices = vmi.getNumIndices();
     
-    myLogDebug("load model for particle component");
-    myLogDebug("numVerttices = " + ofToString(numVertices));
-    myLogDebug("numNormals = " + ofToString(numNormals));
-    myLogDebug("numIndices = " + ofToString(numIndices));
+    ofxMtb::myLogDebug("load model for particle component");
+    ofxMtb::myLogDebug("numVerttices = " + ofToString(numVertices));
+    ofxMtb::myLogDebug("numNormals = " + ofToString(numNormals));
+    ofxMtb::myLogDebug("numIndices = " + ofToString(numIndices));
 
 #if 0
 #ifndef NDEBUG
@@ -364,7 +364,7 @@ void instancedComponent::loadInstanceMesh(ofMesh mesh, ofVec3f scale){
         ofVec3f pos = vmi->getVertex(i);
         char mes[256];
         sprintf(mes, "vertices[%d] =  %03f, %03f, %03f", i, pos.x, pos.y, pos.z);
-        myLogDebug(string(mes));
+        ofxMtb::myLogDebug(string(mes));
     }
 #endif
 #endif
@@ -394,13 +394,13 @@ void instancedComponent::setInstanceColor(INSTANCE_MAP_ITR itr, ofFloatColor col
 void instancedComponent::setGroupColorGradient(){
 
     int instanceAllNum = instanceMap.size();
-    int keySize = STL_UTIL::getAllKeySize(instanceMap);
+    int keySize = ofxMtb::STL_UTIL::getAllKeySize(instanceMap);
     
     INSTANCE_MAP_ITR itr = instanceMap.begin();
     for(int i=0; itr!=instanceMap.end(); itr=instanceMap.upper_bound(itr->first), i++){
 
         int key = itr->first;
-        int n = STL_UTIL::getElementSize(instanceMap, key);
+        int n = ofxMtb::STL_UTIL::getElementSize(instanceMap, key);
         ofFloatColor color;
         color.setHsb(ofRandom(0.9),ofRandom(0.9), ofRandom(0.9));
         
@@ -410,10 +410,10 @@ void instancedComponent::setGroupColorGradient(){
 
 void instancedComponent::setGroupColor(int groupId, ofFloatColor color){
     if(index<0){
-        myLogRelease("invalid value for index num");
+        ofxMtb::myLogRelease("invalid value for index num");
         return;
     }else if(groupId<-2){
-        myLogRelease("invalid value for groupId");
+        ofxMtb::myLogRelease("invalid value for groupId");
         return;
     }
 
@@ -421,7 +421,7 @@ void instancedComponent::setGroupColor(int groupId, ofFloatColor color){
     INSTANCE_MAP_ITR itr = instanceMap.find(groupId);
     INSTANCE_MAP_ITR end = instanceMap.end();
     if(itr == end){
-        myLogRelease("Can not set color to group, Id: " + ofToString(groupId));
+        ofxMtb::myLogRelease("Can not set color to group, Id: " + ofToString(groupId));
         return;
     }
 
@@ -435,7 +435,7 @@ void instancedComponent::setGroupColor(int groupId, ofFloatColor color){
 }
 
 void instancedComponent::changeInstanceGroupId(INSTANCE_MAP_ITR& itr, int groupId){
-    STL_UTIL::changeKey(instanceMap, itr, groupId);
+    ofxMtb::STL_UTIL::changeKey(instanceMap, itr, groupId);
 }
 
 void instancedComponent::mergeInstanceGroup(int groupIdA, int groupIdB){
@@ -451,18 +451,18 @@ void instancedComponent::mergeInstanceGroup(int groupIdA, int groupIdB){
     INSTANCE_MAP_ITR itrA = instanceMap.find(groupIdA);
     INSTANCE_MAP_ITR itrB = instanceMap.find(groupIdB);
 
-    myLogRelease("merge group " +  ofToString(groupIdA) + " + " + ofToString(groupIdB));
+    ofxMtb::myLogRelease("merge group " +  ofToString(groupIdA) + " + " + ofToString(groupIdB));
 
     if(itrB==end){
-        myLogRelease("Can not merge instanceGroup: " + ofToString(groupIdA) + " + " + ofToString(groupIdB));
+        ofxMtb::myLogRelease("Can not merge instanceGroup: " + ofToString(groupIdA) + " + " + ofToString(groupIdB));
         return;
     }
     
     if(itrA==end){
-        myLogRelease("Can not find group so merge to new group : " + ofToString(groupIdA));
-       STL_UTIL::replace_key(instanceMap, groupIdB, groupIdA);
+        ofxMtb::myLogRelease("Can not find group so merge to new group : " + ofToString(groupIdA));
+       ofxMtb::STL_UTIL::replace_key(instanceMap, groupIdB, groupIdA);
     }else{
-        STL_UTIL::replace_key(instanceMap, groupIdA, groupIdB);
+        ofxMtb::STL_UTIL::replace_key(instanceMap, groupIdA, groupIdB);
     }
     
     
@@ -496,7 +496,7 @@ vector<string> instancedComponent::printData(bool console){
         sprintf(m, "instance[%03d]: group %03d, type %02d, x=%0.3f, y=%0.3f, z=%0.4f", i, itr->first, ins.type, mat.getTranslation().x, mat.getTranslation().y, mat.getTranslation().z);
 
         if(console)
-            myLogRelease(m);
+            ofxMtb::myLogRelease(m);
         else
             data.push_back(m);
     }
@@ -510,7 +510,7 @@ vector<string> instancedComponent::printGroupData(bool console){
     
     for(; itr!=instanceMap.end(); itr=instanceMap.upper_bound(itr->first) ){
         int key = itr->first;
-        int n = STL_UTIL::getElementSize(instanceMap, key);
+        int n = ofxMtb::STL_UTIL::getElementSize(instanceMap, key);
         if( key == -1){
             sprintf(m, "Singles n=%04d", n);
         }else{
@@ -518,7 +518,7 @@ vector<string> instancedComponent::printGroupData(bool console){
         }
         
         if(console)
-            myLogRelease(m);
+            ofxMtb::myLogRelease(m);
         else
             data.push_back(m);
     }
@@ -526,7 +526,7 @@ vector<string> instancedComponent::printGroupData(bool console){
 }
 
 int instancedComponent::updateGroupTotalNum(){
-    groupTotalNum =  STL_UTIL::getAllKeySize(instanceMap);
+    groupTotalNum =  ofxMtb::STL_UTIL::getAllKeySize(instanceMap);
     return groupTotalNum;
 }
 
@@ -543,7 +543,7 @@ void instancedComponent::removeSmallGroup(int minNum){
     
     INSTANCE_MAP_ITR itr = instanceMap.begin();
     for(; itr!=instanceMap.end(); itr=instanceMap.upper_bound(itr->first)){       // iterate each key
-        int groupSize = STL_UTIL::getElementSize(instanceMap, itr->first);
+        int groupSize = ofxMtb::STL_UTIL::getElementSize(instanceMap, itr->first);
         if(groupSize<minNum){
             removeGroup(itr->first);
         }
@@ -572,8 +572,8 @@ void instancedComponent::resetGroup(){
 //    INSTANCE_MAP_ITR itr = instanceMap.begin();
 //    
 //    for(; itr!=instanceMap.end(); itr=instanceMap.upper_bound(itr->first)){
-//        myLogDebug("replace");
-//        STL_UTIL::replace_key(instanceMap, itr->first, defaultGroup);
+//        ofxMtb::myLogDebug("replace");
+//        ofxMtb::STL_UTIL::replace_key(instanceMap, itr->first, defaultGroup);
 //    }
     
     char d[255];
@@ -734,7 +734,7 @@ void instancedComponent::removeDuplication(){
             instance& insB = itrB->second;
             if(insA == insB){
                 instanceMap.erase(itrB++);
-                myLogRelease("remove dupliated instance");
+                ofxMtb::myLogRelease("remove dupliated instance");
             }
         }
     }

@@ -26,7 +26,7 @@ void rnApp::processCollision(){
     char m[255];
     for(int i=0; itrA!=instanceMap.end(); itrA++, i++){
         //sprintf(m, "processCollisionTest i:%d", i);
-        //myLogDebug(ofToString(m));
+        //ofxMtb::myLogDebug(ofToString(m));
         
         INSTANCE_MAP_ITR itrB = instanceMap.begin();
     std:advance(itrB, i+1);
@@ -124,7 +124,7 @@ int rnApp::collisionStart(){
     instancedComponent::resetGroup();
     
     int startTime = ofGetElapsedTimeMillis();
-    myLogRelease("collisionTest startTime:  "+ ofToString(startTime));
+    ofxMtb::myLogRelease("collisionTest startTime:  "+ ofToString(startTime));
     
 //#ifndef NDEBUG
 //    instancedComponent::printData();
@@ -149,6 +149,6 @@ void rnApp::collisionEnd(int startTime){
     cylinders.bVtxtexNeedUpdate = true;
     
     int endTime = ofGetElapsedTimeMillis();
-    myLogRelease("collisionTest endTime:  "+ ofToString(endTime)+", elapsed: " + ofToString((float)(endTime-startTime)/1000.0));
-    myLogRelease("finish CollisionTest");
+    ofxMtb::myLogRelease("collisionTest endTime:  "+ ofToString(endTime)+", elapsed: " + ofToString((float)(endTime-startTime)/1000.0));
+    ofxMtb::myLogRelease("finish CollisionTest");
 }
